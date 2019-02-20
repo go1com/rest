@@ -10,6 +10,16 @@ use Slim\Http\Response;
 
 /**
  * For restful microservices, access JWT payload is frequently use case; so we parse JWT into jwt.payload by default.
+ *
+ * # Start HTTP server
+ * # ---------------------
+ * cd rest/examples
+ * php -S localhost:8989
+ *
+ * # Run example
+ * # ---------------------
+ * JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+ * curl localhost:8989/hello/there?jwt=$JWT
  */
 
 if (!function_exists('__main__')) {

@@ -11,11 +11,11 @@ class RestService extends \DI\Bridge\Slim\App
 {
     const VERSION = 'v1.0';
 
-    private $config;
+    private $cnf;
 
-    public function __construct(array $config = [])
+    public function __construct(array $cnf = [])
     {
-        $this->config = $config;
+        $this->cnf = $cnf;
 
         parent::__construct();
 
@@ -32,9 +32,9 @@ class RestService extends \DI\Bridge\Slim\App
 
     protected function configureContainer(ContainerBuilder $builder)
     {
-        if (!empty($this->config)) {
-            $this->config = [];
-            $builder->addDefinitions($this->config);
+        if (!empty($this->cnf)) {
+            $builder->addDefinitions($this->cnf);
+            $this->cnf = [];
         }
     }
 
