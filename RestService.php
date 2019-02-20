@@ -17,25 +17,7 @@ class RestService extends \DI\Bridge\Slim\App
 
         parent::__construct();
 
-        # Middleware to convert JWT from query|header|cookie -> attribute jwt.payload
-        # Note: This is not JWT validation
-        $this->add(
-            function (Request $request, Response $response, callable $next) {
-                $auth = $request->getHeader('Authorization');
-                if ($auth && (0 === strpos('Bearer ', $auth))) {
-                    $jwt = substr($auth, 7);
-                }
-
-                $jwt = $jwt ?? $request->getQueryParam('jwt') ?? $request->getCookieParam('jwt');
-                $jwt = is_null($jwt) ? null : (2 !== substr_count($jwt, '.')) ? null : explode('.', $jwt)[1];
-                $jwt = is_null($jwt) ? null : JWT::jsonDecode(JWT::urlsafeB64Decode($jwt));
-
-                return $next(
-                    is_null($jwt) ? $request : $request->withAttribute('jwt.payload', $jwt),
-                    $response
-                );
-            }
-        );
+        $this->add($this->jwtMiddleware());
     }
 
     protected function configureContainer(ContainerBuilder $builder)
@@ -44,5 +26,31 @@ class RestService extends \DI\Bridge\Slim\App
             $this->config = [];
             $builder->addDefinitions($this->config);
         }
+    }
+
+    /**
+     * Middleware to convert JWT from query|header|cookie into attribute jwt.payload
+     *
+     * Note: This is not JWT validation
+     *
+     * @return callable
+     */
+    private function jwtMiddleware()
+    {
+        return function (Request $request, Response $response, callable $next) {
+            $auth = $request->getHeader('Authorization');
+            if ($auth && (0 === strpos('Bearer ', $auth))) {
+                $jwt = substr($auth, 7);
+            }
+
+            $jwt = $jwt ?? $request->getQueryParam('jwt') ?? $request->getCookieParam('jwt');
+            $jwt = is_null($jwt) ? null : (2 !== substr_count($jwt, '.')) ? null : explode('.', $jwt)[1];
+            $jwt = is_null($jwt) ? null : JWT::jsonDecode(JWT::urlsafeB64Decode($jwt));
+
+            return $next(
+                is_null($jwt) ? $request : $request->withAttribute('jwt.payload', $jwt),
+                $response
+            );
+        };
     }
 }

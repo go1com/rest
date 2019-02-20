@@ -54,4 +54,3 @@ class MyController
 }
 
 __main__();
-
