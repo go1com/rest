@@ -53,4 +53,5 @@ class MyController
     }
 }
 
-call_user_func('__main__');
+__main__();
+

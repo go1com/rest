@@ -53,3 +53,5 @@ class PortalSingleController
         return $res->withJson(['wip' => true, 'id' => $id]);
     }
 }
+
+__main__();
