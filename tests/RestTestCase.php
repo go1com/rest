@@ -3,11 +3,23 @@
 namespace go1\rest\tests;
 
 use go1\rest\RestService;
+use Http\Message\MessageFactory\SlimMessageFactory;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 abstract class RestTestCase extends TestCase
 {
+    protected $mf;
+
+    public function mf(): SlimMessageFactory
+    {
+        if (null === $this->mf) {
+            $this->mf = new SlimMessageFactory;
+        }
+
+        return $this->mf;
+    }
+
     protected function app(): RestService
     {
         if (!defined('APP_ROOT')) {
