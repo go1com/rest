@@ -13,15 +13,13 @@ require __DIR__ . '/../vendor/autoload.php';
  * With Silex
  * -------
  *
- *  $app->register(new Doctrine);
- *  $app['ctrl']       = function(Container $c) { return new MyController($c['translator']); };
- *  $app['translator'] = function(Container $c) { return new Translator(); };
- *  $app->get('/hello/{name}', 'ctrl:hello');
+ *  $app['ctrl'] = function(Container $c) { new PortalSingleController($c['dbs']['go1'], $c['dbs']['staff']); };
+ *  $app->get('/portal/{id}', 'ctrl:get');
  *
  * With REST
  * -------
  *
- *  $app->get('/hello/{name}', [MyController::class, 'hello']);
+ *  $app->get('/portal/{id}', [PortalSingleController::class, 'get']);
  */
 
 if (!function_exists('__main__')) {
