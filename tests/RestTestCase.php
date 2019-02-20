@@ -4,11 +4,24 @@ namespace go1\rest\tests;
 
 use go1\rest\RestService;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
-class RestTestCase extends TestCase
+abstract class RestTestCase extends TestCase
 {
-    public function server(): RestService
+    public function app(): RestService
     {
-        # …
+        if (!defined('APP_ROOT')) {
+            throw new RuntimeException('APP_ROOT is not defined');
+        }
+
+        /** @var RestService $app */
+        $app = require __DIR__ . '/../public/index.php';
+        $this->install($app);
+
+        return $app;
+    }
+
+    public function install(RestService $service)
+    {
     }
 }
