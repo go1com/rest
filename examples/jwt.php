@@ -8,6 +8,10 @@ use go1\rest\RestService;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+/**
+ * For restful microservices, access JWT payload is frequently use case; so we parse JWT into jwt.payload by default.
+ */
+
 if (!function_exists('__main__')) {
     function __main__()
     {
