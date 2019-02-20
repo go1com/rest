@@ -58,7 +58,7 @@ class Request extends \Slim\Http\Request
         return $this->roleCheck($portalIdOrName, self::ROLE_ADMIN, $inherit);
     }
 
-    public function isContentAdministrator($portalIdOrName, bool $inherit = true)
+    public function isPortalContentAdministrator($portalIdOrName, bool $inherit = true)
     {
         return $this->roleCheck($portalIdOrName, self::ROLE_ADMIN_CONTENT, $inherit);
     }
@@ -92,5 +92,4 @@ class Request extends \Slim\Http\Request
 
         return false;
     }
-
 }
