@@ -8,15 +8,15 @@ use Doctrine\DBAL\DriverManager;
 
 class DatabaseConnections
 {
-    private $dbOptions;
+    private $options;
 
     public function __construct(Container $c)
     {
-        $this->dbOptions = $c->get('dbOptions');
+        $this->options = $c->get('dbOptions');
     }
 
     public function get($name): Connection
     {
-        return DriverManager::getConnection($this->dbOptions[$name]);
+        return DriverManager::getConnection($this->options[$name]);
     }
 }

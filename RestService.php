@@ -16,26 +16,30 @@ class RestService extends \DI\Bridge\Slim\App
     public function __construct(array $cnf = [])
     {
         $this->cnf = $cnf;
+        
+        # $this->cnf[] = '';
 
         parent::__construct();
 
-        $this->add($this->jwtMiddleware());
-
-        $this->get('/', function (Response $response) {
-            return $response->withJson([
-                'service' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
-                'version' => defined('SERVICE_VERSION') ? SERVICE_VERSION : self::VERSION,
-                'time'    => time(),
-            ]);
-        });
+        $this
+            ->add($this->jwtMiddleware())
+            ->get('/', function (Response $response) {
+                return $response->withJson([
+                    'service' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
+                    'version' => defined('SERVICE_VERSION') ? SERVICE_VERSION : self::VERSION,
+                    'time'    => time(),
+                ]);
+            });
     }
 
     protected function configureContainer(ContainerBuilder $builder)
     {
-        if (!empty($this->cnf)) {
-            $builder->addDefinitions($this->cnf);
-            $this->cnf = [];
+        if (empty($this->cnf)) {
+            return null;
         }
+
+        $builder->addDefinitions($this->cnf);
+        $this->cnf = [];
     }
 
     /**
