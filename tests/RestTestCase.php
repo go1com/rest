@@ -8,7 +8,7 @@ use RuntimeException;
 
 abstract class RestTestCase extends TestCase
 {
-    public function app(): RestService
+    protected function app(): RestService
     {
         if (!defined('APP_ROOT')) {
             throw new RuntimeException('APP_ROOT is not defined');
@@ -21,7 +21,7 @@ abstract class RestTestCase extends TestCase
         return $app;
     }
 
-    public function install(RestService $service)
+    protected function install(RestService $service)
     {
     }
 }
