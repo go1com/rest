@@ -2,6 +2,8 @@
 
 namespace go1\rest;
 
+use Firebase\JWT\JWT;
+
 class Request extends \Slim\Http\Request
 {
     const ROLE_SYSTEM        = 'Admin on #Accounts';
@@ -11,14 +13,27 @@ class Request extends \Slim\Http\Request
 
     private $contextUser;
 
-    public function contextUser()
+    private function jwtPayload()
     {
-        if (!$this->attributes->has('jwt.payload')) {
-            return null;
+        $auth = $this->getHeader('Authorization');
+        if ($auth && (0 === strpos('Bearer ', $auth))) {
+            $jwt = substr($auth, 7);
         }
 
+        $jwt = $jwt ?? $this->getQueryParam('jwt') ?? $this->getCookieParam('jwt');
+        $jwt = is_null($jwt) ? null : (2 !== substr_count($jwt, '.')) ? null : explode('.', $jwt)[1];
+        $jwt = is_null($jwt) ? null : JWT::jsonDecode(JWT::urlsafeB64Decode($jwt));
+
+        return $jwt ?? null;
+    }
+
+    public function contextUser()
+    {
         if (is_null($this->contextUser)) {
-            $payload = $this->attributes->get('jwt.payload');
+            if (!$payload = $this->jwtPayload()) {
+                return null;
+            }
+
             if (!empty($payload->object->type)) {
                 if ('user' === $payload->object->type) {
                     $this->contextUser = !empty($payload->object->content->mail) ? $payload->object->content : null;
