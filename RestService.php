@@ -9,6 +9,8 @@ use Slim\Http\Response;
 
 class RestService extends \DI\Bridge\Slim\App
 {
+    const VERSION = 'v1.0';
+
     private $config;
 
     public function __construct(array $config = [])
@@ -21,8 +23,8 @@ class RestService extends \DI\Bridge\Slim\App
 
         $this->get('/', function (Response $response) {
             return $response->withJson([
-                'service' => SERVICE_NAME,
-                'version' => SERVICE_VERSION,
+                'service' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
+                'version' => defined('SERVICE_VERSION') ? SERVICE_VERSION : self::VERSION,
                 'time'    => time(),
             ]);
         });
