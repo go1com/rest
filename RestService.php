@@ -18,6 +18,14 @@ class RestService extends \DI\Bridge\Slim\App
         parent::__construct();
 
         $this->add($this->jwtMiddleware());
+
+        $this->get('/', function (Response $response) {
+            return $response->withJson([
+                'service' => SERVICE_NAME,
+                'version' => SERVICE_VERSION,
+                'time'    => time(),
+            ]);
+        });
     }
 
     protected function configureContainer(ContainerBuilder $builder)
