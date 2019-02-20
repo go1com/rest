@@ -41,7 +41,7 @@ class Request extends \Slim\Http\Request
             }
         }
 
-        return $this->contextUser;
+        return $this->contextUser ?? null;
     }
 
     public function isSystemUser(): bool
