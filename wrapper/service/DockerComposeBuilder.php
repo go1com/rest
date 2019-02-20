@@ -12,12 +12,19 @@ class DockerComposeBuilder
     public function __construct(ConfigBuilder $builder)
     {
         $this->builder = $builder;
-        $this->config = [];
+        $this->config = [
+            'version'  => '2.0',
+            'services' => [
+                'web' => [
+                    'environment' => [],
+                ],
+            ],
+        ];
     }
 
-    public function withEnv(string $name, string $value)
+    public function withEnv(string $name, ?string $value = null)
     {
-        $this->config['environment'][] = "{$name}={$value}";
+        $this->config['services']['web']['environment'][] = is_null($value) ? "{$name}" : "{$name}={$value}";
 
         return $this;
     }
