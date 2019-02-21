@@ -6,6 +6,9 @@ use go1\core\customer\user_explore\Controller;
 use go1\rest\RestService;
 use go1\rest\wrapper\ConfigBuilder;
 
+# ---------------------------------------------------------------
+# Builder interface for composing CI files without googling
+# ---------------------------------------------------------------
 ConfigBuilder::create()
     ->composer()
         ->withName('go1-core/customer/user-explore')
@@ -32,6 +35,9 @@ ConfigBuilder::create()
         ->withOpenAPI('3.0.0')
         ->withServer('%user-explore%', 'Service for user exploring')
         ->withPath('/lo/{portalId}/{loId}/learners/{keyword}', 'GET')
+            # ---------------------------------------------------------------
+            # config builder auto register this route with slim
+            # ---------------------------------------------------------------
             ->withController([Controller::class, 'get'])
             ->withSummary('Find users who has enrolment with the learning object in certain portal.')
             ->withParam('portalId')->inPath()->required(true)->withTypeInteger()->end()
