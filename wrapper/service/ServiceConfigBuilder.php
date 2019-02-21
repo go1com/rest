@@ -2,6 +2,7 @@
 
 namespace go1\rest\wrapper\service;
 
+use go1\rest\RestService;
 use go1\rest\wrapper\ConfigBuilder;
 
 class ServiceConfigBuilder
@@ -48,7 +49,21 @@ class ServiceConfigBuilder
 
     public function withBootCallback(callable $fn)
     {
-        $this->config['boot'] = $fn;
+        $this->config['boot'] = function (RestService $app) use ($fn) {
+            call_user_func($fn, $app, $this);
+
+            foreach ($this->builder->swagger()->getPaths() as $pattern => $methods) {
+                foreach ($methods as $method => $_) {
+                    $map = $app->map([$method], $pattern, $_['#controller']);
+
+                    foreach ($_['parameters'] as $param) {
+                        if (isset($param['schema']['default'])) {
+                            $map->setArgument($param['name'], $param['schema']['default']);
+                        }
+                    }
+                }
+            }
+        };
 
         return $this;
     }

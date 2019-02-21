@@ -35,6 +35,11 @@ class RestService extends \DI\Bridge\Slim\App
                 'time'    => time(),
             ]);
         });
+
+        if (!empty($this->cnf['boot'])) {
+            call_user_func($this->cnf['boot'], $this);
+            unset($this->cnf['boot']);
+        }
     }
 
     protected function configureContainer(ContainerBuilder $builder)

@@ -34,6 +34,13 @@ class SwaggerParamBuilder
         return $this;
     }
 
+    public function withDefaultValue($value)
+    {
+        $this->config['schema']['default'] = $value;
+
+        return $this;
+    }
+
     public function withTypeString()
     {
         $this->config['schema']['type'] = 'string';

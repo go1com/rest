@@ -12,7 +12,7 @@ class SwaggerBuilder
     public function __construct(ConfigBuilder $builder)
     {
         $this->builder = $builder;
-        $this->config = [];
+        $this->config = ['paths' => []];
     }
 
     public function withOpenAPI(string $version)
@@ -38,6 +38,11 @@ class SwaggerBuilder
         $pathBuilder = new SwaggerPathBuilder($this, $this->config['paths'][$path][$method]);
 
         return $pathBuilder;
+    }
+
+    public function getPaths()
+    {
+        return $this->config['paths'];
     }
 
     /**

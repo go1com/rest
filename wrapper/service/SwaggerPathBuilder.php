@@ -28,6 +28,13 @@ class SwaggerPathBuilder
         return new SwaggerParamBuilder($this, $this->config['parameters'][$_]);
     }
 
+    public function withController($controller)
+    {
+        $this->config['#controller'] = $controller;
+
+        return $this;
+    }
+
     public function end()
     {
         return $this->swagger;
