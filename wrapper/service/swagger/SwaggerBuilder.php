@@ -1,6 +1,6 @@
 <?php
 
-namespace go1\rest\wrapper\service;
+namespace go1\rest\wrapper\service\swagger;
 
 use go1\rest\wrapper\ConfigBuilder;
 

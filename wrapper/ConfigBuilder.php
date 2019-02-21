@@ -6,7 +6,7 @@ use go1\rest\wrapper\service\ComposerBuilder;
 use go1\rest\wrapper\service\DockerComposeBuilder;
 use go1\rest\wrapper\service\PHPUnitConfigBuilder;
 use go1\rest\wrapper\service\ServiceConfigBuilder;
-use go1\rest\wrapper\service\SwaggerBuilder;
+use go1\rest\wrapper\service\swagger\SwaggerBuilder;
 
 class ConfigBuilder
 {
