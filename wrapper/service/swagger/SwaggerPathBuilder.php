@@ -11,6 +11,7 @@ class SwaggerPathBuilder
     {
         $this->swagger = $swagger;
         $this->config = &$config;
+        $this->config['parameters'] = [];
     }
 
     public function withSummary(string $value)

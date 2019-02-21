@@ -53,4 +53,9 @@ class PHPUnitConfigBuilder
     {
         return $this->builder;
     }
+
+    public function build()
+    {
+        return $this->config;
+    }
 }

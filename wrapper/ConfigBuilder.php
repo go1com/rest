@@ -10,7 +10,7 @@ use go1\rest\wrapper\service\swagger\SwaggerBuilder;
 
 class ConfigBuilder
 {
-    private $serviceConfig;
+    private $service;
     private $dockerCompose;
     private $composer;
     private $phpunit;
@@ -18,7 +18,7 @@ class ConfigBuilder
 
     public function __construct()
     {
-        $this->serviceConfig = new ServiceConfigBuilder($this);
+        $this->service = new ServiceConfigBuilder($this);
         $this->dockerCompose = new DockerComposeBuilder($this);
         $this->composer = new ComposerBuilder($this);
         $this->phpunit = new PHPUnitConfigBuilder($this);
@@ -35,9 +35,9 @@ class ConfigBuilder
         return $this->composer;
     }
 
-    public function serviceConfig()
+    public function service()
     {
-        return $this->serviceConfig;
+        return $this->service;
     }
 
     public function dockerCompose()
@@ -57,7 +57,12 @@ class ConfigBuilder
 
     public function build()
     {
-        # @TODO Build resources/config.default.php
-        # @TODO Build resources/ci/docker-compose.yml
+        return [
+            'service'        => $this->service->build(),
+            'docker-compose' => $this->dockerCompose->build(),
+            'composer'       => $this->composer->build(),
+            'phpunit'        => $this->phpunit->build(),
+            'swagger'        => $this->swagger->build(),
+        ];
     }
 }
