@@ -9,11 +9,30 @@ class ServiceConfigBuilder
 {
     private $builder;
     private $config = [];
+    private $boot;
 
     public function __construct(ConfigBuilder $builder)
     {
         $this->builder = $builder;
-        $this->config = [];
+        $this->config = [
+            'boot' => function (RestService $app) {
+                if (!is_null($this->boot)) {
+                    call_user_func($this->boot, $app, $this);
+                }
+
+                foreach ($this->builder->swagger()->getPaths() as $pattern => $methods) {
+                    foreach ($methods as $method => $_) {
+                        $map = $app->map([$method], $pattern, $_['#controller']);
+
+                        foreach ($_['parameters'] as $param) {
+                            if (isset($param['schema']['default'])) {
+                                $map->setArgument($param['name'], $param['schema']['default']);
+                            }
+                        }
+                    }
+                }
+            },
+        ];
     }
 
     public function withServiceName(string $name)
@@ -47,23 +66,9 @@ class ServiceConfigBuilder
         return $this;
     }
 
-    public function withBootCallback(callable $fn)
+    public function withBootCallback(callable $boot)
     {
-        $this->config['boot'] = function (RestService $app) use ($fn) {
-            call_user_func($fn, $app, $this);
-
-            foreach ($this->builder->swagger()->getPaths() as $pattern => $methods) {
-                foreach ($methods as $method => $_) {
-                    $map = $app->map([$method], $pattern, $_['#controller']);
-
-                    foreach ($_['parameters'] as $param) {
-                        if (isset($param['schema']['default'])) {
-                            $map->setArgument($param['name'], $param['schema']['default']);
-                        }
-                    }
-                }
-            }
-        };
+        $this->boot = $boot;
 
         return $this;
     }
