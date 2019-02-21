@@ -6,6 +6,7 @@ use go1\rest\wrapper\service\ComposerBuilder;
 use go1\rest\wrapper\service\DockerComposeBuilder;
 use go1\rest\wrapper\service\PHPUnitConfigBuilder;
 use go1\rest\wrapper\service\ServiceConfigBuilder;
+use go1\rest\wrapper\service\SwaggerBuilder;
 
 class ConfigBuilder
 {
@@ -13,6 +14,7 @@ class ConfigBuilder
     private $dockerCompose;
     private $composer;
     private $phpunit;
+    private $swagger;
 
     public function __construct()
     {
@@ -20,6 +22,7 @@ class ConfigBuilder
         $this->dockerCompose = new DockerComposeBuilder($this);
         $this->composer = new ComposerBuilder($this);
         $this->phpunit = new PHPUnitConfigBuilder($this);
+        $this->swagger = new SwaggerBuilder($this);
     }
 
     public static function create(): ConfigBuilder
@@ -45,6 +48,11 @@ class ConfigBuilder
     public function phpunit()
     {
         return $this->phpunit;
+    }
+
+    public function swagger()
+    {
+        return $this->swagger;
     }
 
     public function build()
