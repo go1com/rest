@@ -11,6 +11,10 @@ use go1\rest\RestService;
 /**
  * For restful microservices, access JWT payload is frequently use case; so we parse JWT into jwt.payload by default.
  *
+ * JWt parsing:
+ *  - in go1/app: Run as middleware, it's always parsed.
+ *  - in go1/rest: Only parse JWT payload if we really needed it.
+ *
  * # Start HTTP server
  * # ---------------------
  * cd rest/examples
@@ -21,7 +25,6 @@ use go1\rest\RestService;
  * JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
  * curl localhost:8989/hello/there?jwt=$JWT
  */
-
 if (!function_exists('__main__')) {
     function __main__()
     {
