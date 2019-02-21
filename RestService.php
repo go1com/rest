@@ -28,6 +28,10 @@ class RestService extends \DI\Bridge\Slim\App
 
         parent::__construct();
 
+        if (!empty($cnf['boot'])) {
+            call_user_func($cnf['boot'], $this);
+        }
+
         $this->get('/', function (Response $response) {
             return $response->withJson([
                 'service' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
@@ -35,11 +39,6 @@ class RestService extends \DI\Bridge\Slim\App
                 'time'    => time(),
             ]);
         });
-
-        if (!empty($this->cnf['boot'])) {
-            call_user_func($this->cnf['boot'], $this);
-            unset($this->cnf['boot']);
-        }
     }
 
     protected function configureContainer(ContainerBuilder $builder)

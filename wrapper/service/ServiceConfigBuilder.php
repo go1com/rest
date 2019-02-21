@@ -17,7 +17,7 @@ class ServiceConfigBuilder
         $this->config = [
             'boot' => function (RestService $app) {
                 if (!is_null($this->boot)) {
-                    call_user_func($this->boot, $app, $this);
+                    call_user_func($this->boot, $app, $this->builder);
                 }
 
                 foreach ($this->builder->swagger()->getPaths() as $pattern => $methods) {
