@@ -2,7 +2,7 @@
 
 namespace go1\rest\wrapper\service;
 
-use go1\rest\wrapper\ConfigBuilder;
+use go1\rest\wrapper\Manifest;
 
 class PHPUnitConfigBuilder
 {
@@ -12,7 +12,7 @@ class PHPUnitConfigBuilder
         '@stopOnFailure' => 'true',
     ];
 
-    public function __construct(ConfigBuilder $builder)
+    public function __construct(Manifest $builder)
     {
         $this->builder = $builder;
         $this->config = [];
@@ -49,7 +49,7 @@ class PHPUnitConfigBuilder
         return $this;
     }
 
-    public function end(): ConfigBuilder
+    public function end(): Manifest
     {
         return $this->builder;
     }

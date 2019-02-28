@@ -4,12 +4,12 @@ namespace go1\rest\examples;
 
 use go1\core\customer\user_explore\Controller;
 use go1\rest\RestService;
-use go1\rest\wrapper\ConfigBuilder;
+use go1\rest\wrapper\Manifest;
 
 # ---------------------------------------------------------------
 # Builder interface for composing CI files without googling
 # ---------------------------------------------------------------
-ConfigBuilder::create()
+Manifest::create()
     ->composer()
         ->withName('go1-core/customer/user-explore')
         ->withPreferStable(true)
@@ -24,7 +24,7 @@ ConfigBuilder::create()
         ->withVersion('v1.0')
         ->withEsOption('default', getenv('ES_URL') ?: 'http://localhost:9200')
         ->withBootCallback(
-            function (RestService $app, ConfigBuilder $builder) {
+            function (RestService $app, Manifest $builder) {
                 if (!defined('ES_INDEX')) {
                     define('ES_INDEX', getenv('ES_INDEX') ?: 'go1_dev');
                 }

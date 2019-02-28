@@ -2,14 +2,14 @@
 
 namespace go1\rest\wrapper\service\swagger;
 
-use go1\rest\wrapper\ConfigBuilder;
+use go1\rest\wrapper\Manifest;
 
 class SwaggerBuilder
 {
     private $builder;
     private $config = [];
 
-    public function __construct(ConfigBuilder $builder)
+    public function __construct(Manifest $builder)
     {
         $this->builder = $builder;
         $this->config = ['paths' => []];
@@ -54,7 +54,7 @@ class SwaggerBuilder
      * withSecurity()
      */
 
-    public function end(): ConfigBuilder
+    public function end(): Manifest
     {
         return $this->builder;
     }

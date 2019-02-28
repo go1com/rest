@@ -3,7 +3,7 @@
 namespace go1\rest\wrapper\service;
 
 use go1\rest\RestService;
-use go1\rest\wrapper\ConfigBuilder;
+use go1\rest\wrapper\Manifest;
 
 class ServiceConfigBuilder
 {
@@ -11,7 +11,7 @@ class ServiceConfigBuilder
     private $config = [];
     private $boot;
 
-    public function __construct(ConfigBuilder $builder)
+    public function __construct(Manifest $builder)
     {
         $this->builder = $builder;
         $this->config = [
@@ -73,7 +73,7 @@ class ServiceConfigBuilder
         return $this;
     }
 
-    public function end(): ConfigBuilder
+    public function end(): Manifest
     {
         return $this->builder;
     }

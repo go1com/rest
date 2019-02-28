@@ -1,7 +1,7 @@
 <?php
 
 use go1\rest\RestService;
-use go1\rest\wrapper\ConfigBuilder;
+use go1\rest\wrapper\Manifest;
 
 return call_user_func(
     function () {
@@ -21,7 +21,7 @@ return call_user_func(
         $cnf = !$cnf ? null : require $cnf;
         $cnf = $cnf ?: call_user_func(
             function () {
-                /** @var ConfigBuilder $cnf */
+                /** @var Manifest $cnf */
                 $cnf = require __DIR__ . '/../manifest.php';
                 $cnf = $cnf->service()->build();
 

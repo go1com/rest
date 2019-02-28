@@ -8,7 +8,7 @@ use go1\rest\wrapper\service\PHPUnitConfigBuilder;
 use go1\rest\wrapper\service\ServiceConfigBuilder;
 use go1\rest\wrapper\service\swagger\SwaggerBuilder;
 
-class ConfigBuilder
+class Manifest
 {
     private $service;
     private $dockerCompose;
@@ -25,9 +25,9 @@ class ConfigBuilder
         $this->swagger = new SwaggerBuilder($this);
     }
 
-    public static function create(): ConfigBuilder
+    public static function create(): Manifest
     {
-        return new ConfigBuilder;
+        return new Manifest;
     }
 
     public function composer(): ComposerBuilder

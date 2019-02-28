@@ -2,11 +2,11 @@
 
 namespace go1\rest;
 
-use stdClass;
-use RuntimeException;
-use ReflectionMethod;
-use ReflectionFunction;
 use ReflectionClass;
+use ReflectionFunction;
+use ReflectionMethod;
+use RuntimeException;
+use stdClass;
 
 class Stream
 {
