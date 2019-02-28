@@ -4,7 +4,9 @@
   "prefer-stable":     true,
   "minimum-stability": "stable",
   "autoload":          {
-    "go1\\rest\\": "./"
+    "psr-4": {
+      "go1\\rest\\": "./"
+    }
   },
   "require":           {
     "php":                "^7.2",
