@@ -12,6 +12,11 @@ class RestService extends \DI\Bridge\Slim\App
 
     private $cnf;
 
+    /**
+     * @var Stream
+     */
+    private $stream;
+
     public function __construct(array $cnf = [])
     {
         $this->cnf = $cnf;
@@ -49,5 +54,13 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
+    }
+
+    public function stream(): Stream
+    {
+        if (!$this->stream) {
+            $this->stream = new Stream;
+        }
+        return $this->stream;
     }
 }
