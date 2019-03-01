@@ -6,11 +6,24 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use RuntimeException;
-use stdClass;
 
 class Stream
 {
     private $listeners = [];
+    private $transports;
+
+    public function __construct(?callable $transport = null)
+    {
+        $this->addTransport([$this, 'defaultTransport']);
+        if (null != $transport) {
+            $this->addTransport($transport);
+        }
+    }
+
+    public function addTransport(callable $transport)
+    {
+        $this->transports[] = $transport;
+    }
 
     public function on(string $eventName, callable $callable): self
     {
@@ -19,7 +32,14 @@ class Stream
         return $this;
     }
 
-    public function commit(string $eventName, stdClass $payload)
+    public function commit(string $eventName, string $payload, array $context = [])
+    {
+        foreach ($this->transports as $transport) {
+            call_user_func($transport, $eventName, $payload, $context);
+        }
+    }
+
+    protected function defaultTransport($eventName, string $payload)
     {
         foreach ($this->listeners as $name => $callable) {
             if ($eventName == $name) {
@@ -28,7 +48,7 @@ class Stream
         }
     }
 
-    private function resolveEventPayload(callable $callable, stdClass $payload)
+    private function resolveEventPayload(callable $callable, string $payload)
     {
         $reflection = is_array($callable) ?
             new ReflectionMethod($callable[0], $callable[1]) :

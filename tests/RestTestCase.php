@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 abstract class RestTestCase extends TestCase
 {
     protected $mf;
+    protected $committed;
 
     public function mf(): SlimMessageFactory
     {
@@ -19,21 +20,26 @@ abstract class RestTestCase extends TestCase
         return $this->mf;
     }
 
-    protected function app(): RestService
+    protected function rest(): RestService
     {
         if (!defined('APP_ROOT')) {
             define('REST_ROOT', dirname(__DIR__));
             define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
         }
 
-        /** @var RestService $app */
-        $app = require __DIR__ . '/../public/index.php';
-        $this->install($app);
+        /** @var RestService $rest */
+        $rest = require __DIR__ . '/../public/index.php';
+        $this->install($rest);
 
-        return $app;
+        return $rest;
     }
 
-    protected function install(RestService $service)
+    protected function install(RestService $rest)
     {
+        $rest->stream()->addTransport(
+            function (string $event, string $payload, array $context) {
+                $this->committed[$event][] = [$payload, $context];
+            }
+        );
     }
 }
