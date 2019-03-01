@@ -22,7 +22,8 @@ return call_user_func(
         $cnf = $cnf ?: call_user_func(
             function () {
                 /** @var Manifest $cnf */
-                $cnf = require __DIR__ . '/../manifest.php';
+                $cnf = defined('APP_MANIFEST') ? APP_MANIFEST : (__DIR__ . '/../manifest.php');
+                $cnf = require $cnf;
                 $cnf = $cnf->service()->build();
 
                 return $cnf;

@@ -5,7 +5,6 @@ namespace go1\rest\tests;
 use go1\rest\RestService;
 use Http\Message\MessageFactory\SlimMessageFactory;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 abstract class RestTestCase extends TestCase
 {
@@ -23,7 +22,8 @@ abstract class RestTestCase extends TestCase
     protected function app(): RestService
     {
         if (!defined('APP_ROOT')) {
-            throw new RuntimeException('APP_ROOT is not defined');
+            define('APP_ROOT', dirname(__DIR__));
+            define('APP_MANIFEST', __DIR__ . '/../examples/manifest.php');
         }
 
         /** @var RestService $app */
