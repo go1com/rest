@@ -9,7 +9,7 @@ use go1\rest\wrapper\Manifest;
 # ---------------------------------------------------------------
 # Builder interface for composing CI files without googling
 # ---------------------------------------------------------------
-Manifest::create()
+return Manifest::create()
     ->composer()
         ->withName('go1-core/customer/user-explore')
         ->withPreferStable(true)
@@ -63,4 +63,4 @@ Manifest::create()
         ->withEnv('_DOCKER_ES_URL')
         ->withEnv('_DOCKER_ES_INDEX')
         ->end()
-    ->build();
+    ;

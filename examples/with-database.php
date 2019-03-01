@@ -14,7 +14,14 @@ require __DIR__ . '/../vendor/autoload.php';
  * With Silex
  * -------
  *
- *  $app['ctrl'] = function(Container $c) { new PortalSingleController($c['dbs']['go1'], $c['dbs']['staff'], $c['go1.client.es']); };
+ *  # define service
+ *  $app['ctrl'] = function(Container $c) {
+ *      return new PortalSingleController(
+ *          $c['dbs']['go1'], $c['dbs']['staff'],
+ *          $c['go1.client.es']);
+ *      };
+ *
+ *  # define routing
  *  $app->get('/portal/{id}', 'ctrl:get');
  *
  * With REST
@@ -22,22 +29,6 @@ require __DIR__ . '/../vendor/autoload.php';
  *
  *  $app->get('/portal/{id}', [PortalSingleController::class, 'get']);
  */
-
-if (!function_exists('__main__')) {
-    function __main__()
-    {
-        $app = new RestService([
-            'dbOptions' => [
-                'go1'   => DB::connectionOptions('go1'),
-                'staff' => DB::connectionOptions('go1'),
-            ],
-        ]);
-
-        $app->get('/portal/{id}', [PortalSingleController::class, 'get']);
-        $app->run();
-    }
-}
-
 class PortalSingleController
 {
     private $go1;
@@ -57,4 +48,16 @@ class PortalSingleController
     }
 }
 
-__main__();
+call_user_func(
+    function () {
+        $app = new RestService([
+            'dbOptions' => [
+                'go1'   => DB::connectionOptions('go1'),
+                'staff' => DB::connectionOptions('go1'),
+            ],
+        ]);
+
+        $app->get('/portal/{id}', [PortalSingleController::class, 'get']);
+        $app->run();
+    }
+);
