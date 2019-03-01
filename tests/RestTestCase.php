@@ -22,8 +22,8 @@ abstract class RestTestCase extends TestCase
     protected function app(): RestService
     {
         if (!defined('APP_ROOT')) {
-            define('APP_ROOT', dirname(__DIR__));
-            define('APP_MANIFEST', __DIR__ . '/../examples/manifest.php');
+            define('REST_ROOT', dirname(__DIR__));
+            define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
         }
 
         /** @var RestService $app */

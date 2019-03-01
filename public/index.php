@@ -9,7 +9,7 @@ return call_user_func(
             define('APP_ROOT', dirname(__DIR__));
         }
 
-        require_once APP_ROOT . '/vendor/autoload.php';
+        require_once REST_ROOT . '/vendor/autoload.php';
 
         # Get service configuration from:
         #   - config.php — option to provide custom configuration for local machine.
@@ -22,7 +22,7 @@ return call_user_func(
         $cnf = $cnf ?: call_user_func(
             function () {
                 /** @var Manifest $cnf */
-                $cnf = defined('APP_MANIFEST') ? APP_MANIFEST : (__DIR__ . '/../manifest.php');
+                $cnf = defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php');
                 $cnf = require $cnf;
                 $cnf = $cnf->service()->build();
 
