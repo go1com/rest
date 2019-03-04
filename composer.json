@@ -23,7 +23,7 @@
     "symfony/yaml":                "^v4.2.3"
   },
   "bin":               [
-    "cli.php"
+    "rest-cli.php"
   ],
   "extra": {
     "branch-alias": {
