@@ -20,7 +20,8 @@
     "doctrine/dbal":               "^2.9.2",
     "elasticsearch/elasticsearch": "^5.4.0",
     "symfony/console":             "^v4.2.3",
-    "symfony/yaml":                "^v4.2.3"
+    "symfony/yaml":                "^v4.2.3",
+    "phpunit/phpunit": "^8.0"
   },
   "bin":               [
     "rest-cli.php"

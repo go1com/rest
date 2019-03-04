@@ -37,7 +37,7 @@ class ServiceConfigBuilder
 
     public function withServiceName(string $name)
     {
-        define('SERVICE_NAME', $name);
+        defined('SERVICE_NAME') || define('SERVICE_NAME', $name);
 
         $this
             ->builder
@@ -49,7 +49,7 @@ class ServiceConfigBuilder
 
     public function withVersion(string $version)
     {
-        define('SERVICE_VERSION', $version);
+        defined('SERVICE_VERSION') || define('SERVICE_VERSION', $version);
 
         return $this;
     }
