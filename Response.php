@@ -15,6 +15,11 @@ class Response extends \Slim\Http\Response
         );
     }
 
+    public function json()
+    {
+        return json_decode($this->getBody()->getContents());
+    }
+
     public function jr403($msg)
     {
         return $this->jr($msg, 403);
