@@ -25,7 +25,7 @@ class JwtParserTest extends RestTestCase
         $req = $this->mf()->createRequest('GET', '/auth?jwt=' . $this->jwt);
         $res = $this->rest()->process($req, new Response());
         $payload = $res->json();
-        
+
         $this->assertEquals(200, $res->getStatusCode());
         $this->assertEquals('phuong.huynh@go1.com', $payload->mail);
     }

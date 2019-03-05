@@ -5,8 +5,8 @@ use go1\rest\wrapper\Manifest;
 
 return call_user_func(
     function () {
-        if (!defined('APP_ROOT')) {
-            define('APP_ROOT', dirname(__DIR__));
+        if (!defined('REST_ROOT')) {
+            define('REST_ROOT', dirname(__DIR__));
         }
 
         require_once REST_ROOT . '/vendor/autoload.php';

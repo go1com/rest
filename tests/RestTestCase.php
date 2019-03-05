@@ -22,7 +22,7 @@ abstract class RestTestCase extends TestCase
 
     protected function rest(): RestService
     {
-        if (!defined('APP_ROOT')) {
+        if (!defined('REST_ROOT')) {
             define('REST_ROOT', dirname(__DIR__));
             define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
         }
