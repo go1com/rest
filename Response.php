@@ -17,6 +17,8 @@ class Response extends \Slim\Http\Response
 
     public function json()
     {
+        $this->getBody()->rewind();
+        
         return json_decode($this->getBody()->getContents());
     }
 

@@ -35,6 +35,13 @@ class ServiceConfigBuilder
         ];
     }
 
+    public function set($k, $v)
+    {
+        $this->config[$k] = $v;
+
+        return $this;
+    }
+
     public function withServiceName(string $name)
     {
         defined('SERVICE_NAME') || define('SERVICE_NAME', $name);
