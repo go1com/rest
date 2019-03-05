@@ -58,7 +58,7 @@ class DBConnectionOptionsTest extends RestTestCase
                 [],     // environment
                 'GET',
                 'go1',  // name
-                DatabaseConnections::CON_OPTION_AUTO_MASTER,  // force master
+                DatabaseConnections::CON_OPTION_AUTO_MASTER,
                 [       // expected
                         'driver'        => 'pdo_mysql',
                         'dbname'        => 'dev_go1',
@@ -97,7 +97,7 @@ class DBConnectionOptionsTest extends RestTestCase
                 $baseEnv,
                 'GET',
                 'event',
-                DatabaseConnections::CON_OPTION_ALWAYS_MASTER,  // force master YES
+                DatabaseConnections::CON_OPTION_ALWAYS_MASTER,
                 [
                     'dbname'   => 'event_dev',
                     'host'     => 'master.rds.go1.co',
@@ -110,7 +110,7 @@ class DBConnectionOptionsTest extends RestTestCase
                 $baseEnv,
                 'POST',
                 'event',
-                DatabaseConnections::CON_OPTION_DISABLE_MASTER,  // force master YES
+                DatabaseConnections::CON_OPTION_DISABLE_MASTER,
                 [
                     'dbname'   => 'event_dev',
                     'host'     => 'slave.rds.go1.co',
