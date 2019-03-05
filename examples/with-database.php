@@ -5,7 +5,6 @@ namespace go1\rest\examples;
 use go1\rest\RestService;
 use go1\rest\wrapper\DatabaseConnections;
 use go1\rest\wrapper\ElasticSearchClients;
-use go1\util\DB;
 use Slim\Http\Response;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -52,8 +51,8 @@ call_user_func(
     function () {
         $app = new RestService([
             'dbOptions' => [
-                'go1'   => DB::connectionOptions('go1'),
-                'staff' => DB::connectionOptions('go1'),
+                'go1'   => DatabaseConnections::connectionOptions('go1'),
+                'staff' => DatabaseConnections::connectionOptions('go1'),
             ],
         ]);
 
