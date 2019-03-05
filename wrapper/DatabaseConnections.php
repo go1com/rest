@@ -10,6 +10,10 @@ class DatabaseConnections
 {
     private $options;
 
+    const CON_OPTION_AUTO_MASTER    = 0;
+    const CON_OPTION_ALWAYS_MASTER  = 1;
+    const CON_OPTION_DISABLE_MASTER = 2;
+
     public function __construct(Container $c)
     {
         $this->options = $c->get('dbOptions');
@@ -20,7 +24,7 @@ class DatabaseConnections
         return DriverManager::getConnection($this->options[$name]);
     }
 
-    public static function connectionOptions(string $name, $forceMaster = false): array
+    public static function connectionOptions(string $name, int $masterMode = self::CON_OPTION_AUTO_MASTER): array
     {
         if (function_exists('__db_connection_options')) {
             return __db_connection_options($name);
@@ -28,10 +32,11 @@ class DatabaseConnections
 
         $prefix = strtoupper("{$name}_DB");
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
-        $slave = self::getEnvByPriority(["{$prefix}_HOST", 'RDS_DB_HOST', 'DEV_DB_HOST']);
-
-        if (('GET' === $method) && !$forceMaster) {
-            $slave = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $slave;
+        $useMaster = self::CON_OPTION_ALWAYS_MASTER === $masterMode
+            || ($masterMode === self::CON_OPTION_AUTO_MASTER  && 'GET' !== strtoupper($method));
+        $host = self::getEnvByPriority(["{$prefix}_HOST", 'RDS_DB_HOST', 'DEV_DB_HOST']);
+        if (!$useMaster) {
+            $host = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $host;
         }
 
         $isDevEnv = !in_array(self::getEnvByPriority(['_DOCKER_ENV', 'ENV']), ['staging', 'production']);
@@ -43,7 +48,7 @@ class DatabaseConnections
         return [
             'driver'        => 'pdo_mysql',
             'dbname'        => getenv("{$prefix}_NAME") ?: $dbName,
-            'host'          => $slave,
+            'host'          => $host,
             'user'          => self::getEnvByPriority(["{$prefix}_USERNAME", 'RDS_DB_USERNAME', 'DEV_DB_USERNAME']),
             'password'      => self::getEnvByPriority(["{$prefix}_PASSWORD", 'RDS_DB_PASSWORD', 'DEV_DB_PASSWORD']),
             'port'          => getenv("{$prefix}_PORT") ?: '3306',
