@@ -2,11 +2,11 @@
 
 namespace go1\rest\tests\http;
 
+use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\tests\RestTestCase;
 use Slim\Http\Environment;
-use go1\rest\Request;
 
 class JwtParserTest extends RestTestCase
 {
@@ -44,8 +44,8 @@ class JwtParserTest extends RestTestCase
     {
         $req = Request::createFromEnvironment(Environment::mock([
             'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI' => '/auth',
-            'QUERY_STRING' => http_build_query(['jwt' => $this->jwt]),
+            'REQUEST_URI'    => '/auth',
+            'QUERY_STRING'   => http_build_query(['jwt' => $this->jwt]),
         ]));
         $resp = $this->app->process($req, new Response());
         $this->assertEquals(200, $resp->getStatusCode());
@@ -57,7 +57,7 @@ class JwtParserTest extends RestTestCase
     {
         $req = Request::createFromEnvironment(Environment::mock([
             'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI' => '/auth',
+            'REQUEST_URI'    => '/auth',
         ]));
         $req = $req->withHeader('authorization', 'Bearer ' . $this->jwt);
         $resp = $this->app->process($req, new Response());
