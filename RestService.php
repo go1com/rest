@@ -4,6 +4,8 @@ namespace go1\rest;
 
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Headers;
 
 class RestService extends \DI\Bridge\Slim\App
@@ -46,6 +48,18 @@ class RestService extends \DI\Bridge\Slim\App
         });
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @return Response
+     * @throws \Slim\Exception\MethodNotAllowedException
+     * @throws \Slim\Exception\NotFoundException
+     */
+    public function process(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        return parent::process($request, $response);
+    }
+
     protected function configureContainer(ContainerBuilder $builder)
     {
         if (empty($this->cnf)) {
@@ -61,6 +75,7 @@ class RestService extends \DI\Bridge\Slim\App
         if (!$this->stream) {
             $this->stream = new Stream;
         }
+
         return $this->stream;
     }
 }

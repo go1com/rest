@@ -3,7 +3,7 @@
 namespace go1\rest\tests;
 
 use go1\rest\RestService;
-use Http\Message\MessageFactory\SlimMessageFactory;
+use go1\rest\wrapper\MessageFactory;
 use PHPUnit\Framework\TestCase;
 
 abstract class RestTestCase extends TestCase
@@ -11,10 +11,10 @@ abstract class RestTestCase extends TestCase
     protected $mf;
     protected $committed;
 
-    public function mf(): SlimMessageFactory
+    public function mf(): MessageFactory
     {
         if (null === $this->mf) {
-            $this->mf = new SlimMessageFactory;
+            $this->mf = new MessageFactory;
         }
 
         return $this->mf;
