@@ -22,7 +22,7 @@ class ComposerBuilderCommand extends Command
         /** @var Manifest $manifest */
         $manifest = require $input->getArgument('path');
         $_ = $manifest->composer()->build();
-        $_ = json_encode($_);
+        $_ = json_encode($_, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
         echo $_;
     }

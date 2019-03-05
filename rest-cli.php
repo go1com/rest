@@ -2,7 +2,7 @@
 
 namespace go1\rest;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use go1\rest\commands\ComposerBuilderCommand;
 use go1\rest\commands\DockerComposeBuilderCommand;
