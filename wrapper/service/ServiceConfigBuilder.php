@@ -73,6 +73,18 @@ class ServiceConfigBuilder
         return $this;
     }
 
+    public function withConfigFile(string $path)
+    {
+        if (file_exists($path)) {
+            $_ = require $path;
+            foreach ($_ as $k => $v) {
+                $this->set($k, $v);
+            }
+        }
+
+        return $this;
+    }
+
     public function withBootCallback(callable $boot)
     {
         $this->boot = $boot;
@@ -88,5 +100,10 @@ class ServiceConfigBuilder
     public function build()
     {
         return $this->config;
+    }
+
+    public function get()
+    {
+        return new RestService($this->build());
     }
 }
