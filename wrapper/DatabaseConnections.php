@@ -20,7 +20,7 @@ class DatabaseConnections
         return DriverManager::getConnection($this->options[$name]);
     }
 
-    public static function connectionOptions(string $name, $forceSlave = false, $forceMaster = false): array
+    public static function connectionOptions(string $name, $forceMaster = false): array
     {
         if (function_exists('__db_connection_options')) {
             return __db_connection_options($name);
@@ -30,10 +30,8 @@ class DatabaseConnections
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $slave = self::getEnvByPriority(["{$prefix}_HOST", 'RDS_DB_HOST', 'DEV_DB_HOST']);
 
-        if (('GET' === $method) || $forceSlave) {
-            if (!$forceMaster) {
-                $slave = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $slave;
-            }
+        if (('GET' === $method) && !$forceMaster) {
+            $slave = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $slave;
         }
 
         $isDevEnv = !in_array(self::getEnvByPriority(['_DOCKER_ENV', 'ENV']), ['staging', 'production']);

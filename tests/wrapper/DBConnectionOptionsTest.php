@@ -14,14 +14,13 @@ class DBConnectionOptionsTest extends RestTestCase
         array $environment,
         string $method,
         string $name,
-        bool $forceSlave,
         bool $forceMaster,
         array $expected
     )
     {
         $_SERVER['REQUEST_METHOD'] = $method;
         $this->putEnvironment($environment);
-        $result = DatabaseConnections::connectionOptions($name, $forceSlave, $forceMaster);
+        $result = DatabaseConnections::connectionOptions($name, $forceMaster);
         $this->assertSubset($expected, $result);
     }
 
@@ -59,7 +58,6 @@ class DBConnectionOptionsTest extends RestTestCase
                 [],     // environment
                 'GET',
                 'go1',  // name
-                true,   // force slave
                 false,  // force master
                 [       // expected
                         'driver'        => 'pdo_mysql',
@@ -73,7 +71,6 @@ class DBConnectionOptionsTest extends RestTestCase
                 $baseEnv,
                 'GET',
                 'event',
-                true,
                 false,
                 [
                     'dbname'   => 'event_dev',
@@ -87,21 +84,6 @@ class DBConnectionOptionsTest extends RestTestCase
                 $baseEnv,
                 'POST',
                 'event',
-                true, // force slave
-                false,
-                [
-                    'dbname'   => 'event_dev',
-                    'host'     => 'slave.rds.go1.co',
-                    'user'     => 'user_event',
-                    'password' => 'user_event_pass',
-                ],
-            ],
-
-            [
-                $baseEnv,
-                'POST',
-                'event',
-                false, // force slave NO
                 false,
                 [
                     'dbname'   => 'event_dev',
@@ -115,7 +97,6 @@ class DBConnectionOptionsTest extends RestTestCase
                 $baseEnv,
                 'GET',
                 'event',
-                false, // force slave NO
                 true,  // force master YES
                 [
                     'dbname'   => 'event_dev',
@@ -130,7 +111,6 @@ class DBConnectionOptionsTest extends RestTestCase
                 $baseEnv + ['EVENT_DB_USERNAME' => 'go1'],
                 'GET',
                 'event',
-                false, // force slave NO
                 false,  // force master YES
                 [
                     'dbname'   => 'event_dev',
