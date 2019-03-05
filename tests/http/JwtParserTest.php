@@ -6,7 +6,6 @@ use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\tests\RestTestCase;
-use Slim\Http\Environment;
 
 class JwtParserTest extends RestTestCase
 {
@@ -42,27 +41,24 @@ class JwtParserTest extends RestTestCase
 
     public function testCanParseQuery()
     {
-        $req = Request::createFromEnvironment(Environment::mock([
-            'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI'    => '/auth',
-            'QUERY_STRING'   => http_build_query(['jwt' => $this->jwt]),
-        ]));
-        $resp = $this->app->process($req, new Response());
-        $this->assertEquals(200, $resp->getStatusCode());
-        $payload = json_decode($resp->getBody());
+        $req = $this->mf()->createRequest('GET', '/auth?jwt=' . $this->jwt);
+        $res = $this->app->process($req, new Response());
+        $payload = json_decode($res->getBody());
+
+        $this->assertEquals(200, $res->getStatusCode());
         $this->assertEquals('phuong.huynh@go1.com', $payload->mail);
     }
 
     public function testCanParseHeader()
     {
-        $req = Request::createFromEnvironment(Environment::mock([
-            'REQUEST_METHOD' => 'GET',
-            'REQUEST_URI'    => '/auth',
-        ]));
-        $req = $req->withHeader('authorization', 'Bearer ' . $this->jwt);
-        $resp = $this->app->process($req, new Response());
-        $this->assertEquals(200, $resp->getStatusCode());
-        $payload = json_decode($resp->getBody());
+        $req = $this
+            ->mf()
+            ->createRequest('GET', '/auth')
+            ->withHeader('authorization', 'Bearer ' . $this->jwt);
+        $res = $this->app->process($req, new Response());
+        $payload = json_decode($res->getBody());
+
+        $this->assertEquals(200, $res->getStatusCode());
         $this->assertEquals('phuong.huynh@go1.com', $payload->mail);
     }
 }
