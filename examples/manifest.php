@@ -23,6 +23,7 @@ return Manifest::create()
         ->withServiceName('user-explore')
         ->withVersion('v1.0')
         ->withEsOption('default', getenv('ES_URL') ?: 'http://localhost:9200')
+        ->withConfigFile(__DIR__ . '/resources/config.default.php')
         ->withBootCallback(
             function (RestService $app, Manifest $builder) {
                 if (!defined('ES_INDEX')) {
