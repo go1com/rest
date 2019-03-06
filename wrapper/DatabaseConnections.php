@@ -3,6 +3,7 @@
 namespace go1\rest\wrapper;
 
 use DI\Container;
+use DI\NotFoundException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\TableExistsException;
@@ -11,20 +12,30 @@ use go1\rest\Response;
 
 class DatabaseConnections
 {
-    private $options;
+    private $container;
 
     const CON_OPTION_AUTO_MASTER    = 0;
     const CON_OPTION_ALWAYS_MASTER  = 1;
     const CON_OPTION_DISABLE_MASTER = 2;
 
-    public function __construct(Container $c)
+    public function __construct(Container &$c)
     {
-        $this->options = $c->get('dbOptions');
+        $this->container = $c;
     }
 
-    public function get($name): Connection
+    public function get(string $name): Connection
     {
-        return DriverManager::getConnection($this->options[$name]);
+        $key = 'dbs.' . $name;
+        if (!$this->container->has($key)) {
+            $config = $this->container->get("dbOptions")[$name] ?? [];
+            if (empty($config)) {
+                throw new NotFoundException("DB Config dbOptions.{$name} not found.");
+            }
+
+            $this->container->set($key, DriverManager::getConnection($config));
+        }
+
+        return $this->container->get($key);
     }
 
     public static function connectionOptions(string $name, int $masterMode = self::CON_OPTION_AUTO_MASTER): array
@@ -69,7 +80,7 @@ class DatabaseConnections
                 $originSchema = clone $schema;
                 $callbacks = is_array($callbacks) ? $callbacks : [$callbacks];
                 foreach ($callbacks as &$callback) {
-                    $callback($schema);
+                    call_user_func($callback, $schema);
                 }
                 $diff = $compare->compare($originSchema, $schema);
                 foreach ($diff->toSql($db->getDatabasePlatform()) as $sql) {
