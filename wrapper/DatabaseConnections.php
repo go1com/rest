@@ -29,7 +29,7 @@ class DatabaseConnections
         if (!$this->container->has($key)) {
             $config = $this->container->get("dbOptions")[$name] ?? [];
             if (empty($config)) {
-                throw new NotFoundException("DB Config dbOptions.{$name} not found.");
+                throw new NotFoundException("DB Config dbOptions[{$name}] not found.");
             }
 
             $this->container->set($key, DriverManager::getConnection($config));
