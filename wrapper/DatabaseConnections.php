@@ -5,6 +5,9 @@ namespace go1\rest\wrapper;
 use DI\Container;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception\TableExistsException;
+use Doctrine\DBAL\Schema\Comparator;
+use go1\rest\Response;
 
 class DatabaseConnections
 {
@@ -54,6 +57,31 @@ class DatabaseConnections
             'port'          => getenv("{$prefix}_PORT") ?: '3306',
             'driverOptions' => [1002 => 'SET NAMES utf8'],
         ];
+    }
+
+    public static function install(Connection $db, array $callbacks): Response
+    {
+        $db->transactional(
+            function (Connection $db) use (&$callbacks) {
+                $compare = new Comparator;
+                $schemaManager = $db->getSchemaManager();
+                $schema = $schemaManager->createSchema();
+                $originSchema = clone $schema;
+                $callbacks = is_array($callbacks) ? $callbacks : [$callbacks];
+                foreach ($callbacks as &$callback) {
+                    $callback($schema);
+                }
+                $diff = $compare->compare($originSchema, $schema);
+                foreach ($diff->toSql($db->getDatabasePlatform()) as $sql) {
+                    try {
+                        $db->executeQuery($sql);
+                    } catch (TableExistsException $e) {
+                    }
+                }
+            }
+        );
+
+        return (new Response())->jr([], 204);
     }
 
     private static function getEnvByPriority(array $names)
