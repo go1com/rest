@@ -67,4 +67,18 @@ class StreamTest extends RestTestCase
         $this->assertTrue(1 == count($this->committed[$event]));
         $this->assertEquals(json_encode($payload), $this->committed[$event][0][0]);
     }
+
+    public function testConsumeWithBadBody()
+    {
+        /**
+         * @var $req Request
+         */
+        $req = $this->mf()
+            ->createRequest('POST', '/consume')
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody((new SlimStreamFactory)->createStream("bad payload"));
+        $res = $this->rest()->process($req, $this->mf()->createResponse());
+
+        $this->assertEquals(400, $res->getStatusCode());
+    }
 }

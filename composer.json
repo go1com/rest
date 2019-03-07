@@ -9,7 +9,7 @@
     }
   },
   "require":           {
-    "php":                "^7.2",
+    "php":                "^7.3",
     "ext-json":           "*",
     "firebase/php-jwt":   "^5.0",
     "php-di/slim-bridge": "^2.0",

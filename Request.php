@@ -18,7 +18,7 @@ class Request extends \Slim\Http\Request
         $body = $this->getBody();
         $body->rewind();
 
-        return json_decode($body->getContents(), true);
+        return json_decode($body->getContents(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     private function jwtPayload()

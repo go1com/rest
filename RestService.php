@@ -58,27 +58,29 @@ class RestService extends \DI\Bridge\Slim\App
         });
 
         $this->post('/consume', function(Request $request, Response $response) use ($stream) {
-            $json = $request->json();
-            $routingKey = $json['routingKey'] ?? '';
-            $body = $json['body'] ?? null;
-            $context = $json['context'] ?? [];
-
-            if (empty($body) || !is_array($body)) {
-                return $response->jr('Invalid or missing payload');
-            }
-
-            if (!empty($context) && !is_array($context)) {
-                return $response->jr('Invalid context');
-            }
-
-            if (empty($routingKey) || !is_string($routingKey)) {
-                return $response->jr('Invalid or missing routingKey');
-            }
-
             try {
+                $json = $request->json();
+                $routingKey = $json['routingKey'] ?? '';
+                $body = $json['body'] ?? null;
+                $context = $json['context'] ?? [];
+
+                if (empty($body) || !is_array($body)) {
+                    return $response->jr('Invalid or missing payload');
+                }
+
+                if (!empty($context) && !is_array($context)) {
+                    return $response->jr('Invalid context');
+                }
+
+                if (empty($routingKey) || !is_string($routingKey)) {
+                    return $response->jr('Invalid or missing routingKey');
+                }
+
                 $stream->commit($routingKey, json_encode($body), $context);
 
                 return $response->withJson(null, 204);
+            } catch (\JsonException $e) {
+                return $response->jr('Invalid payload');
             } catch (\Exception $e) {
                 return $response->jr500('Failed to commit stream');
             }
