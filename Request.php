@@ -13,6 +13,14 @@ class Request extends \Slim\Http\Request
 
     private $contextUser;
 
+    public function json(): array
+    {
+        $body = $this->getBody();
+        $body->rewind();
+
+        return json_decode($body->getContents(), true);
+    }
+
     private function jwtPayload()
     {
         $auth = $this->getHeaderLine('Authorization');

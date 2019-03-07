@@ -46,6 +46,43 @@ class RestService extends \DI\Bridge\Slim\App
                 'time'    => time(),
             ]);
         });
+
+        $stream = $this->stream();
+        $this->get('/consume', function (Response $response) use ($stream) {
+            $listeners = [];
+            foreach ($stream->listeners() as $name => $listener) {
+                $listeners[$name] = $listener['description'];
+            }
+
+            return $response->withJson($listeners);
+        });
+
+        $this->post('/consume', function(Request $request, Response $response) use ($stream) {
+            $json = $request->json();
+            $routingKey = $json['routingKey'] ?? '';
+            $body = $json['body'] ?? null;
+            $context = $json['context'] ?? [];
+
+            if (empty($body) || !is_array($body)) {
+                return $response->jr('Invalid or missing payload');
+            }
+
+            if (!empty($context) && !is_array($context)) {
+                return $response->jr('Invalid context');
+            }
+
+            if (empty($routingKey) || !is_string($routingKey)) {
+                return $response->jr('Invalid or missing routingKey');
+            }
+
+            try {
+                $stream->commit($routingKey, json_encode($body), $context);
+
+                return $response->withJson(null, 204);
+            } catch (\Exception $e) {
+                return $response->jr500('Failed to commit stream');
+            }
+        });
     }
 
     /**
