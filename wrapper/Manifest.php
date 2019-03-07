@@ -4,6 +4,7 @@ namespace go1\rest\wrapper;
 
 use go1\rest\wrapper\service\ComposerBuilder;
 use go1\rest\wrapper\service\DockerComposeBuilder;
+use go1\rest\wrapper\service\EntityApiBuilder;
 use go1\rest\wrapper\service\PHPUnitConfigBuilder;
 use go1\rest\wrapper\service\ServiceConfigBuilder;
 use go1\rest\wrapper\service\swagger\SwaggerBuilder;
@@ -15,6 +16,7 @@ class Manifest
     private $composer;
     private $phpunit;
     private $swagger;
+    private $entityApi;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class Manifest
         $this->composer = new ComposerBuilder($this);
         $this->phpunit = new PHPUnitConfigBuilder($this);
         $this->swagger = new SwaggerBuilder($this);
+        $this->entityApi = new EntityApiBuilder($this);
     }
 
     public static function create(): Manifest
@@ -53,6 +56,11 @@ class Manifest
     public function swagger()
     {
         return $this->swagger;
+    }
+
+    public function entityApi()
+    {
+        return $this->entityApi;
     }
 
     public function build()
