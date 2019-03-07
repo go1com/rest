@@ -27,9 +27,9 @@ use go1\rest\RestService;
  */
 call_user_func(
     function () {
-        $app = new RestService();
+        $rest = new RestService();
 
-        $app->get('/hello/{name}', function (Request $request, Response $res) {
+        $rest->get('/hello/{name}', function (Request $request, Response $res) {
             return $res->withJson([
                 'jwt' => [
                     'contextUser'            => $request->contextUser(),
@@ -41,6 +41,6 @@ call_user_func(
             ]);
         });
 
-        $app->run();
+        $rest->run();
     }
 );

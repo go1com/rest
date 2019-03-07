@@ -20,16 +20,6 @@ use Slim\Http\Response;
  *
  *  $app->get('/hello/{name}', [MyController::class, 'hello']);
  */
-
-if (!function_exists('__main__')) {
-    function __main__()
-    {
-        $app = new RestService();
-        $app->get('/hello/{name}', [MyController::class, 'hello']);
-        $app->run();
-    }
-}
-
 class Translator
 {
     public function translate(string $input)
@@ -53,4 +43,10 @@ class MyController
     }
 }
 
-__main__();
+call_user_func(
+    function () {
+        $rest = new RestService();
+        $rest->get('/hello/{name}', [MyController::class, 'hello']);
+        $rest->run();
+    }
+);
