@@ -62,8 +62,6 @@ class DBConnectionOptionsTest extends RestTestCase
                 [       // expected
                         'driver'        => 'pdo_mysql',
                         'dbname'        => 'dev_go1',
-                        'user'          => null,
-                        'password'      => null,
                         'driverOptions' => [1002 => 'SET NAMES utf8'],
                 ],
             ],
