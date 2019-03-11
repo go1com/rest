@@ -82,7 +82,7 @@ class RestService extends \DI\Bridge\Slim\App
             } catch (\JsonException $e) {
                 return $response->jr('Invalid payload');
             } catch (\Exception $e) {
-                return $response->jr500('Failed to commit stream');
+                return $response->jr500('Failed to commit stream: ' . $e->getMessage());
             }
         });
     }
