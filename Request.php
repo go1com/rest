@@ -59,6 +59,22 @@ class Request extends \Slim\Http\Request
         return $this->contextUser ?? null;
     }
 
+    public function contextAccount(string $portalName)
+    {
+        if (!$user = $this->contextUser()) {
+            return null;
+        }
+
+        $accounts = isset($user->accounts) ? $user->accounts : [];
+        foreach ($accounts as $account) {
+            if ($portalName == $account->instance) {
+                return $account;
+            }
+        }
+
+        return null;
+    }
+
     public function isSystemUser(): bool
     {
         if (!$contextUser = $this->contextUser()) {
