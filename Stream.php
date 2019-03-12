@@ -25,9 +25,10 @@ class Stream
         $this->transports[] = $transport;
     }
 
-    public function on(string $eventName, callable $callable): self
+    public function on(string $eventName, string $description, callable $callable): self
     {
-        $this->listeners[$eventName] = $callable;
+        $this->listeners[$eventName]['description'] = $description;
+        $this->listeners[$eventName]['fn'] = $callable;
 
         return $this;
     }
@@ -41,9 +42,9 @@ class Stream
 
     protected function defaultTransport($eventName, string $payload)
     {
-        foreach ($this->listeners as $name => $callable) {
+        foreach ($this->listeners as $name => $listener) {
             if ($eventName == $name) {
-                call_user_func($callable, $this->resolveEventPayload($callable, $payload));
+                call_user_func($listener['fn'], $this->resolveEventPayload($listener['fn'], $payload));
             }
         }
     }
@@ -63,5 +64,10 @@ class Stream
         }
 
         throw new RuntimeException('Un-supported event');
+    }
+
+    public function listeners(): array
+    {
+        return $this->listeners ?: [];
     }
 }

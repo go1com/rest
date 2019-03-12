@@ -105,4 +105,15 @@ class DatabaseConnections
 
         return null;
     }
+
+    public static function safeThread(Connection $db, string $threadName, int $timeout, callable $callback)
+    {
+        try {
+            $sqlite = 'sqlite' === $db->getDatabasePlatform()->getName();
+            !$sqlite && $db->executeQuery('DO GET_LOCK("' . $threadName . '", ' . $timeout . ')');
+            return $callback($db);
+        } finally {
+            !$sqlite && $db->executeQuery('DO RELEASE_LOCK("' . $threadName . '")');
+        }
+    }
 }

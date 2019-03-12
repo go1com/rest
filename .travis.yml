@@ -1,0 +1,12 @@
+language: php
+php:
+  - 7.2
+  - 7.3
+
+env:
+  - APP_ENV=testing
+
+install: composer install
+
+script:
+  - phpunit --configuration phpunit.xml.dist --coverage-text

@@ -6,7 +6,10 @@
   "autoload":          {
     "psr-4": {
       "go1\\rest\\": "./"
-    }
+    },
+    "files": [
+      "helper.php"
+    ]
   },
   "require":           {
     "php":                "^7.2",
