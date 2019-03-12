@@ -1,4 +1,4 @@
-RESTful service builder
+RESTful service builder [![Build Status](https://travis-ci.org/go1com/rest.svg?branch=master)](https://travis-ci.org/go1com/rest)
 ====
 
 Base on [slim 3.x](https://www.slimframework.com/)
