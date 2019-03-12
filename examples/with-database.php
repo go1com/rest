@@ -49,14 +49,14 @@ class PortalSingleController
 
 call_user_func(
     function () {
-        $app = new RestService([
+        $rest = new RestService([
             'dbOptions' => [
                 'go1'   => DatabaseConnections::connectionOptions('go1'),
                 'staff' => DatabaseConnections::connectionOptions('go1'),
             ],
         ]);
 
-        $app->get('/portal/{id}', [PortalSingleController::class, 'get']);
-        $app->run();
+        $rest->get('/portal/{id}', [PortalSingleController::class, 'get']);
+        $rest->run();
     }
 );
