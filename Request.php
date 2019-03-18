@@ -14,11 +14,17 @@ class Request extends \Slim\Http\Request
 
     private $contextUser;
 
-    public function json(bool $assoc = true, int $depth = 512)
+    public function bodyString(): string
     {
         $body = $this->getBody();
         $body->rewind();
-        $data = json_decode($body->getContents(), $assoc, $depth, JSON_THROW_ON_ERROR);
+
+        return $body->getContents();
+    }
+
+    public function json(bool $assoc = true, int $depth = 512)
+    {
+        $data = json_decode($this->bodyString(), $assoc, $depth, JSON_THROW_ON_ERROR);
 
         // support php <= 7.2
         if (0 !== json_last_error()) {
