@@ -15,11 +15,16 @@ class Response extends \Slim\Http\Response
         );
     }
 
-    public function json()
+    public function bodyString()
     {
         $this->getBody()->rewind();
-        
-        return json_decode($this->getBody()->getContents());
+
+        return $this->getBody()->getContents();
+    }
+
+    public function json()
+    {
+        return json_decode($this->bodyString());
     }
 
     public function jr403($msg)
