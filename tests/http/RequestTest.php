@@ -6,6 +6,12 @@ use go1\rest\tests\RestTestCase;
 
 class RequestTest extends RestTestCase
 {
+    public function testBodyString()
+    {
+        $req = $this->mf()->createRequest('POST', '/', [], json_encode(['foo' => 'bar']));
+        $this->assertEquals(json_encode(['foo' => 'bar']), $req->bodyString());
+    }
+
     public function testJsonArray()
     {
         $req = $this->mf()->createRequest('POST', '/', [], json_encode(['foo' => 'bar']));
