@@ -23,13 +23,12 @@ class RestService extends \DI\Bridge\Slim\App
     {
         $this->cnf = $cnf;
         $this->cnf += [
-            'request'  => function (ContainerInterface $c) {
-                return Request::createFromEnvironment($c->get('environment'));
-            },
+            'request'  => function (ContainerInterface $c) { return Request::createFromEnvironment($c->get('environment')); },
+            'req'      => \DI\get('request'),
             'response' => function (ContainerInterface $c) {
-                $response = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
+                $res = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
 
-                return $response->withProtocolVersion($c->get('settings')['httpVersion']);
+                return $res->withProtocolVersion($c->get('settings')['httpVersion']);
             },
         ];
 
@@ -57,7 +56,7 @@ class RestService extends \DI\Bridge\Slim\App
             return $response->withJson($listeners);
         });
 
-        $this->post('/consume', function(Request $request, Response $response) use ($stream) {
+        $this->post('/consume', function (Request $request, Response $response) use ($stream) {
             try {
                 $json = $request->json();
                 $routingKey = $json['routingKey'] ?? '';

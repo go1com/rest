@@ -15,8 +15,8 @@ class JwtParserTest extends RestTestCase
     {
         parent::install($rest);
 
-        $rest->get('/auth', function (Request $request, Response $response) {
-            return $response->withJson($request->contextUser());
+        $rest->get('/auth', function (Request $req, Response $res) {
+            return $res->withJson($req->contextUser());
         });
     }
 
