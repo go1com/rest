@@ -52,7 +52,7 @@ call_user_func(
         $rest = new RestService([
             'dbOptions' => [
                 'go1'   => DatabaseConnections::connectionOptions('go1'),
-                'staff' => DatabaseConnections::connectionOptions('go1'),
+                'staff' => DatabaseConnections::connectionOptions('staff'),
             ],
         ]);
 

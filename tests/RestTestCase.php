@@ -2,6 +2,7 @@
 
 namespace go1\rest\tests;
 
+use DI\Container;
 use go1\rest\RestService;
 use go1\rest\wrapper\MessageFactory;
 use PHPUnit\Framework\TestCase;
@@ -41,5 +42,16 @@ abstract class RestTestCase extends TestCase
                 $this->committed[$event][] = [$payload, $context];
             }
         );
+
+        // Mock database connections
+        /** @var Container $c */
+        $c = $rest->getContainer();
+        if ($c->has('dbOptions')) {
+            foreach ($c->get('dbOptions') as $name => $options) {
+                $override[$name]['url'] = 'sqlite://sqlite::memory:';
+            }
+
+            $c->set('dbOptions', $override ?? []);
+        }
     }
 }
