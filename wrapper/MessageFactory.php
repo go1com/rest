@@ -7,6 +7,7 @@ use go1\rest\Response;
 use Http\Message\MessageFactory as TheInterface;
 use Http\Message\StreamFactory\SlimStreamFactory;
 use Http\Message\UriFactory\SlimUriFactory;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Headers;
 
 /**
@@ -32,8 +33,9 @@ final class MessageFactory implements TheInterface
         $this->uriFactory = new SlimUriFactory();
     }
 
+
     /**
-     * {@inheritdoc}
+     * @return Request|ServerRequestInterface
      */
     public function createRequest(
         $method,
