@@ -63,6 +63,9 @@ class RestService extends \DI\Bridge\Slim\App
                 $routingKey = $json['routingKey'] ?? '';
                 $body = $json['body'] ?? null;
                 $context = $json['context'] ?? [];
+                if (is_scalar($body)) {
+                    $body = json_decode($body, true);
+                }
 
                 if (empty($body) || !is_array($body)) {
                     return $response->jr('Invalid or missing payload');
