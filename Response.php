@@ -15,7 +15,7 @@ class Response extends \Slim\Http\Response
         );
     }
 
-    public function bodyString()
+    public function bodyString(): string
     {
         $this->getBody()->rewind();
 
