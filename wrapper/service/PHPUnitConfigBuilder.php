@@ -32,6 +32,10 @@ class PHPUnitConfigBuilder
             'directory' => $directories,
         ];
 
+        foreach ($directories as $directory) {
+            $this->withoutWhitelistDirectory($directory);
+        }
+
         return $this;
     }
 
