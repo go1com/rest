@@ -5,27 +5,16 @@ namespace go1\rest\tests\wrapper;
 use Doctrine\DBAL\Schema\Schema;
 use go1\rest\RestService;
 use go1\rest\tests\RestTestCase;
-use go1\rest\tests\WithDbTestTrait;
 use go1\rest\wrapper\DatabaseConnections;
 
 class DBMockTest extends RestTestCase
 {
-    use WithDbTestTrait;
-
-    protected function rest(): RestService
+    protected function install(RestService $rest)
     {
-        $rest = parent::rest();
+        parent::install($rest);
 
-        $this->mockDbs($rest);
-        $this->installDbs($rest);
-
-        return $rest;
-    }
-
-    protected function installDbs(RestService $rest)
-    {
         $schemaInstall = function (Schema $schema) {
-            if (! $schema->hasTable('go1_test')) {
+            if (!$schema->hasTable('go1_test')) {
                 $table = $schema->createTable('go1_test');
                 $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
                 $table->addColumn('note', 'text');
@@ -40,9 +29,7 @@ class DBMockTest extends RestTestCase
     {
         $rest = $this->rest();
         $db = $rest->getContainer()->get(DatabaseConnections::class)->get('default');
-        $db->insert('go1_test', $expected = [
-            'note' => 'some testing',
-        ]);
+        $db->insert('go1_test', $expected = ['note' => 'some testing']);
 
         $row = $db->fetchAssoc('SELECT * FROM go1_test');
         $this->assertNotEmpty($row);
