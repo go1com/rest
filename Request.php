@@ -3,6 +3,7 @@
 namespace go1\rest;
 
 use Firebase\JWT\JWT;
+use JsonException;
 
 class Request extends \Slim\Http\Request
 {
@@ -13,16 +14,15 @@ class Request extends \Slim\Http\Request
 
     private $contextUser;
 
-    public function json(): array
+    public function json(bool $assoc = true, int $depth = 512)
     {
         $body = $this->getBody();
         $body->rewind();
-
-        $data = json_decode($body->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode($body->getContents(), $assoc, $depth, JSON_THROW_ON_ERROR);
 
         // support php <= 7.2
         if (0 !== json_last_error()) {
-            throw new \JsonException(json_last_error_msg());
+            throw new JsonException(json_last_error_msg());
         }
 
         return $data;
