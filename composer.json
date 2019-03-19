@@ -25,7 +25,8 @@
     "php-http/message":            "^1.7.2",
     "phpunit/phpunit":             "^8.0",
     "symfony/console":             "^v4.2.3",
-    "symfony/yaml":                "^v4.2.3"
+    "symfony/yaml":                "^v4.2.3",
+    "symfony/cache":               "^v4.2.4"
   },
   "bin":               [
     "rest-cli.php"
