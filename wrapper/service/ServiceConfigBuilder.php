@@ -4,6 +4,7 @@ namespace go1\rest\wrapper\service;
 
 use go1\rest\RestService;
 use go1\rest\wrapper\Manifest;
+use RuntimeException;
 
 class ServiceConfigBuilder
 {
@@ -23,6 +24,25 @@ class ServiceConfigBuilder
                 foreach ($this->builder->swagger()->getPaths() as $pattern => $methods) {
                     foreach ($methods as $method => $_) {
                         $map = $app->map([$method], $pattern, $_['#controller']);
+
+                        if (!empty($_['#middleware'])) {
+                            foreach ($_['#middleware'] as $m) {
+                                if (is_callable($m)) {
+                                    $map->add($m);
+                                    continue;
+                                }
+
+                                if (is_string($m)) {
+                                    if (!$app->getContainer()->has($m)) {
+                                        throw new RuntimeException(sprintf('Invalid middleware: service %s not found.', $m));
+                                    }
+                                    $map->add($app->getContainer()->get($m));
+                                    continue;
+                                }
+
+                                throw new RuntimeException('Middleware must be a callable or name of service');
+                            }
+                        }
 
                         foreach ($_['parameters'] as $param) {
                             if (isset($param['schema']['default'])) {
