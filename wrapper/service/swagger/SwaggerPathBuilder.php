@@ -36,6 +36,13 @@ class SwaggerPathBuilder
         return $this;
     }
 
+    public function withMiddleware($middleware)
+    {
+        $this->config['#middleware'][] = $middleware;
+
+        return $this;
+    }
+
     public function end()
     {
         return $this->swagger;
