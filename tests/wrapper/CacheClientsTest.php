@@ -18,6 +18,9 @@ class CacheClientsTest extends RestTestCase
 
     public function testMemcachedClient()
     {
+        if (!class_exists(\Memcached::class)) {
+            $this->markTestSkipped('Missing memcached');
+        }
         $rest = $this->rest();
 
         /** @var Container $c */
