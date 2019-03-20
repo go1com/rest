@@ -65,7 +65,7 @@ class Request extends \Slim\Http\Request
         return $this->contextUser ?? null;
     }
 
-    public function contextAccount(string $portalName)
+    public function contextAccount($portalIdOrName)
     {
         if (!$user = $this->contextUser()) {
             return null;
@@ -73,7 +73,8 @@ class Request extends \Slim\Http\Request
 
         $accounts = isset($user->accounts) ? $user->accounts : [];
         foreach ($accounts as $account) {
-            if ($portalName == $account->instance) {
+            $actual = is_numeric($portalIdOrName) ? $account->portal_id : $account->instance;
+            if ($portalIdOrName === $actual) {
                 return $account;
             }
         }
