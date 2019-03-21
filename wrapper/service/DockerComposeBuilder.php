@@ -49,10 +49,7 @@ class DockerComposeBuilder
             $this->config['services']['web']['environment'][] = 'RDS_DB_SLAVE=$RDS_DB_SLAVE';
             $this->config['services']['web']['environment'][] = 'RDS_DB_USERNAME=$RDS_DB_USERNAME';
             $this->config['services']['web']['environment'][] = 'RDS_DB_PASSWORD=$RDS_DB_PASSWORD';
-            $this->config['services']['web']['environment'][] = 'RDS_DB_PORT=$DEV_DB_PASSWORD';
-            $this->config['services']['web']['environment'][] = 'DEV_DB_HOST=$DEV_DB_HOST';
-            $this->config['services']['web']['environment'][] = 'DEV_DB_USERNAME=$DEV_DB_USERNAME';
-            $this->config['services']['web']['environment'][] = 'DEV_DB_PASSWORD=$DEV_DB_PASSWORD';
+            $this->config['services']['web']['environment'][] = 'RDS_DB_PORT=$RDS_DB_PORT';
         }
 
         return $this->config;
