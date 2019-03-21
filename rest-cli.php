@@ -3,7 +3,11 @@
 
 namespace go1\rest;
 
-require __DIR__ . '/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+} else {
+    require __DIR__ . '/../../autoload.php';
+}
 
 use go1\rest\commands\ComposerBuilderCommand;
 use go1\rest\commands\DockerComposeBuilderCommand;
