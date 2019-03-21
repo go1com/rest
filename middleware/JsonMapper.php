@@ -17,6 +17,10 @@ class JsonMapper
     {
         $rObj = new ReflectionObject($obj);
         foreach ($input as $k => $v) {
+            if (!$rObj->hasProperty($k)) {
+                continue;
+            }
+
             $rProperty = $rObj->getProperty($k);
             $rProperty->setAccessible(true);
             if (is_scalar($v)) {
