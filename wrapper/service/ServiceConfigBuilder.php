@@ -69,7 +69,7 @@ class ServiceConfigBuilder
         $this
             ->builder
             ->dockerCompose()
-            ->withEnv('SERVICE_TAGS', $name);
+            ->withEnv('SERVICE_80_NAME', $name);
 
         return $this;
     }
