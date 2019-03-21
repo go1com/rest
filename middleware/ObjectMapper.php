@@ -5,19 +5,20 @@ namespace go1\rest\middleware;
 use ReflectionObject;
 use stdClass;
 
-class JsonMapper
+class ObjectMapper
 {
     /**
      * @param stdClass $input
      * @param object   $obj
+     * @param bool     $skipNonExistProperty
      * @return mixed Entry.
      * @throws \ReflectionException
      */
-    public function map(stdClass $input, $obj)
+    public function map(stdClass $input, $obj, bool $skipNonExistProperty = true)
     {
         $rObj = new ReflectionObject($obj);
         foreach ($input as $k => $v) {
-            if (!$rObj->hasProperty($k)) {
+            if ($skipNonExistProperty && !$rObj->hasProperty($k)) {
                 continue;
             }
 
