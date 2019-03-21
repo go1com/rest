@@ -4,7 +4,7 @@ namespace go1\rest\examples;
 
 use DI\Container;
 use go1\core\customer\user_explore\Controller;
-use go1\rest\middleware\JsonMapper;
+use go1\rest\middleware\ObjectMapper;
 use go1\rest\middleware\JsonSchemaValidatorMiddleWare;
 use go1\rest\RestService;
 use go1\rest\tests\fixtures\User;
@@ -34,7 +34,7 @@ return Manifest::create()
         ->set('userCreateJsonValidatorMiddleware', function (Container $c) {
             return new JsonSchemaValidatorMiddleWare(
                 $c->get(Validator::class),
-                $c->get(JsonMapper::class),
+                $c->get(ObjectMapper::class),
                 User::class,
                 'file://'.realpath(__DIR__.'/../tests/fixtures/json_schema/user.json')
             );

@@ -13,7 +13,7 @@ class JsonSchemaValidatorMiddleWare
     private $className;
     private $jsonSchemaPath;
 
-    public function __construct(Validator $validator, JsonMapper $mapper, string $className, string $jsonSchemaPath)
+    public function __construct(Validator $validator, ObjectMapper $mapper, string $className, string $jsonSchemaPath)
     {
         $this->validator = $validator;
         $this->mapper = $mapper;
