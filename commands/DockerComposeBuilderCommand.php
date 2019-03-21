@@ -24,6 +24,7 @@ class DockerComposeBuilderCommand extends Command
         $manifest = require $input->getArgument('path');
         $_ = $manifest->dockerCompose()->build();
         $_ = Yaml::dump($_, Yaml::DUMP_OBJECT_AS_MAP);
+        $_ = str_replace("'%IMAGE_URL%'", '${CI_REGISTRY_IMAGE}:${DOCKER_TAG}', $_);
 
         echo $_;
     }

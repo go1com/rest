@@ -15,9 +15,9 @@ class DockerComposeBuilder
         $this->config = [
             'version'  => '2.0',
             'services' => [
-                'image'     => '${CI_REGISTRY_IMAGE}:${DOCKER_TAG}',
+                'image'     => "%IMAGE_URL%",
                 'mem_limit' => '$MEM',
-                'ports'     => ["80"],
+                'ports'     => ["80:80"],
                 'web'       => [
                     'environment' => [],
                 ],
