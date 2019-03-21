@@ -13,12 +13,12 @@ class DockerComposeBuilder
     {
         $this->builder = $builder;
         $this->config = [
-            'version'  => '2.0',
+            'version'  => '2',
             'services' => [
-                'image'     => "%IMAGE_URL%",
-                'mem_limit' => '$MEM',
-                'ports'     => ["80:80"],
                 'web'       => [
+                    'image'       => "%IMAGE_URL%",
+                    'mem_limit'   => '$MEM',
+                    'ports'       => ["80:80"],
                     'environment' => [],
                 ],
             ],
