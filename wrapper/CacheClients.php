@@ -4,11 +4,11 @@ namespace go1\rest\wrapper;
 
 use DI\Container;
 use go1\rest\tests\RestTestCase;
-use RuntimeException;
+use Memcached;
 use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
+use RuntimeException;
 use Symfony\Component\Cache\Simple\ArrayCache;
 use Symfony\Component\Cache\Simple\MemcachedCache;
-use Memcached;
 
 class CacheClients
 {
@@ -21,8 +21,14 @@ class CacheClients
 
     public function get(string $name, bool $arrayCacheForTesting = true): Psr16CacheInterface
     {
+        static $caches;
+
+        if (!empty($caches[$name])) {
+            return $caches[$name];
+        }
+
         if ($arrayCacheForTesting && class_exists(RestTestCase::class, false)) {
-            return new ArrayCache;
+            return $caches[$name] = new ArrayCache;
         }
 
         if (!$this->container->has("cache.$name")) {
@@ -38,12 +44,12 @@ class CacheClients
 
                     $memcached = new Memcached($name);
                     $memcached->addServer($host, $port);
-                    return new MemcachedCache($memcached);
+                    return $caches[$name] = new MemcachedCache($memcached);
                 default:
                     throw new RuntimeException('Unsupported backend: ' . $name);
             }
         }
 
-        return $this->container->get("cache.$name");
+        return $caches[$name] = $this->container->get("cache.$name");
     }
 }
