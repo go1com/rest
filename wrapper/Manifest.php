@@ -35,7 +35,7 @@ class Manifest
         return $this->composer;
     }
 
-    public function service()
+    public function rest()
     {
         return $this->service;
     }
