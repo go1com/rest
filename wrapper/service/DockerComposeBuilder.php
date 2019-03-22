@@ -43,7 +43,7 @@ class DockerComposeBuilder
 
     public function build()
     {
-        $service = $this->builder->service()->build();
+        $service = $this->builder->rest()->build();
         if (!empty($service['dbOptions'])) {
             $this->config['services']['web']['environment'][] = 'RDS_DB_HOST';
             $this->config['services']['web']['environment'][] = 'RDS_DB_SLAVE';
