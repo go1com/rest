@@ -13,7 +13,7 @@ return call_user_func(
         /** @var Manifest $manifest */
         $manifest = defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php');
         $manifest = require $manifest;
-        $service = $manifest->service()->get();
+        $service = $manifest->rest()->get();
 
         return ('cli' === php_sapi_name()) ? $service : $service->run();
     }
