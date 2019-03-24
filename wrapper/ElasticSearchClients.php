@@ -33,7 +33,7 @@ class ElasticSearchClients
         return Builder::create()->setHosts([$host])->build();
     }
 
-    private function host(string $name): ?string
+    private function host(string $name)
     {
         if (isset($this->options[$name]['endpoint'])) {
             return parse_url($this->options[$name]['endpoint']);
