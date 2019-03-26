@@ -43,6 +43,14 @@ class SwaggerPathBuilder
         return $this;
     }
 
+    public function responses(string $code)
+    {
+        $this->config['responses'][$code] = [];
+        $builder = new SwaggerResponseBuilder($this, $this->config['responses'][$code]);
+
+        return $builder;
+    }
+
     public function end()
     {
         return $this->swagger;
