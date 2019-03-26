@@ -9,8 +9,18 @@ use PHPUnit\Framework\TestCase;
 
 abstract class RestTestCase extends TestCase
 {
+    /**
+     * @var MessageFactory
+     */
     protected $mf;
     protected $committed;
+
+    /**
+     * Enable to auto process POST /install on every test cases.
+     *
+     * @var bool
+     */
+    protected $hasInstallRoute = false;
 
     public function mf(): MessageFactory
     {
@@ -52,6 +62,16 @@ abstract class RestTestCase extends TestCase
             }
 
             $c->set('dbOptions', $override ?? []);
+        }
+
+        // POST /install if it's available
+        if ($this->hasInstallRoute) {
+            $res = $rest->process(
+                $this->mf()->createRequest('POST', '/install'),
+                $this->mf()->createResponse()
+            );
+
+            $this->assertContains($res->getStatusCode(), [200, 204]);
         }
     }
 }
