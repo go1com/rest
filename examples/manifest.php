@@ -4,8 +4,8 @@ namespace go1\rest\examples;
 
 use DI\Container;
 use go1\core\customer\user_explore\Controller;
-use go1\rest\middleware\ObjectMapper;
 use go1\rest\middleware\JsonSchemaValidatorMiddleWare;
+use go1\rest\middleware\ObjectMapper;
 use go1\rest\RestService;
 use go1\rest\tests\fixtures\User;
 use go1\rest\tests\fixtures\UserCreateController;
@@ -70,14 +70,23 @@ return Manifest::create()
         ->withPath('/user', 'POST')
             ->withController([UserCreateController::class, 'post'])
             ->withMiddleware('userCreateJsonValidatorMiddleware')
+            ->responses('200')
+                ->withDescription('Create new user')
+                ->withContent('application/json')
+                    ->withSchema([
+                        'type' => 'object',
+                        'properties' => [
+                            'id' => ['type' => 'int'],
+                        ]
+                    ])
+                    ->end()
+                ->end()
             ->end()
         ->end()
-
     ->phpunit()
         ->withBootstrapFile('./vendor/autoload.php')
         ->withTestSuite('go1', ['./tests'])
         ->withWhitelistDirectory('./')
-        ->withoutWhitelistDirectory('./tests')
         ->withoutWhitelistDirectory('./vendor')
         ->end()
     ->dockerCompose()
