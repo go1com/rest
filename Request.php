@@ -11,6 +11,8 @@ class Request extends \Slim\Http\Request
     const ROLE_ADMIN         = 'administrator';
     const ROLE_ADMIN_CONTENT = 'content administrator';
     const ROLE_MANAGER       = 'manager';
+    const ROLE_STUDENT       = 'Student';
+    const ROLE_ASSESSOR      = 'tutor';
 
     private $contextUser;
 
