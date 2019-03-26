@@ -47,15 +47,19 @@ abstract class RestTestCase extends TestCase
 
     protected function install(RestService $rest)
     {
-        $rest->stream()->addTransport(
-            function (string $event, string $payload, array $context) {
+        /** @var Container $c */
+        $c = $rest->getContainer();
+        $stream = $rest->stream();
+
+        $stream->addTransport(
+            function (string $event, string $payload, array $context) use (&$stream) {
                 $this->committed[$event][] = [$payload, $context];
             }
         );
 
+        // ---------------------
         // Mock database connections
-        /** @var Container $c */
-        $c = $rest->getContainer();
+        // ---------------------
         if ($c->has('dbOptions')) {
             foreach ($c->get('dbOptions') as $name => $options) {
                 $override[$name]['url'] = 'sqlite://sqlite::memory:';
@@ -64,14 +68,19 @@ abstract class RestTestCase extends TestCase
             $c->set('dbOptions', $override ?? []);
         }
 
-        // POST /install if it's available
+        // [REST.INSTALL] RESTFUL base — POST /install
+        // ---------------------
         if ($this->hasInstallRoute) {
             $res = $rest->process(
                 $this->mf()->createRequest('POST', '/install'),
                 $this->mf()->createResponse()
             );
 
-            $this->assertContains($res->getStatusCode(), [200, 204]);
+            $this->assertContains($res->getStatusCode(), [200, 204, 404]);
         }
+
+        // [REST.INSTALL] Stream base
+        // ---------------------
+        $stream->commit('rest.install', '');
     }
 }
