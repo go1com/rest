@@ -55,7 +55,11 @@ class Stream
             new ReflectionMethod($callable[0], $callable[1]) :
             new ReflectionFunction($callable);
 
-        foreach ($reflection->getParameters() as $parameter) {
+        if (!$parameters = $reflection->getParameters()) {
+            return null; # no params to be resolved
+        }
+
+        foreach ($parameters as $parameter) {
             $class = $parameter->getType()->getName();
             $reflection = new ReflectionClass($class);
             if ($reflection->hasMethod('create')) {
