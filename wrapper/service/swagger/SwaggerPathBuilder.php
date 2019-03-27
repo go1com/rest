@@ -29,6 +29,13 @@ class SwaggerPathBuilder
         return new SwaggerParamBuilder($this, $this->config['parameters'][$_]);
     }
 
+    public function withRequestBody()
+    {
+        $this->config['requestBody'] = [];
+
+        return new SwaggerRequestBodyBuilder($this, $this->config['requestBody']);
+    }
+
     public function withController($controller)
     {
         $this->config['#controller'] = $controller;
