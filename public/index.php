@@ -1,5 +1,6 @@
 <?php
 
+use go1\rest\RestService;
 use go1\rest\wrapper\Manifest;
 
 return call_user_func(
@@ -8,7 +9,9 @@ return call_user_func(
             define('REST_ROOT', dirname(__DIR__));
         }
 
-        require_once REST_ROOT . '/vendor/autoload.php';
+        if (!class_exists(RestService::class)) {
+            require_once REST_ROOT . '/vendor/autoload.php';
+        }
 
         /** @var Manifest $manifest */
         $manifest = defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php');
