@@ -24,6 +24,6 @@ abstract class RestError extends DomainException
 
     public function httpErrorCode()
     {
-        return $this->httpErrorCode();
+        return $this->httpErrorCode;
     }
 }
