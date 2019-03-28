@@ -6,7 +6,9 @@ use DomainException;
 
 abstract class RestError extends DomainException
 {
-    protected function errorCode()
+    protected $httpErrorCode = 400;
+
+    public function errorCode()
     {
         switch (static::class) {
             case InternalResourceError::class:
@@ -15,5 +17,10 @@ abstract class RestError extends DomainException
             default:
                 return 0;
         }
+    }
+
+    public function httpErrorCode()
+    {
+        return $this->httpErrorCode();
     }
 }
