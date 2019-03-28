@@ -33,6 +33,11 @@ final class MessageFactory implements TheInterface
         $this->uriFactory = new SlimUriFactory();
     }
 
+    public function streamFactory()
+    {
+        return $this->streamFactory;
+    }
+
 
     /**
      * @return Request|ServerRequestInterface
