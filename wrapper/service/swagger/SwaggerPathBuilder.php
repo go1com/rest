@@ -58,6 +58,11 @@ class SwaggerPathBuilder
         return $builder;
     }
 
+    public function endPath()
+    {
+        return $this->swagger;
+    }
+
     public function end()
     {
         return $this->swagger;
