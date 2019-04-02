@@ -16,7 +16,10 @@
     "ext-json":                  "*",
     "firebase/php-jwt":          "^5.0",
     "php-di/slim-bridge":        "^2.0",
-    "slim/slim":                 "^3.12.0"
+    "psr/http-client":           "^1.0.0",
+    "slim/slim":                 "^3.12.0",
+    "symfony/http-client":       "dev-master",
+    "nyholm/psr7":               "^1.1.0"
   },
   "require-dev":       {
     "beberlei/assert":             "^3.2.0",

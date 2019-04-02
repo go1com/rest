@@ -5,9 +5,12 @@ namespace go1\rest;
 use DI\ContainerBuilder;
 use go1\rest\controller\ConsumeController;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Headers;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Psr18Client;
 
 class RestService extends \DI\Bridge\Slim\App
 {
@@ -25,10 +28,22 @@ class RestService extends \DI\Bridge\Slim\App
     {
         $this->cnf = $cnf;
         $this->cnf += [
-            'request'  => function (ContainerInterface $c) {
+            'http-client.options' => function (ContainerInterface $c) {
+                return [
+                    'headers' => [
+                        'User-Agent' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
+                    ],
+                ];
+            },
+            HttpClient::class     => function (ContainerInterface $c) {
+                $options = $c->get('http-client.options');
+
+                return HttpClient::create($options);
+            },
+            'request'             => function (ContainerInterface $c) {
                 return Request::createFromEnvironment($c->get('environment'));
             },
-            'response' => function (ContainerInterface $c) {
+            'response'            => function (ContainerInterface $c) {
                 $response = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
 
                 return $response->withProtocolVersion($c->get('settings')['httpVersion']);
@@ -82,5 +97,12 @@ class RestService extends \DI\Bridge\Slim\App
         }
 
         return $this->stream;
+    }
+
+    public function httpClient(): ClientInterface
+    {
+        $client = $this->getContainer()->get(HttpClient::class);
+
+        return new Psr18Client($client);
     }
 }
