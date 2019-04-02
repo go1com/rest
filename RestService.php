@@ -28,22 +28,25 @@ class RestService extends \DI\Bridge\Slim\App
     {
         $this->cnf = $cnf;
         $this->cnf += [
-            'http-client.options' => function (ContainerInterface $c) {
+            'http-client.options'  => function (ContainerInterface $c) {
                 return [
                     'headers' => [
                         'User-Agent' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
                     ],
                 ];
             },
-            HttpClient::class     => function (ContainerInterface $c) {
+            HttpClient::class      => function (ContainerInterface $c) {
                 $options = $c->get('http-client.options');
 
                 return HttpClient::create($options);
             },
-            'request'             => function (ContainerInterface $c) {
+            ClientInterface::class => function () {
+                return $this->httpClient();
+            },
+            'request'              => function (ContainerInterface $c) {
                 return Request::createFromEnvironment($c->get('environment'));
             },
-            'response'            => function (ContainerInterface $c) {
+            'response'             => function (ContainerInterface $c) {
                 $response = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
 
                 return $response->withProtocolVersion($c->get('settings')['httpVersion']);
