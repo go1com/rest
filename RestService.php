@@ -71,22 +71,22 @@ class RestService extends \DI\Bridge\Slim\App
 
                 return $response->withProtocolVersion($c->get('settings')['httpVersion']);
             },
+            'errorHandler'         => function () {
+                return function (Request $request, Response $response, Exception $e) {
+                    if ($e instanceof RestError) {
+                        return $response->withJson(
+                            [
+                                'code'    => $e->errorCode(),
+                                'message' => $e->getMessage(),
+                            ],
+                            $e->httpErrorCode()
+                        );
+                    }
+
+                    throw $e;
+                };
+            },
         ];
-    }
-
-    protected function handleException(Exception $e, ServerRequestInterface $request, ResponseInterface $response)
-    {
-        if ($e instanceof RestError) {
-            return $response->withJson(
-                [
-                    'code'    => $e->errorCode(),
-                    'message' => $e->getMessage(),
-                ],
-                $e->httpErrorCode()
-            );
-        }
-
-        return parent::handlePhpError($e, $request, $response);
     }
 
     /**
