@@ -26,6 +26,11 @@ class Request extends \Slim\Http\Request
 
     public function json(bool $assoc = true, int $depth = 512)
     {
+        $body = $this->bodyString();
+        if (empty($body)) {
+            return null;
+        }
+
         $data = json_decode($this->bodyString(), $assoc, $depth, JSON_THROW_ON_ERROR);
 
         // support php <= 7.2
