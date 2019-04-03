@@ -26,32 +26,7 @@ class RestService extends \DI\Bridge\Slim\App
 
     public function __construct(array $cnf = [])
     {
-        $this->cnf = $cnf;
-        $this->cnf += [
-            'http-client.options'  => function (ContainerInterface $c) {
-                return [
-                    'headers' => [
-                        'User-Agent' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
-                    ],
-                ];
-            },
-            HttpClient::class      => function (ContainerInterface $c) {
-                $options = $c->get('http-client.options');
-
-                return HttpClient::create($options);
-            },
-            ClientInterface::class => function () {
-                return $this->httpClient();
-            },
-            'request'              => function (ContainerInterface $c) {
-                return Request::createFromEnvironment($c->get('environment'));
-            },
-            'response'             => function (ContainerInterface $c) {
-                $response = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
-
-                return $response->withProtocolVersion($c->get('settings')['httpVersion']);
-            },
-        ];
+        $this->cnf = $cnf + $this->defaultServices();
 
         parent::__construct();
 
@@ -59,6 +34,11 @@ class RestService extends \DI\Bridge\Slim\App
             call_user_func($cnf['boot'], $this);
         }
 
+        $this->defaultRoutes();
+    }
+
+    protected function defaultRoutes()
+    {
         $this->get('/', function (Response $response) {
             return $response->withJson([
                 'service' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
@@ -69,6 +49,27 @@ class RestService extends \DI\Bridge\Slim\App
 
         $this->get('/consume', [new ConsumeController($this->stream()), 'get']);
         $this->post('/consume', [new ConsumeController($this->stream()), 'post']);
+    }
+
+    protected function defaultServices(): array
+    {
+        return [
+            'http-client.options'  => function (ContainerInterface $c) {
+                return [
+                    'headers' => [
+                        'User-Agent' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
+                    ],
+                ];
+            },
+            HttpClient::class      => function (ContainerInterface $c) { return HttpClient::create($c->get('http-client.options')); },
+            ClientInterface::class => function () { return $this->httpClient(); },
+            'request'              => function (ContainerInterface $c) { return Request::createFromEnvironment($c->get('environment')); },
+            'response'             => function (ContainerInterface $c) {
+                $response = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
+
+                return $response->withProtocolVersion($c->get('settings')['httpVersion']);
+            },
+        ];
     }
 
     /**

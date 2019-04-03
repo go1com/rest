@@ -9,8 +9,11 @@ class HttpClientTest extends RestTestCase
     public function test()
     {
         $rest = $this->rest();
-        $httpClient = $rest->httpClient();
 
-        $this->assertTrue($httpClient instanceof ClientInterface);
+        # Use helper method
+        $this->assertTrue($rest->httpClient() instanceof ClientInterface);
+
+        # Use container getter
+        $this->assertTrue($rest->getContainer()->get(ClientInterface::class) instanceof ClientInterface);
     }
 }
