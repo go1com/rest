@@ -3,7 +3,9 @@
 namespace go1\rest;
 
 use DI\ContainerBuilder;
+use Exception;
 use go1\rest\controller\ConsumeController;
+use go1\rest\errors\RestError;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -70,6 +72,21 @@ class RestService extends \DI\Bridge\Slim\App
                 return $response->withProtocolVersion($c->get('settings')['httpVersion']);
             },
         ];
+    }
+
+    protected function handleException(Exception $e, ServerRequestInterface $request, ResponseInterface $response)
+    {
+        if ($e instanceof RestError) {
+            return $response->withJson(
+                [
+                    'code'    => $e->errorCode(),
+                    'message' => $e->getMessage(),
+                ],
+                $e->httpErrorCode()
+            );
+        }
+
+        return parent::handlePhpError($e, $request, $response);
     }
 
     /**
