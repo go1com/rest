@@ -54,6 +54,11 @@ class SwaggerBuilder
      * withSecurity()
      */
 
+    public function endSwagger(): Manifest
+    {
+        return $this->builder;
+    }
+
     public function end(): Manifest
     {
         return $this->builder;

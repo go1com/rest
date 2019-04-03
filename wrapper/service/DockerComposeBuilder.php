@@ -36,6 +36,11 @@ class DockerComposeBuilder
         return $this;
     }
 
+    public function endDockerCompose(): Manifest
+    {
+        return $this->builder;
+    }
+
     public function end(): Manifest
     {
         return $this->builder;
