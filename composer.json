@@ -18,7 +18,7 @@
     "php-di/slim-bridge":        "^2.0",
     "psr/http-client":           "^1.0.0",
     "slim/slim":                 "^3.12.0",
-    "symfony/http-client":       "dev-master",
+    "symfony/http-client":       "4.3.x-dev",
     "nyholm/psr7":               "^1.1.0"
   },
   "require-dev":       {
