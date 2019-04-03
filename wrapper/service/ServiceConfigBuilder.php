@@ -2,6 +2,7 @@
 
 namespace go1\rest\wrapper\service;
 
+use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\wrapper\Manifest;
 use RuntimeException;
@@ -21,7 +22,17 @@ class ServiceConfigBuilder
                     call_user_func($this->boot, $app, $this->builder);
                 }
 
-                foreach ($this->builder->swagger()->getPaths() as $pattern => $methods) {
+                $swagger = $this->builder->swagger();
+                $paths = $swagger->getPaths();
+                if (!$paths) {
+                    return;
+                }
+
+                $app->get('/swagger', function (Response $response) use ($swagger) {
+                    return $response->withJson($swagger->build());
+                });
+
+                foreach ($paths as $pattern => $methods) {
                     foreach ($methods as $method => $_) {
                         $map = $app->map([$method], $pattern, $_['#controller']);
 
