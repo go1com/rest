@@ -2,7 +2,7 @@
   "name":              "go1/rest",
   "license":           "MIT",
   "prefer-stable":     true,
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "autoload":          {
     "psr-4": {
       "go1\\rest\\": "./"

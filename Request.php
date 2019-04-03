@@ -41,7 +41,7 @@ class Request extends \Slim\Http\Request
         return $data;
     }
 
-    private function jwtPayload()
+    public function jwt()
     {
         $auth = $this->getHeaderLine('Authorization');
         if ($auth && (0 === strpos($auth, 'Bearer '))) {
@@ -49,6 +49,13 @@ class Request extends \Slim\Http\Request
         }
 
         $jwt = $jwt ?? $this->getQueryParam('jwt') ?? $this->getCookieParam('jwt');
+
+        return $jwt;
+    }
+
+    private function jwtPayload()
+    {
+        $jwt = $this->jwt();
         $jwt = is_null($jwt) ? null : ((2 !== substr_count($jwt, '.')) ? null : explode('.', $jwt)[1]);
         $jwt = is_null($jwt) ? null : JWT::jsonDecode(JWT::urlsafeB64Decode($jwt));
 
