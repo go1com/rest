@@ -26,6 +26,11 @@ class Request extends \Slim\Http\Request
 
     public function json(bool $assoc = true, int $depth = 512)
     {
+        $body = $this->bodyString();
+        if (empty($body)) {
+            return null;
+        }
+
         $data = json_decode($this->bodyString(), $assoc, $depth, JSON_THROW_ON_ERROR);
 
         // support php <= 7.2
@@ -36,7 +41,7 @@ class Request extends \Slim\Http\Request
         return $data;
     }
 
-    private function jwtPayload()
+    public function jwt()
     {
         $auth = $this->getHeaderLine('Authorization');
         if ($auth && (0 === strpos($auth, 'Bearer '))) {
@@ -44,6 +49,13 @@ class Request extends \Slim\Http\Request
         }
 
         $jwt = $jwt ?? $this->getQueryParam('jwt') ?? $this->getCookieParam('jwt');
+
+        return $jwt;
+    }
+
+    private function jwtPayload()
+    {
+        $jwt = $this->jwt();
         $jwt = is_null($jwt) ? null : ((2 !== substr_count($jwt, '.')) ? null : explode('.', $jwt)[1]);
         $jwt = is_null($jwt) ? null : JWT::jsonDecode(JWT::urlsafeB64Decode($jwt));
 
