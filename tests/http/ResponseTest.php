@@ -36,4 +36,16 @@ class ResponseTest extends RestTestCase
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertEquals('Just for test', $response->json()->message);
     }
+
+    public function testGetSwagger()
+    {
+        $rest = $this->rest();
+        $request = $this->mf()->createRequest('GET', '/swagger');
+        $response = $this->mf()->createResponse();
+        $response = $rest->process($request, $response);
+        $swagger = $response->json(true);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('loId', $swagger['paths']['/lo/{portalId}/{loId}/learners/{keyword}']['GET']['parameters'][0]['name']);
+    }
 }

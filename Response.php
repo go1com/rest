@@ -22,9 +22,9 @@ class Response extends \Slim\Http\Response
         return $this->getBody()->getContents();
     }
 
-    public function json()
+    public function json(bool $assoc = false)
     {
-        return json_decode($this->bodyString());
+        return json_decode($this->bodyString(), $assoc);
     }
 
     public function jr403($msg)

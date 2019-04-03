@@ -22,14 +22,15 @@ class ServiceConfigBuilder
                     call_user_func($this->boot, $app, $this->builder);
                 }
 
-                $paths = $this->builder->swagger()->getPaths();
-
-                if ($paths) {
-                    $builder = $this;
-                    $app->get('/swagger', function (Response $response) use ($builder) {
-                        return $response->json($builder->build());
-                    });
+                $swagger = $this->builder->swagger();
+                $paths = $swagger->getPaths();
+                if (!$paths) {
+                    return;
                 }
+
+                $app->get('/swagger', function (Response $response) use ($swagger) {
+                    return $response->withJson($swagger->build());
+                });
 
                 foreach ($paths as $pattern => $methods) {
                     foreach ($methods as $method => $_) {
