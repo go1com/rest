@@ -123,6 +123,11 @@ class ServiceConfigBuilder
         return $this;
     }
 
+    public function endRest(): Manifest
+    {
+        return $this->builder;
+    }
+
     public function end(): Manifest
     {
         return $this->builder;

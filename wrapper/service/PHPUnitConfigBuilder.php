@@ -53,6 +53,11 @@ class PHPUnitConfigBuilder
         return $this;
     }
 
+    public function endPHPUnit(): Manifest
+    {
+        return $this->builder;
+    }
+
     public function end(): Manifest
     {
         return $this->builder;
