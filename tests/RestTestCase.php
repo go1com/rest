@@ -92,7 +92,7 @@ abstract class RestTestCase extends TestCase
                 $this->mf()->createResponse()
             );
 
-            $this->assertContains($res->getStatusCode(), [200, 204, 404]);
+            $this->assertContains($res->getStatusCode(), [200, 204, 404, 405]);
         }
 
         // [REST.INSTALL] Stream base
