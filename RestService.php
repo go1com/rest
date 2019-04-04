@@ -10,6 +10,8 @@ use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
@@ -86,6 +88,7 @@ class RestService extends \DI\Bridge\Slim\App
             },
             Stream::class          => function (Container $c) { return new Stream($c->get('stream.transport')); },
             'stream.transport'     => null,
+            LoggerInterface::class => function () { return new NullLogger; },
         ];
     }
 
