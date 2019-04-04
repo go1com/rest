@@ -49,8 +49,8 @@ class RestService extends \DI\Bridge\Slim\App
             ]);
         });
 
-        $this->get('/consume', [new ConsumeController($this->stream()), 'get']);
-        $this->post('/consume', [new ConsumeController($this->stream()), 'post']);
+        $this->get('/consume', [ConsumeController::class, 'get']);
+        $this->post('/consume', [ConsumeController::class, 'post']);
     }
 
     protected function defaultServices(): array
@@ -86,6 +86,8 @@ class RestService extends \DI\Bridge\Slim\App
                     throw $e;
                 };
             },
+            Stream::class          => function (Container $c) { return new Stream($c->get('stream.transport')); },
+            'stream.transport'     => null,
         ];
     }
 
@@ -109,15 +111,6 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
-    }
-
-    public function stream(): Stream
-    {
-        if (!$this->stream) {
-            $this->stream = new Stream;
-        }
-
-        return $this->stream;
     }
 
     public function httpClient(): ClientInterface

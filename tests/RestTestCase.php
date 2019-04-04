@@ -4,8 +4,12 @@ namespace go1\rest\tests;
 
 use DI\Container;
 use go1\rest\RestService;
+use go1\rest\Stream;
 use go1\rest\wrapper\MessageFactory;
 use PHPUnit\Framework\TestCase;
+use function define;
+use function defined;
+use function dirname;
 
 abstract class RestTestCase extends TestCase
 {
@@ -14,6 +18,7 @@ abstract class RestTestCase extends TestCase
      */
     protected $mf;
     protected $committed;
+    protected $rest;
 
     /**
      * Enable to auto process POST /install on every test cases.
@@ -31,28 +36,39 @@ abstract class RestTestCase extends TestCase
         return $this->mf;
     }
 
+    public function tearDown(): void
+    {
+        $this->rest = null;
+    }
+
     protected function rest(): RestService
     {
-        if (!defined('REST_ROOT')) {
-            define('REST_ROOT', dirname(__DIR__));
-            define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
+        if (!$this->rest) {
+            if (!defined('REST_ROOT')) {
+                define('REST_ROOT', dirname(__DIR__));
+                define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
+            }
+
+            /** @var RestService $rest */
+            $this->rest = require __DIR__ . '/../public/index.php';
+            $this->install($this->rest);
         }
 
-        /** @var RestService $rest */
-        $rest = require __DIR__ . '/../public/index.php';
-        $this->install($rest);
+        return $this->rest;
+    }
 
-        return $rest;
+    protected function stream(): Stream
+    {
+        return $this->rest()->getContainer()->get(Stream::class);
     }
 
     protected function install(RestService $rest)
     {
         /** @var Container $c */
         $c = $rest->getContainer();
-        $stream = $rest->stream();
 
-        $stream->addTransport(
-            function (string $event, string $payload, array $context) use (&$stream) {
+        $this->stream()->addTransport(
+            function (string $event, string $payload, array $context) {
                 $this->committed[$event][] = [$payload, $context];
             }
         );
@@ -81,6 +97,6 @@ abstract class RestTestCase extends TestCase
 
         // [REST.INSTALL] Stream base
         // ---------------------
-        $stream->commit('rest.install', '');
+        $this->stream()->commit('rest.install', '');
     }
 }
