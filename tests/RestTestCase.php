@@ -4,8 +4,12 @@ namespace go1\rest\tests;
 
 use DI\Container;
 use go1\rest\RestService;
+use go1\rest\Stream;
 use go1\rest\wrapper\MessageFactory;
 use PHPUnit\Framework\TestCase;
+use function define;
+use function defined;
+use function dirname;
 
 abstract class RestTestCase extends TestCase
 {
@@ -53,14 +57,18 @@ abstract class RestTestCase extends TestCase
         return $this->rest;
     }
 
+    protected function stream(): Stream
+    {
+        return $this->rest()->getContainer()->get(Stream::class);
+    }
+
     protected function install(RestService $rest)
     {
         /** @var Container $c */
         $c = $rest->getContainer();
-        $stream = $rest->stream();
 
-        $stream->addTransport(
-            function (string $event, string $payload, array $context) use (&$stream) {
+        $this->stream()->addTransport(
+            function (string $event, string $payload, array $context) {
                 $this->committed[$event][] = [$payload, $context];
             }
         );
@@ -89,6 +97,6 @@ abstract class RestTestCase extends TestCase
 
         // [REST.INSTALL] Stream base
         // ---------------------
-        $stream->commit('rest.install', '');
+        $this->stream()->commit('rest.install', '');
     }
 }
