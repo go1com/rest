@@ -66,21 +66,7 @@ class RestService extends \DI\Bridge\Slim\App
 
                 return $res->withProtocolVersion($c->get('settings')['httpVersion']);
             },
-            'errorHandler'         => function () {
-                return function (Request $request, Response $response, Exception $e) {
-                    if ($e instanceof RestError) {
-                        return $response->withJson(
-                            [
-                                'code'    => $e->errorCode(),
-                                'message' => $e->getMessage(),
-                            ],
-                            $e->httpErrorCode()
-                        );
-                    }
-
-                    throw $e;
-                };
-            },
+            'errorHandler'         => function () { return [$this, 'error']; },
             Stream::class          => function (Container $c) { return new Stream($c->get('stream.transport')); },
             'stream.transport'     => null,
             LoggerInterface::class => function () { return new NullLogger; },
@@ -107,5 +93,17 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
+    }
+
+    protected function error(Request $request, Response $response, Exception $e)
+    {
+        if ($e instanceof RestError) {
+            return $response->withJson(
+                ['code' => $e->errorCode(), 'message' => $e->getMessage()],
+                $e->httpErrorCode()
+            );
+        }
+
+        throw $e;
     }
 }
