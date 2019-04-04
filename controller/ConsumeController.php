@@ -5,7 +5,6 @@ namespace go1\rest\controller;
 use Exception;
 use go1\rest\Request;
 use go1\rest\Response;
-use go1\rest\RestService;
 use go1\rest\Stream;
 use JsonException;
 
