@@ -17,6 +17,9 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use function defined;
 
+/**
+ * @method Response process(ServerRequestInterface $request, ResponseInterface $response)
+ */
 class RestService extends \DI\Bridge\Slim\App
 {
     const VERSION     = 'v1.0';
@@ -62,27 +65,17 @@ class RestService extends \DI\Bridge\Slim\App
             ClientInterface::class => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
             'request'              => function (Container $c) { return Request::createFromEnvironment($c->get('environment')); },
             'response'             => function (Container $c) {
-                $res = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
+                $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
+                $res = new Response(200, $headers);
+                $ver = $c->get('settings')['httpVersion'];
 
-                return $res->withProtocolVersion($c->get('settings')['httpVersion']);
+                return $res->withProtocolVersion($ver);
             },
             'errorHandler'         => function () { return [$this, 'error']; },
             Stream::class          => function (Container $c) { return new Stream($c->get('stream.transport')); },
             'stream.transport'     => null,
             LoggerInterface::class => function () { return new NullLogger; },
         ];
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @return Response
-     * @throws \Slim\Exception\MethodNotAllowedException
-     * @throws \Slim\Exception\NotFoundException
-     */
-    public function process(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        return parent::process($request, $response);
     }
 
     protected function configureContainer(ContainerBuilder $builder)
