@@ -14,6 +14,7 @@ abstract class RestTestCase extends TestCase
      */
     protected $mf;
     protected $committed;
+    protected $rest;
 
     /**
      * Enable to auto process POST /install on every test cases.
@@ -31,18 +32,25 @@ abstract class RestTestCase extends TestCase
         return $this->mf;
     }
 
+    public function tearDown(): void
+    {
+        $this->rest = null;
+    }
+
     protected function rest(): RestService
     {
-        if (!defined('REST_ROOT')) {
-            define('REST_ROOT', dirname(__DIR__));
-            define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
+        if (!$this->rest) {
+            if (!defined('REST_ROOT')) {
+                define('REST_ROOT', dirname(__DIR__));
+                define('REST_MANIFEST', __DIR__ . '/../examples/manifest.php');
+            }
+
+            /** @var RestService $rest */
+            $this->rest = require __DIR__ . '/../public/index.php';
+            $this->install($this->rest);
         }
 
-        /** @var RestService $rest */
-        $rest = require __DIR__ . '/../public/index.php';
-        $this->install($rest);
-
-        return $rest;
+        return $this->rest;
     }
 
     protected function install(RestService $rest)
