@@ -24,11 +24,6 @@ class RestService extends \DI\Bridge\Slim\App
 
     private $cnf;
 
-    /**
-     * @var Stream
-     */
-    private $stream;
-
     public function __construct(array $cnf = [])
     {
         $this->cnf = $cnf + $this->defaultServices();
