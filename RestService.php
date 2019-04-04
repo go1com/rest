@@ -34,11 +34,11 @@ class RestService extends \DI\Bridge\Slim\App
 
         parent::__construct();
 
+        $this->defaultRoutes();
+
         if (!empty($cnf['boot'])) {
             call_user_func($cnf['boot'], $this);
         }
-
-        $this->defaultRoutes();
     }
 
     protected function defaultRoutes()
