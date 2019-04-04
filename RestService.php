@@ -6,13 +6,14 @@ use DI\ContainerBuilder;
 use Exception;
 use go1\rest\controller\ConsumeController;
 use go1\rest\errors\RestError;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
+use function defined;
 
 class RestService extends \DI\Bridge\Slim\App
 {
@@ -56,20 +57,17 @@ class RestService extends \DI\Bridge\Slim\App
     protected function defaultServices(): array
     {
         return [
-            'http-client.options'  => function (ContainerInterface $c) {
-                return [
-                    'headers' => [
-                        'User-Agent' => defined('SERVICE_NAME') ? SERVICE_NAME : 'rest',
-                    ],
-                ];
-            },
-            HttpClient::class      => function (ContainerInterface $c) { return HttpClient::create($c->get('http-client.options')); },
-            ClientInterface::class => function () { return $this->httpClient(); },
-            'request'              => function (ContainerInterface $c) { return Request::createFromEnvironment($c->get('environment')); },
-            'response'             => function (ContainerInterface $c) {
-                $response = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
+            'http-client.options'  => function () {
+                $headers['User-Agent'] = defined('SERVICE_NAME') ? SERVICE_NAME : 'rest';
 
-                return $response->withProtocolVersion($c->get('settings')['httpVersion']);
+                return ['headers' => $headers];
+            },
+            ClientInterface::class => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
+            'request'              => function (Container $c) { return Request::createFromEnvironment($c->get('environment')); },
+            'response'             => function (Container $c) {
+                $res = new Response(200, new Headers(['Content-Type' => 'text/html; charset=UTF-8']));
+
+                return $res->withProtocolVersion($c->get('settings')['httpVersion']);
             },
             'errorHandler'         => function () {
                 return function (Request $request, Response $response, Exception $e) {
@@ -111,12 +109,5 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
-    }
-
-    public function httpClient(): ClientInterface
-    {
-        $client = $this->getContainer()->get(HttpClient::class);
-
-        return new Psr18Client($client);
     }
 }
