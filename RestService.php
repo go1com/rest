@@ -50,6 +50,8 @@ class RestService extends \DI\Bridge\Slim\App
 
     protected function defaultServices(): array
     {
+        $rest = $this;
+
         return [
             'http-client.options'  => function () {
                 $headers['User-Agent'] = defined('SERVICE_NAME') ? SERVICE_NAME : 'rest';
@@ -69,6 +71,7 @@ class RestService extends \DI\Bridge\Slim\App
             Stream::class          => function (Container $c) { return new Stream($c->get('stream.transport')); },
             'stream.transport'     => null,
             LoggerInterface::class => function () { return new NullLogger; },
+            RestService::class     => function () use ($rest) { return $rest; },
         ];
     }
 
