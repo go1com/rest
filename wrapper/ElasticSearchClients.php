@@ -15,7 +15,7 @@ class ElasticSearchClients
     {
         $this->options = $container->get('esOptions');
         if (is_string($this->options)) {
-            $this->options = ['default' => ['endpoint' => $this->options],];
+            $this->options = ['default' => ['endpoint' => $this->options]];
         }
     }
 
