@@ -6,6 +6,7 @@ use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\wrapper\Manifest;
 use RuntimeException;
+use function putenv;
 
 class ServiceConfigBuilder
 {
@@ -75,7 +76,7 @@ class ServiceConfigBuilder
 
     public function withServiceName(string $name)
     {
-        defined('SERVICE_NAME') || define('SERVICE_NAME', $name);
+        putenv('REST_SERVICE_NAME=' . $name);
 
         $this
             ->builder
@@ -87,7 +88,7 @@ class ServiceConfigBuilder
 
     public function withVersion(string $version)
     {
-        defined('SERVICE_VERSION') || define('SERVICE_VERSION', $version);
+        putenv('REST_SERVICE_VERSION=' . $version);
 
         return $this;
     }
