@@ -16,7 +16,7 @@ use Psr\Log\NullLogger;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
-use function defined;
+use function getenv;
 
 /**
  * @method Response process(ServerRequestInterface $request, ResponseInterface $response)
@@ -54,7 +54,7 @@ class RestService extends \DI\Bridge\Slim\App
 
         return [
             'http-client.options'  => function () {
-                $headers['User-Agent'] = defined('SERVICE_NAME') ? SERVICE_NAME : 'rest';
+                $headers['User-Agent'] = getenv('REST_SERVICE_NAME') ?: 'rest';
 
                 return ['headers' => $headers];
             },
