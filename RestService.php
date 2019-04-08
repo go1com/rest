@@ -55,6 +55,15 @@ class RestService extends \DI\Bridge\Slim\App
             'http-client.options'  => function () {
                 $headers['User-Agent'] = getenv('REST_SERVICE_NAME') ?: 'rest';
 
+                foreach ($_SERVER as $name => $value) {
+                    if (substr($name, 0, 7) == 'HTTP_X_') {
+                        // Add header to request, follow by section Fielding of RFC 2616
+                        // Example from `$_SERVER['HTTP_X_REQUEST_ID']` we will have the header name `X-Request-Id`
+                        // @see: http://php.net/manual/en/function.getallheaders.php#84262
+                        $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                    }
+                }
+
                 return ['headers' => $headers];
             },
             ClientInterface::class => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
