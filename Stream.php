@@ -6,6 +6,7 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use RuntimeException;
+use function call_user_func;
 
 class Stream
 {
@@ -61,9 +62,19 @@ class Stream
 
         foreach ($parameters as $parameter) {
             $class = $parameter->getType()->getName();
-            $reflection = new ReflectionClass($class);
-            if ($reflection->hasMethod('create')) {
-                return call_user_func([$class, 'create'], $payload);
+
+            switch ($class) {
+                case 'string':
+                case 'int':
+                case 'float':
+                case 'bool':
+                    return $payload;
+
+                default:
+                    $reflection = new ReflectionClass($class);
+                    if ($reflection->hasMethod('create')) {
+                        return call_user_func([$class, 'create'], $payload);
+                    }
             }
         }
 
