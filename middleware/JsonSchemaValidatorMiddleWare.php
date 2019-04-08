@@ -4,6 +4,7 @@ namespace go1\rest\middleware;
 
 use go1\rest\Request;
 use go1\rest\Response;
+use go1\rest\util\ObjectMapper;
 use JsonSchema\Validator;
 
 class JsonSchemaValidatorMiddleWare

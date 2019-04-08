@@ -1,6 +1,6 @@
 <?php
 
-namespace go1\rest\middleware;
+namespace go1\rest\util;
 
 use ReflectionObject;
 use stdClass;

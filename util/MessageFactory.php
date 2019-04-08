@@ -1,6 +1,6 @@
 <?php
 
-namespace go1\rest\wrapper;
+namespace go1\rest\util;
 
 use go1\rest\Request;
 use go1\rest\Response;
@@ -37,7 +37,6 @@ final class MessageFactory implements TheInterface
     {
         return $this->streamFactory;
     }
-
 
     /**
      * @return Request|ServerRequestInterface
