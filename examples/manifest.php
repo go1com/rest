@@ -40,7 +40,7 @@ return Manifest::create()
             );
         })
         ->withBootCallback(
-            function (RestService $app, Manifest $builder) {
+            function (RestService $rest, Manifest $builder) {
                 if (!defined('ES_INDEX')) {
                     define('ES_INDEX', getenv('ES_INDEX') ?: 'go1_dev');
                 }

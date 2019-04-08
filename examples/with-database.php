@@ -14,19 +14,19 @@ require __DIR__ . '/../vendor/autoload.php';
  * -------
  *
  *  # define service
- *  $app['ctrl'] = function(Container $c) {
+ *  $rest['ctrl'] = function(Container $c) {
  *      return new PortalSingleController(
  *          $c['dbs']['go1'], $c['dbs']['staff'],
  *          $c['go1.client.es']);
  *      };
  *
  *  # define routing
- *  $app->get('/portal/{id}', 'ctrl:get');
+ *  $rest->get('/portal/{id}', 'ctrl:get');
  *
  * With REST
  * -------
  *
- *  $app->get('/portal/{id}', [PortalSingleController::class, 'get']);
+ *  $rest->get('/portal/{id}', [PortalSingleController::class, 'get']);
  */
 class PortalSingleController
 {

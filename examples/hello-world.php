@@ -11,14 +11,14 @@ use Slim\Http\Response;
  * With Silex
  * -------
  *
- *  $app['ctrl']       = function(Container $c) { return new MyController($c['translator']); };
- *  $app['translator'] = function(Container $c) { return new Translator(); };
- *  $app->get('/hello/{name}', 'ctrl:hello');
+ *  $rest['ctrl']       = function(Container $c) { return new MyController($c['translator']); };
+ *  $rest['translator'] = function(Container $c) { return new Translator(); };
+ *  $rest->get('/hello/{name}', 'ctrl:hello');
  *
  * With REST
  * -------
  *
- *  $app->get('/hello/{name}', [MyController::class, 'hello']);
+ *  $rest->get('/hello/{name}', [MyController::class, 'hello']);
  */
 class Translator
 {
