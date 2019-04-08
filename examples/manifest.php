@@ -50,9 +50,9 @@ return Manifest::create()
         ->end()
     ->stream()
         ->on(
-        FoodCreatedEvent::NAME,
-                 'Notification',
-                 function (FoodCreatedEvent $event) {}
+            FoodCreatedEvent::NAME,
+            'Notification',
+            function (FoodCreatedEvent $event) {}
         )
         ->endStream()
     ->swagger()
