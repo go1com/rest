@@ -18,7 +18,7 @@ class DockerComposeBuilder
                 'web'       => [
                     'image'       => "%IMAGE_URL%",
                     'mem_limit'   => '$MEM',
-                    'ports'       => ["80:80"],
+                    'ports'       => ["80"],
                     'environment' => [],
                 ],
             ],
