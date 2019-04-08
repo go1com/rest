@@ -4,7 +4,6 @@ namespace go1\rest;
 
 use DI\ContainerBuilder;
 use Exception;
-use go1\rest\controller\ConsumeController;
 use go1\rest\controller\DefaultController;
 use go1\rest\errors\RestError;
 use go1\rest\tests\RestTestCase;
@@ -46,8 +45,6 @@ class RestService extends \DI\Bridge\Slim\App
     protected function defaultRoutes()
     {
         $this->get('/', [DefaultController::class, 'get']);
-        $this->get('/consume', [ConsumeController::class, 'get']);
-        $this->post('/consume', [ConsumeController::class, 'post']);
     }
 
     protected function defaultServices(): array
