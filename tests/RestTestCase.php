@@ -5,7 +5,7 @@ namespace go1\rest\tests;
 use DI\Container;
 use go1\rest\RestService;
 use go1\rest\Stream;
-use go1\rest\wrapper\MessageFactory;
+use go1\rest\util\MessageFactory;
 use PHPUnit\Framework\TestCase;
 use function define;
 use function defined;
