@@ -87,8 +87,8 @@ return Manifest::create()
                             'id' => ['type' => 'int'],
                         ]
                     ])
-                    ->end()
-                ->end()
+                    ->endResponseContent()
+                ->endResponse()
             ->end()
         ->end()
     ->phpunit()

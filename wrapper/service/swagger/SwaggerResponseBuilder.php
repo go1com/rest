@@ -28,7 +28,7 @@ class SwaggerResponseBuilder
         return $builder;
     }
 
-    public function end()
+    public function endResponse()
     {
         return $this->builder;
     }

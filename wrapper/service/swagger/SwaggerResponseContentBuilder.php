@@ -20,7 +20,7 @@ class SwaggerResponseContentBuilder
         return $this;
     }
 
-    public function end()
+    public function endResponseContent()
     {
         return $this->builder;
     }
