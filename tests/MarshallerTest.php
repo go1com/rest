@@ -2,7 +2,7 @@
 
 namespace go1\rests\tests;
 
-use go1\core\lo\model\LearningObject;
+use go1\rest\tests\fixtures\LearningObject;
 use go1\rest\tests\RestTestCase;
 use go1\rest\util\Marshaller;
 
