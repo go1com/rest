@@ -66,8 +66,12 @@ class Manifest
         return $this->phpunit;
     }
 
-    public function swagger()
+    public function swagger(string $version = '')
     {
+        if ($version) {
+            $this->swagger->withOpenAPI($version);
+        }
+
         return $this->swagger;
     }
 
