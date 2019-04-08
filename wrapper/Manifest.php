@@ -5,12 +5,12 @@ namespace go1\rest\wrapper;
 use go1\rest\wrapper\service\ComposerBuilder;
 use go1\rest\wrapper\service\DockerComposeBuilder;
 use go1\rest\wrapper\service\PHPUnitConfigBuilder;
-use go1\rest\wrapper\service\ServiceConfigBuilder;
+use go1\rest\wrapper\service\RestConfigBuilder;
 use go1\rest\wrapper\service\swagger\SwaggerBuilder;
 
 class Manifest
 {
-    private $service;
+    private $rest;
     private $dockerCompose;
     private $composer;
     private $phpunit;
@@ -18,7 +18,7 @@ class Manifest
 
     public function __construct()
     {
-        $this->service = new ServiceConfigBuilder($this);
+        $this->rest = new RestConfigBuilder($this);
         $this->dockerCompose = new DockerComposeBuilder($this);
         $this->composer = new ComposerBuilder($this);
         $this->phpunit = new PHPUnitConfigBuilder($this);
@@ -37,7 +37,7 @@ class Manifest
 
     public function rest()
     {
-        return $this->service;
+        return $this->rest;
     }
 
     public function dockerCompose()
@@ -58,7 +58,7 @@ class Manifest
     public function build()
     {
         return [
-            'service'        => $this->service->build(),
+            'rest'           => $this->rest->build(),
             'docker-compose' => $this->dockerCompose->build(),
             'composer'       => $this->composer->build(),
             'phpunit'        => $this->phpunit->build(),
