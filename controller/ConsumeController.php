@@ -19,12 +19,11 @@ class ConsumeController
 
     public function get(Response $response)
     {
-        $listeners = [];
         foreach ($this->stream->listeners() as $name => $listener) {
             $listeners[$name] = $listener['description'];
         }
 
-        return $response->withJson($listeners);
+        return $response->withJson($listeners ?? []);
     }
 
     public function post(Request $request, Response $response)

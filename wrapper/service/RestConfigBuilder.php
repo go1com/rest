@@ -2,11 +2,14 @@
 
 namespace go1\rest\wrapper\service;
 
+use go1\rest\controller\ConsumeController;
 use go1\rest\Response;
 use go1\rest\RestService;
+use go1\rest\Stream;
 use go1\rest\wrapper\Manifest;
 use RuntimeException;
 use function call_user_func;
+use function call_user_func_array;
 use function is_callable;
 use function is_null;
 use function is_string;
@@ -36,6 +39,17 @@ class RestConfigBuilder
             $paths = $swagger->getPaths();
             if (!$paths) {
                 return;
+            }
+
+            $binding = $this->builder->stream()->build();
+            if ($binding) {
+                $rest->get('/consume', [ConsumeController::class, 'get']);
+                $rest->post('/consume', [ConsumeController::class, 'post']);
+                
+                $stream = $rest->getContainer()->get(Stream::class);
+                foreach ($binding as $_) {
+                    call_user_func_array([$stream, 'on'], $_);
+                }
             }
 
             $rest->get(

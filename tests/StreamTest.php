@@ -41,29 +41,18 @@ class StreamTest extends RestTestCase
 
     public function testPostConsume()
     {
-        $this->stream()
-             ->on(
-                 FoodCreatedEvent::NAME,
-                 'Notification',
-                 function (FoodCreatedEvent $event) { $this->assertEquals('Ant', $event->name); }
-             );
+        $req = $this
+            ->mf()
+            ->createRequest('POST', '/consume')
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody(
+                $this->mf()->streamFactory()->createStream(json_encode([
+                    'routingKey' => $event = 'foo.create',
+                    'body'       => $payload = ['name' => 'Ant'],
+                ]))
+            );
 
-        $res = $this->rest()->process(
-            $this->mf()
-                 ->createRequest('POST', '/consume')
-                 ->withHeader('Content-Type', 'application/json')
-                 ->withBody(
-                     $this->mf()
-                          ->streamFactory()
-                          ->createStream(json_encode(
-                              [
-                                  'routingKey' => $event = 'foo.create',
-                                  'body'       => $payload = ['name' => 'Ant'],
-                              ]
-                          ))
-                 ),
-            $this->mf()->createResponse()
-        );
+        $res = $this->rest()->process($req, $this->mf()->createResponse());
 
         $this->assertEquals(204, $res->getStatusCode());
         $this->assertTrue(1 == count($this->committed[$event]));
@@ -72,17 +61,12 @@ class StreamTest extends RestTestCase
 
     public function testConsumeWithBadBody()
     {
-        $res = $this->rest()->process(
-            $this->mf()
-                 ->createRequest('POST', '/consume')
-                 ->withHeader('Content-Type', 'application/json')
-                 ->withBody(
-                     $this->mf()
-                          ->streamFactory()
-                          ->createStream('bad payload')
-                 ),
-            $this->mf()->createResponse()
-        );
+        $req = $this
+            ->mf()
+            ->createRequest('POST', '/consume')
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody($this->mf()->streamFactory()->createStream('bad payload'));
+        $res = $this->rest()->process($req, $this->mf()->createResponse());
 
         $this->assertEquals(400, $res->getStatusCode());
     }
