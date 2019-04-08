@@ -38,8 +38,16 @@ class Manifest
         return $this->composer;
     }
 
-    public function rest()
+    public function rest(string $serviceName = '', string $version = '')
     {
+        if ($serviceName) {
+            $this->rest->withServiceName($serviceName);
+        }
+
+        if ($version) {
+            $this->rest->withVersion($version);
+        }
+
         return $this->rest;
     }
 
