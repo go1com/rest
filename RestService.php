@@ -7,6 +7,7 @@ use Exception;
 use go1\rest\controller\ConsumeController;
 use go1\rest\controller\DefaultController;
 use go1\rest\errors\RestError;
+use go1\rest\tests\RestTestCase;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -16,6 +17,7 @@ use Psr\Log\NullLogger;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
+use function class_exists;
 use function getenv;
 
 /**
@@ -89,7 +91,11 @@ class RestService extends \DI\Bridge\Slim\App
     {
         if ($e instanceof RestError) {
             return $response->withJson(
-                ['code' => $e->errorCode(), 'message' => $e->getMessage()],
+                [
+                    'code'    => $e->errorCode(),
+                    'message' => $e->getMessage(),
+                    'trace'   => !class_exists(RestTestCase::class, false) ? '' : $e->getTraceAsString(),
+                ],
                 $e->httpErrorCode()
             );
         }
