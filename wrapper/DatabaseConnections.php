@@ -47,7 +47,7 @@ class DatabaseConnections
         $prefix = strtoupper("{$name}_DB");
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $useMaster = self::CON_OPTION_ALWAYS_MASTER === $masterMode
-            || ($masterMode === self::CON_OPTION_AUTO_MASTER  && 'GET' !== strtoupper($method));
+            || ($masterMode === self::CON_OPTION_AUTO_MASTER && 'GET' !== strtoupper($method));
         $host = self::getEnvByPriority(["{$prefix}_HOST", 'RDS_DB_HOST', 'DEV_DB_HOST']);
         if (!$useMaster) {
             $host = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $host;
@@ -106,15 +106,11 @@ class DatabaseConnections
         return null;
     }
 
+    /**
+     * @deprecated Use DatabaseSafeThread::run() or symfony/lock.
+     */
     public static function safeThread(Connection $db, string $threadName, int $timeout, callable $callback)
     {
-        try {
-            $sqlite = 'sqlite' === $db->getDatabasePlatform()->getName();
-            !$sqlite && $db->executeQuery('DO GET_LOCK("' . $threadName . '", ' . $timeout . ')');
-
-            return $callback($db);
-        } finally {
-            !$sqlite && $db->executeQuery('DO RELEASE_LOCK("' . $threadName . '")');
-        }
+        DatabaseSafeThread::run($db, $threadName, $timeout, $callback);
     }
 }
