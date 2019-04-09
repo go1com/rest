@@ -11,15 +11,17 @@ use go1\rest\wrapper\service\swagger\SwaggerBuilder;
 
 class Manifest
 {
-    private $rest;
-    private $stream;
-    private $dockerCompose;
-    private $composer;
-    private $phpunit;
-    private $swagger;
+    protected $serviceRoot;
+    private   $rest;
+    private   $stream;
+    private   $dockerCompose;
+    private   $composer;
+    private   $phpunit;
+    private   $swagger;
 
-    public function __construct()
+    private function __construct(string $serviceRoot)
     {
+        $this->serviceRoot = $serviceRoot;
         $this->rest = new RestConfigBuilder($this);
         $this->stream = new StreamBuilder($this);
         $this->dockerCompose = new DockerComposeBuilder($this);
@@ -28,9 +30,9 @@ class Manifest
         $this->swagger = new SwaggerBuilder($this);
     }
 
-    public static function create(): Manifest
+    public static function create(string $serviceRoot = ''): Manifest
     {
-        return new Manifest;
+        return new Manifest(rtrim($serviceRoot, '/'));
     }
 
     public function composer(): ComposerBuilder
