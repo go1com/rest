@@ -8,7 +8,7 @@ use go1\rest\util\rabbitmq\Channel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use function parse_url;
 
-class RabbitMqClient
+class Client
 {
     private $connectionUrl;
     private $connection;

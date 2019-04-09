@@ -2,14 +2,14 @@
 
 namespace go1\rest\examples;
 
+use go1\rest\wrapper\request\Client;
 use go1\rest\wrapper\request\Message;
-use go1\rest\wrapper\request\RabbitMqClient;
 
 class RabbitMqExample
 {
     private $client;
 
-    public function __construct(RabbitMqClient $client)
+    public function __construct(Client $client)
     {
         $this->client = $client;
     }
