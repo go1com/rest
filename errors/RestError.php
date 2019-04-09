@@ -8,6 +8,15 @@ abstract class RestError extends DomainException
 {
     protected $httpErrorCode = 400;
 
+    /**
+     * @param string $msg
+     * @return mixed
+     */
+    public static function throw(string $msg = '')
+    {
+        throw new static($msg);
+    }
+
     public function errorCode()
     {
         switch (static::class) {

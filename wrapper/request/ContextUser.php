@@ -7,13 +7,13 @@ use function in_array;
 use function is_numeric;
 
 /**
- * @property int              $id
- * @property string           $accountsName
- * @property int              $profileId
- * @property string           $mail
- * @property string           $name
- * @property string[]         $roles
- * @property ContextAccount[] $accounts
+ * @property int                                        $id
+ * @property string                                     $accountsName
+ * @property int                                        $profileId
+ * @property string                                     $mail
+ * @property string                                     $name
+ * @property string[]                                   $roles
+ * @property \go1\rest\wrapper\request\ContextAccount[] $accounts
  */
 class ContextUser extends Model
 {
@@ -32,7 +32,11 @@ class ContextUser extends Model
     protected $profileId;
     protected $mail;
     protected $name;
-    protected $roles;
+    protected $roles = [];
+
+    /**
+     * @var \go1\rest\wrapper\request\ContextAccount[]
+     */
     protected $accounts = [];
 
     /**

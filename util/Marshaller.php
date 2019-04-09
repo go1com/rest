@@ -4,6 +4,13 @@ namespace go1\rest\util;
 
 use ReflectionObject;
 use stdClass;
+use function get_class;
+use function is_null;
+use function is_scalar;
+use function preg_match;
+use function str_replace;
+use function strpos;
+use function trim;
 
 class Marshaller
 {
@@ -17,34 +24,19 @@ class Marshaller
                 continue;
             }
 
-            switch ($type) {
-                case 'int':
-                    $value = (int) $obj->{$rProperty->getName()};
-                    break;
-
-                case 'float':
-                    $value = (float) $obj->{$rProperty->getName()};
-                    break;
-
-                case 'string':
-                    $value = (string) $obj->{$rProperty->getName()};
-                    break;
-
-                case 'bool':
-                    $value = (bool) $obj->{$rProperty->getName()};
-                    break;
-
-                case '':
-                    $value = $obj->{$rProperty->getName()};
-                    break;
-
-                default:
-                    $value = $obj->{$rProperty->getName()};
-                    if (!is_null($value)) {
-                        $value = $this->dump($value, $propertyFormat);
-                    }
-
-                    break;
+            $raw = $obj->{$rProperty->getName()};
+            if (is_scalar($raw) || empty($type)) {
+                $value = $this->scalarCast($type, $raw);
+            } elseif (false !== strpos($type, '[]')) { # Support UserClass[]
+                $value = [];
+                foreach ($obj->{$rProperty->getName()} as $v) {
+                    $value[] = $this->dump($v, $propertyFormat);
+                }
+            } else {
+                $value = $obj->{$rProperty->getName()};
+                if (!is_null($value)) {
+                    $value = $this->dump($value, $propertyFormat);
+                }
             }
 
             $result[$path] = $value;
@@ -53,10 +45,33 @@ class Marshaller
         return $result ?? [];
     }
 
+    private function scalarCast($type, $value)
+    {
+        switch ($type) {
+            case 'int':
+                return (int) $value;
+
+            case 'float':
+                return (float) $value;
+
+            case 'string':
+                return (string) $value;
+
+            case 'bool':
+                return (bool) $value;
+
+            default:
+                return $value;
+        }
+    }
+
     public function parse(stdClass $input, $obj, array $propertyFormat = ['json'])
     {
-        $rObject = new ReflectionObject($obj);
+        if ('stdClass' == get_class($obj)) {
+            return $input;
+        }
 
+        $rObject = new ReflectionObject($obj);
         foreach ($rObject->getProperties() as $rProperty) {
             $_ = $this->property($rObject->getDocComment(), $rProperty->getDocComment(), $rProperty->getName(), $propertyFormat);
             list($path, $type) = $_;
@@ -67,27 +82,20 @@ class Marshaller
 
             $value = null;
 
-            switch ($type) {
-                case 'int':
-                    $value = (int) $input->{$path};
-                    break;
-
-                case 'float':
-                    $value = (float) $input->{$path};
-                    break;
-
-                case 'string':
-                    $value = (string) $input->{$path};
-                    break;
-
-                case 'bool':
-                    $value = (bool) $input->{$path};
-                    break;
-
-                default:
-                    $value = $input->{$path};
-                    $value = $this->parse($value, new $type);
-                    break;
+            if (is_scalar($input->{$path})) {
+                $value = $this->scalarCast($type, $input->{$path});
+            } elseif (false !== strpos($type, '[]')) {
+                # Support UserClass[]
+                $type = str_replace('[]', '', $type);
+                $value = [];
+                foreach ($input->{$path} as $v) {
+                    $value[] = is_scalar($v)
+                        ? $this->scalarCast($type, $v)
+                        : $this->parse($v, new $type);
+                }
+            } else {
+                $value = $input->{$path};
+                $value = $this->parse($value, new $type);
             }
 
             $rProperty->setAccessible(true);
@@ -119,9 +127,11 @@ class Marshaller
         }
 
         if ($classComment) {
-            preg_match('/@property\s+([^\s]+)\s*\\$' . $propertyName . '.*$/m', $classComment, $matches);
-            if (!empty($matches[1])) {
-                $type = trim($matches[1]);
+            if (!$type) {
+                preg_match('/@property\s+([^\s]+)\s*\\$' . $propertyName . '.*$/m', $classComment, $matches);
+                if (!empty($matches[1])) {
+                    $type = trim($matches[1]);
+                }
             }
         }
 
