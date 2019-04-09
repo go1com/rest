@@ -19,6 +19,12 @@ class SwaggerParamBuilder
 
         return $this;
     }
+    public function inBody()
+    {
+        $this->config['in'] = 'body';
+
+        return $this;
+    }
 
     public function inQuery()
     {
@@ -44,6 +50,13 @@ class SwaggerParamBuilder
     public function withTypeString()
     {
         $this->config['schema']['type'] = 'string';
+
+        return $this;
+    }
+
+    public function withTypeObject(string $ref)
+    {
+        $this->config['schema']['$ref'] = $ref;
 
         return $this;
     }
