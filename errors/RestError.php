@@ -17,6 +17,9 @@ abstract class RestError extends DomainException
             case InvalidRequestContentError::class:
                 return 2;
 
+            case InvalidServiceConfigurationError::class:
+                return 3;
+
             default:
                 return 0;
         }
