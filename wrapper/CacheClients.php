@@ -44,6 +44,7 @@ class CacheClients
 
                     $memcached = new Memcached($name);
                     $memcached->addServer($host, $port);
+
                     return $caches[$name] = new MemcachedCache($memcached);
                 default:
                     throw new RuntimeException('Unsupported backend: ' . $name);
