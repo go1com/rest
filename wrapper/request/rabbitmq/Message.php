@@ -9,7 +9,7 @@ class Message extends AMQPMessage
 {
     private $routingKey;
 
-    public static function create(string $routingKey, string $payload, array $headers)
+    public static function create(string $routingKey, string $payload, array $headers = [])
     {
         $msg = new static($payload, [
             'content_type'        => 'application/json',

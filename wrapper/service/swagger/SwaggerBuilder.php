@@ -32,7 +32,7 @@ class SwaggerBuilder
         return $this;
     }
 
-    public function withPath(string $path, string $method, callable $controller = null): SwaggerPathBuilder
+    public function withPath(string $path, string $method, $controller = null): SwaggerPathBuilder
     {
         $this->config['paths'][$path][$method] = [];
         $pathBuilder = new SwaggerPathBuilder($this, $this->config['paths'][$path][$method]);
