@@ -7,11 +7,14 @@ use go1\rest\RestService;
 use go1\rest\Stream;
 use go1\rest\util\MessageFactory;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use function define;
 use function defined;
 use function dirname;
 
-abstract class RestTestCase extends TestCase
+abstract class RestTestCase extends TestCase implements ContainerInterface
 {
     /**
      * @var MessageFactory
@@ -98,5 +101,15 @@ abstract class RestTestCase extends TestCase
         // [REST.INSTALL] Stream base
         // ---------------------
         $this->stream()->commit('rest.install', '');
+    }
+
+    public function get($id)
+    {
+        return $this->rest()->getContainer()->get($id);
+    }
+
+    public function has($id)
+    {
+        return $this->rest()->getContainer()->has($id);
     }
 }
