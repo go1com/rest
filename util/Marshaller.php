@@ -65,6 +65,12 @@ class Marshaller
         }
     }
 
+    /**
+     * @param stdClass $input
+     * @param mixed    $obj
+     * @param array    $propertyFormat
+     * @return mixed Entity
+     */
     public function parse(stdClass $input, $obj, array $propertyFormat = ['json'])
     {
         if ('stdClass' == get_class($obj)) {
