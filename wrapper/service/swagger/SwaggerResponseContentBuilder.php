@@ -20,6 +20,13 @@ class SwaggerResponseContentBuilder
         return $this;
     }
 
+    public function withSchemaRef(string $jsonSchemaRef)
+    {
+        $this->config['schema']['$ref'] = $jsonSchemaRef;
+
+        return $this;
+    }
+
     public function endResponseContent()
     {
         return $this->builder;
