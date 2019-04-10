@@ -15,7 +15,7 @@ class Client
 
     public function __construct(Container $c)
     {
-        $_ = $c->get('client.rabbitmq.url');
+        $_ = $c->has('client.rabbitmq.url') ? $c->get('client.rabbitmq.url') : null;
         $_ = $_ ?: getenv('CLIENT_RABBITMQ_URL');
 
         if (!$_) {
