@@ -62,7 +62,7 @@ class MarshallerTest extends RestTestCase
             /**
              * @var int
              * @json userId
-             * @ommitEmpty
+             * @omitEmpty
              */
             public $userId;
 
