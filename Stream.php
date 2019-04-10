@@ -49,9 +49,11 @@ class Stream
     {
         foreach ($this->listeners as $name => &$listener) {
             if ($eventName == $name) {
-                if (isset($listener['fn'][0])) {
-                    if (is_string($listener['fn'][0])) {
-                        $listener['fn'][0] = $this->container->get($listener['fn'][0]);
+                if (is_array($listener['fn'])) {
+                    if (isset($listener['fn'][0])) {
+                        if (is_string($listener['fn'][0])) {
+                            $listener['fn'][0] = $this->container->get($listener['fn'][0]);
+                        }
                     }
                 }
 

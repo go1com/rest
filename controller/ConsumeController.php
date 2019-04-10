@@ -3,6 +3,7 @@
 namespace go1\rest\controller;
 
 use Exception;
+use go1\rest\errors\RuntimeError;
 use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\Stream;
@@ -55,7 +56,7 @@ class ConsumeController
         } catch (JsonException $e) {
             return $response->jr('Invalid payload');
         } catch (Exception $e) {
-            return $response->jr500('Failed to commit stream: ' . $e->getMessage());
+            throw new RuntimeError('failed commit: ' . $e->getMessage());
         }
     }
 }

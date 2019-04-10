@@ -29,6 +29,9 @@ abstract class RestError extends DomainException
             case InvalidServiceConfigurationError::class:
                 return 3;
 
+            case RuntimeError::class:
+                return 4;
+
             default:
                 return 0;
         }
