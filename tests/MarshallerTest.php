@@ -54,4 +54,30 @@ class MarshallerTest extends RestTestCase
         $this->assertEquals(10.00, $obj->pricing->price);
         $this->assertEquals(true, $obj->metadata->singleLi);
     }
+
+    public function testDumpWithOmmitEmpty()
+    {
+        $obj = new class
+        {
+            /**
+             * @var int
+             * @json userId
+             * @ommitEmpty
+             */
+            public $userId;
+
+            /**
+             * @var int
+             * @json id
+             */
+            public $id;
+        };
+
+        $marshaller = (new Marshaller);
+        $input = (object) ['id' => null, 'userId' => null];
+        $obj = $marshaller->parse($input, $obj, ['db']);
+
+        $dump = (new Marshaller)->dump($obj);
+        $this->assertEquals(['id' => null], $dump);
+    }
 }

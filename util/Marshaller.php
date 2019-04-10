@@ -19,7 +19,7 @@ class Marshaller
         $rObject = new ReflectionObject($obj);
         foreach ($rObject->getProperties() as $rProperty) {
             $_ = $this->property($rObject->getDocComment(), $rProperty->getDocComment(), $rProperty->getName(), $propertyFormat);
-            list($path, $type) = $_;
+            list($path, $type, $options) = $_;
             if (!$path) {
                 continue;
             }
@@ -37,6 +37,10 @@ class Marshaller
                 if (!is_null($value)) {
                     $value = $this->dump($value, $propertyFormat);
                 }
+            }
+
+            if (isset($options['ommitEmpty']) && is_null($value)) {
+                continue;
             }
 
             $result[$path] = $value;
@@ -115,6 +119,7 @@ class Marshaller
     {
         $path = $propertyName;
         $type = null;
+        $options = [];
 
         if ($propertyComment) {
             # parse `@var STRING` doc-block
@@ -130,6 +135,11 @@ class Marshaller
                     $path = $matches[1];
                 }
             }
+
+            # parse `@ommitEmpty` doc-block
+            if (preg_match('/@ommitEmpty/', $propertyComment, $matches1)) {
+                $options['ommitEmpty'] = true;
+            }
         }
 
         if ($classComment) {
@@ -141,6 +151,6 @@ class Marshaller
             }
         }
 
-        return [$path, $type];
+        return [$path, $type, $options];
     }
 }
