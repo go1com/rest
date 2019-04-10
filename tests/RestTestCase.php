@@ -7,9 +7,7 @@ use go1\rest\RestService;
 use go1\rest\Stream;
 use go1\rest\util\MessageFactory;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use function define;
 use function defined;
 use function dirname;
@@ -29,6 +27,11 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
      * @var bool
      */
     protected $hasInstallRoute = false;
+
+    protected function setUp(): void
+    {
+        $this->rest(/* Just make sure all install logic are executed */);
+    }
 
     public function mf(): MessageFactory
     {
