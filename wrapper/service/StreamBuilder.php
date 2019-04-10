@@ -16,7 +16,7 @@ class StreamBuilder
         $this->config = [];
     }
 
-    public function on(string $routingKey, string $description, callable $callback)
+    public function on(string $routingKey, string $description, $callback)
     {
         $this->config[] = func_get_args();
 
