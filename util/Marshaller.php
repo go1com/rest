@@ -39,7 +39,7 @@ class Marshaller
                 }
             }
 
-            if (isset($options['ommitEmpty']) && is_null($value)) {
+            if (isset($options['omitEmpty']) && is_null($value)) {
                 continue;
             }
 
@@ -136,9 +136,9 @@ class Marshaller
                 }
             }
 
-            # parse `@ommitEmpty` doc-block
-            if (preg_match('/@ommitEmpty/', $propertyComment, $matches1)) {
-                $options['ommitEmpty'] = true;
+            # parse `@omitEmpty` doc-block
+            if (preg_match('/@omitEmpty/', $propertyComment, $_)) {
+                $options['omitEmpty'] = true;
             }
         }
 

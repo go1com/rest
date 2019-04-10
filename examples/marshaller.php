@@ -33,7 +33,7 @@ class UserExample extends Model
 
     # If value is null, this field will be ingored on dump (inspired by go structure definition)
     /**
-     * @ommitEmpty
+     * @omitEmpty
      */
     protected $age;
 }
