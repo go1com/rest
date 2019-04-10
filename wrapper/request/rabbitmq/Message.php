@@ -1,6 +1,6 @@
 <?php
 
-namespace go1\rest\wrapper\request;
+namespace go1\rest\wrapper\request\rabbitmq;
 
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;

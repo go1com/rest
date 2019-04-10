@@ -1,8 +1,7 @@
 <?php
 
-namespace go1\rest\util\rabbitmq;
+namespace go1\rest\wrapper\request\rabbitmq;
 
-use go1\rest\wrapper\request\Message;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 

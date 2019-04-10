@@ -1,10 +1,9 @@
 <?php
 
-namespace go1\rest\wrapper\request;
+namespace go1\rest\wrapper\request\rabbitmq;
 
 use DI\Container;
 use go1\rest\errors\InvalidServiceConfigurationError;
-use go1\rest\util\rabbitmq\Channel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use function parse_url;
 

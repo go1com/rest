@@ -2,8 +2,8 @@
 
 namespace go1\rest\examples;
 
-use go1\rest\wrapper\request\Client;
-use go1\rest\wrapper\request\Message;
+use go1\rest\wrapper\request\rabbitmq\Client;
+use go1\rest\wrapper\request\rabbitmq\Message;
 
 class RabbitMqExample
 {
