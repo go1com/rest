@@ -26,7 +26,7 @@ class Stream
         $this->transports[] = $transport;
     }
 
-    public function on(string $eventName, string $description, callable $callable): self
+    public function on(string $eventName, string $description, $callable): self
     {
         $this->listeners[$eventName]['description'] = $description;
         $this->listeners[$eventName]['fn'] = $callable;

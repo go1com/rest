@@ -16,7 +16,7 @@ use function is_string;
 use function putenv;
 use function sprintf;
 
-class RestConfigBuilder
+class RestBuilder
 {
     private $builder;
     private $config = [];
@@ -35,21 +35,20 @@ class RestConfigBuilder
                 call_user_func($this->boot, $rest, $this->builder);
             }
 
-            $swagger = $this->builder->swagger();
-            $paths = $swagger->getPaths();
-            if (!$paths) {
-                return;
-            }
-
             $binding = $this->builder->stream()->build();
             if ($binding) {
                 $rest->get('/consume', [ConsumeController::class, 'get']);
                 $rest->post('/consume', [ConsumeController::class, 'post']);
-                
                 $stream = $rest->getContainer()->get(Stream::class);
                 foreach ($binding as $_) {
-                    call_user_func_array([$stream, 'on'], $_);
+                    $stream->on($_[0], $_[1], $_[2]);
                 }
+            }
+
+            $swagger = $this->builder->swagger();
+            $paths = $swagger->getPaths();
+            if (!$paths) {
+                return;
             }
 
             $rest->get(

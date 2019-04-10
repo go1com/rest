@@ -5,7 +5,7 @@ namespace go1\rest\wrapper;
 use go1\rest\wrapper\service\ComposerBuilder;
 use go1\rest\wrapper\service\DockerComposeBuilder;
 use go1\rest\wrapper\service\PHPUnitConfigBuilder;
-use go1\rest\wrapper\service\RestConfigBuilder;
+use go1\rest\wrapper\service\RestBuilder;
 use go1\rest\wrapper\service\StreamBuilder;
 use go1\rest\wrapper\service\swagger\SwaggerBuilder;
 
@@ -22,7 +22,7 @@ class Manifest
     private function __construct(string $serviceRoot)
     {
         $this->serviceRoot = $serviceRoot;
-        $this->rest = new RestConfigBuilder($this);
+        $this->rest = new RestBuilder($this);
         $this->stream = new StreamBuilder($this);
         $this->dockerCompose = new DockerComposeBuilder($this);
         $this->composer = new ComposerBuilder($this);
