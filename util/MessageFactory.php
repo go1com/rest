@@ -38,6 +38,11 @@ final class MessageFactory implements TheInterface
         return $this->streamFactory;
     }
 
+    public function uriFactory()
+    {
+        return $this->uriFactory;
+    }
+
     /**
      * @return Request|ServerRequestInterface
      */
