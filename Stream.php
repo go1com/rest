@@ -73,19 +73,23 @@ class Stream
         }
 
         foreach ($parameters as $parameter) {
-            $class = $parameter->getType()->getName();
+            $type = $parameter->getType();
+            if (!$type) {
+                return $payload;
+            }
 
-            switch ($class) {
+            switch ($type->getName()) {
                 case 'string':
                 case 'int':
                 case 'float':
                 case 'bool':
+                case 'stdClass':
                     return $payload;
 
                 default:
-                    $reflection = new ReflectionClass($class);
+                    $reflection = new ReflectionClass($type->getName());
                     if ($reflection->hasMethod('create')) {
-                        return call_user_func([$class, 'create'], $payload);
+                        return call_user_func([$type->getName(), 'create'], $payload);
                     }
             }
         }
