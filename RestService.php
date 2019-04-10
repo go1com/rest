@@ -76,7 +76,7 @@ class RestService extends \DI\Bridge\Slim\App
                 return $res->withProtocolVersion($ver);
             },
             'errorHandler'         => function () { return [$this, 'error']; },
-            Stream::class          => function (Container $c) { return new Stream($c->get('stream.transport')); },
+            Stream::class          => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
             'stream.transport'     => null,
             LoggerInterface::class => function () { return new NullLogger; },
             RestService::class     => function () use ($rest) { return $rest; },

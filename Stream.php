@@ -2,19 +2,23 @@
 
 namespace go1\rest;
 
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use RuntimeException;
 use function call_user_func;
+use function is_string;
 
 class Stream
 {
+    private $container;
     private $listeners = [];
     private $transports;
 
-    public function __construct(?callable $transport = null)
+    public function __construct(ContainerInterface $c, ?callable $transport = null)
     {
+        $this->container = $c;
         $this->addTransport([$this, 'defaultTransport']);
         if (null != $transport) {
             $this->addTransport($transport);
@@ -43,8 +47,14 @@ class Stream
 
     protected function defaultTransport($eventName, string $payload)
     {
-        foreach ($this->listeners as $name => $listener) {
+        foreach ($this->listeners as $name => &$listener) {
             if ($eventName == $name) {
+                if (isset($listener['fn'][0])) {
+                    if (is_string($listener['fn'][0])) {
+                        $listener['fn'][0] = $this->container->get($listener['fn'][0]);
+                    }
+                }
+
                 call_user_func($listener['fn'], $this->resolveEventPayload($listener['fn'], $payload));
             }
         }
