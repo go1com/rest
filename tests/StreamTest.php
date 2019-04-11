@@ -65,7 +65,7 @@ class StreamTest extends RestTestCase
             ->mf()
             ->createRequest('POST', '/consume')
             ->withHeader('Content-Type', 'application/json')
-            ->withBody($this->mf()->streamFactory()->createStream('bad payload'));
+            ->withBody($this->mf()->streamFactory()->createStream('{}'));
         $res = $this->rest()->process($req, $this->mf()->createResponse());
 
         $this->assertEquals(400, $res->getStatusCode());
