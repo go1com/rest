@@ -7,7 +7,14 @@ use go1\rest\errors\RuntimeError;
 use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\Stream;
+use go1\rest\tests\RestTestCase;
 use JsonException;
+use function class_exists;
+use function is_array;
+use function is_scalar;
+use function is_string;
+use function json_decode;
+use function json_encode;
 
 class ConsumeController
 {
@@ -29,34 +36,43 @@ class ConsumeController
 
     public function post(Request $request, Response $response)
     {
+        if (class_exists(RestTestCase::class, false)) {
+            $this->doPost($request, $response);
+        }
+
         try {
-            $json = $request->json();
-            $routingKey = $json['routingKey'] ?? '';
-            $body = $json['body'] ?? null;
-            $context = $json['context'] ?? [];
-            if (is_scalar($body)) {
-                $body = json_decode($body, true);
-            }
-
-            if (empty($body) || !is_array($body)) {
-                return $response->jr('Invalid or missing payload');
-            }
-
-            if (!empty($context) && !is_array($context)) {
-                return $response->jr('Invalid context');
-            }
-
-            if (empty($routingKey) || !is_string($routingKey)) {
-                return $response->jr('Invalid or missing routingKey');
-            }
-
-            $this->stream->commit($routingKey, json_encode($body), $context);
-
-            return $response->withJson(null, 204);
+            return $this->doPost($request, $response);
         } catch (JsonException $e) {
             return $response->jr('Invalid payload');
         } catch (Exception $e) {
             throw new RuntimeError('failed commit: ' . $e->getMessage());
         }
+    }
+
+    private function doPost(Request $request, Response $response)
+    {
+        $json = $request->json();
+        $routingKey = $json['routingKey'] ?? '';
+        $body = $json['body'] ?? null;
+        $context = $json['context'] ?? [];
+        if (is_scalar($body)) {
+            $body = json_decode($body, true);
+        }
+
+        if (empty($body) || !is_array($body)) {
+            return $response->jr('Invalid or missing payload');
+        }
+
+        if (!empty($context) && !is_array($context)) {
+            return $response->jr('Invalid context');
+        }
+
+        if (empty($routingKey) || !is_string($routingKey)) {
+            return $response->jr('Invalid or missing routingKey');
+        }
+
+        $this->stream->commit($routingKey, json_encode($body), $context);
+
+        return $response->withJson(null, 204);
     }
 }

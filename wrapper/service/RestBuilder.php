@@ -9,7 +9,6 @@ use go1\rest\Stream;
 use go1\rest\wrapper\Manifest;
 use RuntimeException;
 use function call_user_func;
-use function call_user_func_array;
 use function is_callable;
 use function is_null;
 use function is_string;

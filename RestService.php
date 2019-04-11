@@ -98,6 +98,7 @@ class RestService extends \DI\Bridge\Slim\App
         if ($e instanceof RestError) {
             return $response->withJson(
                 [
+                    'method'  => $request->getMethod(),
                     'code'    => $e->errorCode(),
                     'message' => $e->getMessage(),
                     'trace'   => !class_exists(RestTestCase::class, false) ? '' : $e->getTraceAsString(),
