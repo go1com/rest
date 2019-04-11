@@ -28,8 +28,8 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
      *
      * @var Connection
      */
-    protected $sqlite;
-    
+    protected $db;
+
     /**
      * Enable to auto process POST /install on every test cases.
      *
@@ -53,17 +53,17 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
 
     protected function db(): Connection
     {
-        if ($this->sqlite) {
-            return $this->sqlite;
+        if ($this->db) {
+            return $this->db;
         }
 
-        return $this->sqlite = DriverManager::getConnection(['url' => 'sqlite://sqlite::memory:']);
+        return $this->db = DriverManager::getConnection(['url' => 'sqlite://sqlite::memory:']);
     }
 
     public function tearDown(): void
     {
         $this->rest = null;
-        $this->sqlite = null;
+        $this->db = null;
     }
 
     protected function rest(): RestService
