@@ -55,7 +55,7 @@ class StreamTest extends RestTestCase
         $res = $this->rest()->process($req, $this->mf()->createResponse());
 
         $this->assertEquals(204, $res->getStatusCode());
-        $this->assertTrue(1 == count($this->committed[$event]));
+        $this->assertTrue(count($this->committed[$event]) >= 1);
         $this->assertEquals(json_encode($payload), $this->committed[$event][0][0]);
     }
 
