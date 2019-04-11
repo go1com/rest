@@ -3,6 +3,8 @@
 namespace go1\rest\tests;
 
 use DI\Container;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use go1\rest\RestService;
 use go1\rest\Stream;
 use go1\rest\util\MessageFactory;
@@ -21,6 +23,13 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
     protected $committed;
     protected $rest;
 
+    /**
+     * A shared connection for all services.
+     *
+     * @var Connection
+     */
+    protected $sqlite;
+    
     /**
      * Enable to auto process POST /install on every test cases.
      *
@@ -42,9 +51,19 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
         return $this->mf;
     }
 
+    protected function db(): Connection
+    {
+        if ($this->sqlite) {
+            return $this->sqlite;
+        }
+
+        return $this->sqlite = DriverManager::getConnection(['url' => 'sqlite://sqlite::memory:']);
+    }
+
     public function tearDown(): void
     {
         $this->rest = null;
+        $this->sqlite = null;
     }
 
     protected function rest(): RestService
