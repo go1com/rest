@@ -107,6 +107,19 @@ class RestService extends \DI\Bridge\Slim\App
             );
         }
 
+        if (class_exists(RestTestCase::class, false)) {
+            return $response
+                ->withJson(
+                    [
+                        'method'  => $request->getMethod(),
+                        'code'    => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'trace'   => $e->getTraceAsString(),
+                    ],
+                    500
+                );
+        }
+
         throw $e;
     }
 }
