@@ -95,6 +95,12 @@ class RestService extends \DI\Bridge\Slim\App
 
     protected function error(Request $request, Response $response, Exception $e)
     {
+        if (!$request->hasHeader('Accept')) {
+            if ($request->hasHeader('Content-Type')) {
+                $request = $request->withHeader('Accept', $request->getHeader('Content-Type'));
+            }
+        }
+
         if ($e instanceof RestError) {
             return $response->withJson(
                 [
