@@ -102,12 +102,22 @@ class RestService extends \DI\Bridge\Slim\App
         }
 
         if ($e instanceof RestError) {
+            # ref: https://jsonapi.org/examples/#error-objects-basics
             return $response->withJson(
                 [
-                    'method'  => $request->getMethod(),
-                    'code'    => $e->errorCode(),
-                    'message' => $e->getMessage(),
-                    'trace'   => !class_exists(RestTestCase::class, false) ? '' : $e->getTraceAsString(),
+                    'errors' => [
+                        [
+                            'status' => $e->httpErrorCode(),
+                            'code'   => $e->errorCode(),
+                            'title'  => $e->getMessage(),
+                            'detail' => sprintf(
+                                '%s %s',
+                                $request->getMethod(),
+                                $request->getUri()->getPath()
+                            ),
+                            'trace'  => !class_exists(RestTestCase::class, false) ? '' : $e->getTraceAsString(),
+                        ],
+                    ],
                 ],
                 $e->httpErrorCode()
             );
