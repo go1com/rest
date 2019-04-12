@@ -34,7 +34,7 @@ class ResponseTest extends RestTestCase
         $response = $rest->process($request, $response);
 
         $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals('Just for test', $response->json()->message);
+        $this->assertEquals('Just for test', $response->json()->errors[0]->title);
     }
 
     public function testGetSwagger()
