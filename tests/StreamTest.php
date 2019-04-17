@@ -13,9 +13,12 @@ class StreamTest extends RestTestCase
              ->on(
                  FoodCreatedEvent::NAME,
                  'Demo',
-                 function (FoodCreatedEvent $event) { $this->assertEquals('Ant', $event->name); }
+                 function (FoodCreatedEvent $event, array $context) {
+                     $this->assertEquals('Ant', $event->name);
+                     $this->assertEquals('bar', $context['foo']);
+                 }
              )
-             ->commit($event = FoodCreatedEvent::NAME, $payload = '{"name": "Ant"}');
+             ->commit($event = FoodCreatedEvent::NAME, $payload = '{"name": "Ant"}', ['foo' => 'bar']);
 
         # Test cases can easily checking what event was committed
         $this->assertTrue(1 == count($this->committed[$event]));
