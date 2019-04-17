@@ -45,7 +45,7 @@ class Stream
         }
     }
 
-    protected function defaultTransport($eventName, string $payload)
+    protected function defaultTransport($eventName, string $payload, array $context = [])
     {
         foreach ($this->listeners as $name => &$listener) {
             if ($eventName == $name) {
@@ -57,7 +57,11 @@ class Stream
                     }
                 }
 
-                call_user_func($listener['fn'], $this->resolveEventPayload($listener['fn'], $payload));
+                call_user_func(
+                    $listener['fn'],
+                    $this->resolveEventPayload($listener['fn'], $payload),
+                    $context
+                );
             }
         }
     }
