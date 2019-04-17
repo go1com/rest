@@ -2,6 +2,9 @@
 
 namespace go1\rest\wrapper\service\swagger;
 
+/**
+ * ref https://swagger.io/docs/specification/describing-parameters/
+ */
 class SwaggerParamBuilder
 {
     private $pathBuilder;
@@ -19,9 +22,17 @@ class SwaggerParamBuilder
 
         return $this;
     }
+
     public function inBody()
     {
         $this->config['in'] = 'body';
+
+        return $this;
+    }
+
+    public function inHeader()
+    {
+        $this->config['in'] = 'header';
 
         return $this;
     }
