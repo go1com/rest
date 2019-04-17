@@ -21,10 +21,14 @@ class SwaggerPathBuilder
         return $this;
     }
 
-    public function withParam(string $name)
+    public function withParam(string $name, string $description = '')
     {
         $_ = count($this->config['parameters']) - 1;
         $this->config['parameters'][$_]['name'] = $name;
+
+        if ($description) {
+            $this->config['parameters'][$_]['description'] = $description;
+        }
 
         return new SwaggerParamBuilder($this, $this->config['parameters'][$_]);
     }
