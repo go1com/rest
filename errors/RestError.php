@@ -32,6 +32,9 @@ abstract class RestError extends DomainException
             case RuntimeError::class:
                 return 4;
 
+            case LoopDetectedError::class:
+                return 5;
+
             default:
                 return 0;
         }
