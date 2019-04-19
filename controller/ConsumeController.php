@@ -70,7 +70,10 @@ class ConsumeController
         if (empty($routingKey) || !is_string($routingKey)) {
             return $response->jr('Invalid or missing routingKey');
         }
-
+        
+        $context['requestContext'] = [
+            'privateKey' => $request->getHeaderLine('JWT-Private-Key'),
+        ];
         $this->stream->commit($routingKey, json_encode($body), $context);
 
         return $response->withJson(null, 204);
