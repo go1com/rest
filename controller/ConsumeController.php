@@ -37,7 +37,7 @@ class ConsumeController
     public function post(Request $request, Response $response)
     {
         if (class_exists(RestTestCase::class, false)) {
-            $this->doPost($request, $response);
+            return $this->doPost($request, $response);
         }
 
         try {
