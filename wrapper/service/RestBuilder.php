@@ -62,6 +62,11 @@ class RestBuilder
                     $this->addRoute($rest, $method, $pattern, $_['#controller'], $_['#middleware'] ?? [], $_['parameters']);
                 }
             }
+
+            $middlewares = $swagger->getMiddlewares();
+            foreach ($middlewares as $m) {
+                $rest->add($this->parseMiddleware($rest, $m));
+            }
         };
     }
 
@@ -70,21 +75,7 @@ class RestBuilder
         $map = $rest->map([$method], $pattern, $controller);
 
         foreach ($middleware as $m) {
-            if (is_callable($m)) {
-                $map->add($m);
-                continue;
-            }
-
-            if (is_string($m)) {
-                if (!$rest->getContainer()->has($m)) {
-                    throw new RuntimeException(sprintf('Invalid middleware: service %s not found.', $m));
-                }
-
-                $map->add($rest->getContainer()->get($m));
-                continue;
-            }
-
-            throw new RuntimeException('Middleware must be a callable or name of service');
+            $map->add($this->parseMiddleware($rest, $m));
         }
 
         foreach ($parameters as $param) {
@@ -92,6 +83,23 @@ class RestBuilder
                 $map->setArgument($param['name'], $param['schema']['default']);
             }
         }
+    }
+
+    private function parseMiddleware(RestService $rest, $m)
+    {
+        if (is_callable($m)) {
+            return $m;
+        }
+
+        if (is_string($m)) {
+            if (!$rest->getContainer()->has($m)) {
+                throw new RuntimeException(sprintf('Invalid middleware: service %s not found.', $m));
+            }
+
+            return $rest->getContainer()->get($m);
+        }
+
+        throw new RuntimeException('Middleware must be a callable or name of service');
     }
 
     public function set($k, $v)

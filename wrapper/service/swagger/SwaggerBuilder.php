@@ -12,7 +12,7 @@ class SwaggerBuilder
     public function __construct(Manifest $builder)
     {
         $this->builder = $builder;
-        $this->config = ['paths' => []];
+        $this->config = ['paths' => [], 'middlewares' => []];
     }
 
     public function withOpenAPI(string $version)
@@ -44,9 +44,21 @@ class SwaggerBuilder
         return $pathBuilder;
     }
 
+    public function withMiddleware($middleware): self
+    {
+        $this->config['middlewares'][] = $middleware;
+
+        return $this;
+    }
+
     public function getPaths()
     {
         return $this->config['paths'];
+    }
+
+    public function getMiddlewares()
+    {
+        return $this->config['middlewares'];
     }
 
     /**
