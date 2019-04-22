@@ -117,7 +117,7 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
                 $this->mf()->createResponse()
             );
 
-            $this->assertContains($res->getStatusCode(), [200, 204, 404, 405]);
+            $this->assertContains($res->getStatusCode(), [200, 204, 404, 405, 403]);
         }
 
         // [REST.INSTALL] Stream base
