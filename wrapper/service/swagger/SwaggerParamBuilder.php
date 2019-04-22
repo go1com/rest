@@ -2,6 +2,9 @@
 
 namespace go1\rest\wrapper\service\swagger;
 
+use function realpath;
+use function strpos;
+
 /**
  * ref https://swagger.io/docs/specification/describing-parameters/
  */
@@ -67,6 +70,10 @@ class SwaggerParamBuilder
 
     public function withTypeObject(string $ref)
     {
+        if (false === strpos($ref, 'file://')) {
+            $ref = 'file://' . realpath($ref);
+        }
+
         $this->config['schema']['$ref'] = $ref;
 
         return $this;
