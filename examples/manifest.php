@@ -6,10 +6,13 @@ use DI\Container;
 use go1\core\customer\user_explore\Controller;
 use go1\rest\middleware\JsonSchemaValidatorMiddleWare;
 use go1\rest\RestService;
+use go1\rest\tests\fixtures\AcmeDatabaseConnection;
+use go1\rest\tests\fixtures\AcmeDatabaseSchema;
 use go1\rest\tests\fixtures\FoodCreatedEvent;
 use go1\rest\tests\fixtures\User;
 use go1\rest\tests\fixtures\UserCreateController;
 use go1\rest\util\ObjectMapper;
+use go1\rest\wrapper\DatabaseConnections;
 use go1\rest\wrapper\Manifest;
 use JsonSchema\Validator;
 
@@ -47,7 +50,17 @@ return Manifest::create()
                 }
             }
         )
-        ->end()
+        # ---------------------
+        # Database example
+        # ---------------------
+        ->set('dbOptions', [
+            'acme' => DatabaseConnections::connectionOptions('acme'),
+        ])
+        ->withDatabaseSchema(AcmeDatabaseConnection::class, AcmeDatabaseSchema::class)
+        # ---------------------
+        # ! Database example
+        # ---------------------
+        ->endRest()
     ->stream()
         ->on(
             FoodCreatedEvent::NAME,
