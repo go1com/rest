@@ -35,6 +35,9 @@ abstract class RestError extends DomainException
             case LoopDetectedError::class:
                 return 5;
 
+            case DatabaseConstraintError::class:
+                return 6;
+
             default:
                 return 0;
         }
