@@ -31,6 +31,7 @@ use JsonSchema\Validator;
  *   a. But it's not easy to know, which services, which database, message queue it depends on.
  *   b. And it's also hard to know which endpoints its providing.
  *      - Each endpoint, we need time to track down input and output format.
+ *   c. Manifest builder also provide simple way to define event routing.
  */
 
 # ---------------------------------------------------------------
