@@ -3,10 +3,8 @@
 namespace go1\rest;
 
 use DI\ContainerBuilder;
-use Exception;
 use go1\rest\controller\DefaultController;
-use go1\rest\errors\RestError;
-use go1\rest\tests\RestTestCase;
+use go1\rest\errors\RestErrorHandler;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +14,6 @@ use Psr\Log\NullLogger;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
-use function class_exists;
 use function getenv;
 
 /**
@@ -75,7 +72,7 @@ class RestService extends \DI\Bridge\Slim\App
 
                 return $res->withProtocolVersion($ver);
             },
-            'errorHandler'         => function () { return [$this, 'error']; },
+            'errorHandler'         => function (Container $c) { return $c->get(RestErrorHandler::class); },
             Stream::class          => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
             'stream.transport'     => null,
             LoggerInterface::class => function () { return new NullLogger; },
@@ -91,51 +88,5 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
-    }
-
-    protected function error(Request $request, Response $response, Exception $e)
-    {
-        if (!$request->hasHeader('Accept')) {
-            if ($request->hasHeader('Content-Type')) {
-                $request = $request->withHeader('Accept', $request->getHeader('Content-Type'));
-            }
-        }
-
-        if ($e instanceof RestError) {
-            # ref: https://jsonapi.org/examples/#error-objects-basics
-            return $response->withJson(
-                [
-                    'errors' => [
-                        [
-                            'status' => $e->httpErrorCode(),
-                            'code'   => $e->errorCode(),
-                            'title'  => $e->getMessage(),
-                            'detail' => sprintf(
-                                '%s %s',
-                                $request->getMethod(),
-                                $request->getUri()->getPath()
-                            ),
-                            'trace'  => !class_exists(RestTestCase::class, false) ? '' : $e->getTraceAsString(),
-                        ],
-                    ],
-                ],
-                $e->httpErrorCode()
-            );
-        }
-
-        if (class_exists(RestTestCase::class, false)) {
-            return $response
-                ->withJson(
-                    [
-                        'method'  => $request->getMethod(),
-                        'code'    => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'trace'   => $e->getTraceAsString(),
-                    ],
-                    500
-                );
-        }
-
-        throw $e;
     }
 }
