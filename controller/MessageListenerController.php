@@ -16,7 +16,7 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 
-class ConsumeController
+class MessageListenerController
 {
     protected $stream;
 
