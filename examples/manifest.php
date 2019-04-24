@@ -32,15 +32,14 @@ use JsonSchema\Validator;
  *   b. And it's also hard to know which endpoints its providing.
  *      - Each endpoint, we need time to track down input and output format.
  *   c. Manifest builder also provide simple way to define event routing.
+ *   b. … as well as  database schema the service is providing.
  */
 
-# ---------------------------------------------------------------
-#
-# ---------------------------------------------------------------
 // @formatter:off
 
 $manifest = Manifest::create();
 
+# =====================
 # define composer.json
 # ---------------------
 $manifest->composer()
@@ -53,8 +52,9 @@ $manifest->composer()
     ->require('ongr/elasticsearch-dsl', '^5.0')
     ->end();
 
+# =====================
 # define phpunit.xml
-# ---------------------
+# =====================
 $manifest->phpunit()
     ->withBootstrapFile('./vendor/autoload.php')
     ->withTestSuite('go1', ['./tests'])
@@ -62,21 +62,24 @@ $manifest->phpunit()
     ->withoutWhitelistDirectory('./vendor')
     ->end();
 
+# =====================
 # define docker-compose.yml
-# ---------------------
+# =====================
 $manifest->dockerCompose()
     ->withEnv('_DOCKER_ES_URL')
     ->withEnv('_DOCKER_ES_INDEX')
     ->end();
 
+# =====================
 # Define event-listening
-# ---------------------
+# =====================
 $manifest->stream()
     ->on(FoodCreatedEvent::NAME, 'Notification', function (FoodCreatedEvent $event) {})
     ->endStream();
 
+# =====================
 # Define REST service configuration
-# ---------------------
+# =====================
 $manifest->rest()
     ->withServiceName('user-explore')
     ->withVersion('v1.0')
@@ -105,8 +108,9 @@ $manifest->rest()
     # ---------------------
     ->endRest();
 
+# =====================
 # Define Swagger/OpenAPI
-# ---------------------
+# =====================
 $manifest->swagger()
     ->withOpenAPI('3.0.0')
     ->withServer('%user-explore%', 'Service for user exploring')
