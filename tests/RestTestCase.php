@@ -109,6 +109,10 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
             $c->set('dbOptions', $override ?? []);
         }
 
+        if ($c->has('cacheConnectionUrl')) {
+            $c->set('cacheConnectionUrl', 'array://localhost');
+        }
+
         // [REST.INSTALL] RESTFUL base — POST /install
         // ---------------------
         if ($this->hasInstallRoute) {
