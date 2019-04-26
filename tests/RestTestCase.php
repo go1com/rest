@@ -13,6 +13,9 @@ use Psr\Container\ContainerInterface;
 use function define;
 use function defined;
 use function dirname;
+use function fwrite;
+use function print_r;
+use const STDERR;
 
 abstract class RestTestCase extends TestCase implements ContainerInterface
 {
@@ -22,6 +25,7 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
     protected $mf;
     protected $committed;
     protected $rest;
+    protected $verbose = false;
 
     /**
      * A shared connection for all services.
@@ -40,6 +44,13 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
     protected function setUp(): void
     {
         $this->rest(/* Just make sure all install logic are executed */);
+    }
+
+    protected function verbose($msg)
+    {
+        if (!empty($this->verbose)) {
+            fwrite(STDERR, print_r($msg . "\n", true));
+        }
     }
 
     public function mf(): MessageFactory
