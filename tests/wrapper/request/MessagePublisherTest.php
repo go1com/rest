@@ -7,6 +7,7 @@ use go1\rest\wrapper\request\MessagePublisher;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use ReflectionObject;
 
 class MessagePublisherTest extends RestTestCase
 {
@@ -39,15 +40,18 @@ class MessagePublisherTest extends RestTestCase
 
     public function test()
     {
-        $res = $this
-            ->get(MessagePublisher::class)
-            ->publish(
-                $this->httpClient($this->get(Psr17Factory::class)),
-                '/consume',
-                'user.login',
-                '{"mail": "hi@qa.com", "password": "112233!#%"}',
-                ['time' => 'now']
-            );
+        $publisher = $this->get(MessagePublisher::class);
+        $rb = new ReflectionObject($publisher);
+        $rp = $rb->getProperty('client');
+        $rp->setAccessible(true);
+        $rp->setValue($publisher, $this->httpClient($this->get(Psr17Factory::class)));
+
+        $res = $publisher->publish(
+            '/consume',
+            'user.login',
+            '{"mail": "hi@qa.com", "password": "112233!#%"}',
+            ['time' => 'now']
+        );
 
         $this->assertEquals(204, $res->getStatusCode());
     }

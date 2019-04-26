@@ -16,7 +16,7 @@ class DatabaseSafeThread
             //  1. create lock with ttls
             //  2. process
             //  3. release lock
-            
+
             return $callback($db);
         }
 

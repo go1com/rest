@@ -8,14 +8,16 @@ use Psr\Http\Message\ResponseInterface;
 
 class MessagePublisher
 {
+    private $client;
     private $sf;
 
-    public function __construct(Psr17Factory $mf)
+    public function __construct(ClientInterface $client, Psr17Factory $mf)
     {
+        $this->client = $client;
         $this->sf = $mf;
     }
 
-    public function publish(ClientInterface $client, string $path, string $routingKey, string $body, array $context): ResponseInterface
+    public function publish(string $path, string $routingKey, string $body, array $context): ResponseInterface
     {
         $req = [];
         $req['routingKey'] = $routingKey;
@@ -27,6 +29,6 @@ class MessagePublisher
             ->createServerRequest('POST', $path)
             ->withBody($req);
 
-        return $client->sendRequest($req);
+        return $this->client->sendRequest($req);
     }
 }
