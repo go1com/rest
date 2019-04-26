@@ -3,6 +3,8 @@
 namespace go1\rest\wrapper;
 
 use DI\Container;
+use function ltrim;
+use function rtrim;
 
 class ServiceUrl
 {
@@ -24,7 +26,11 @@ class ServiceUrl
     public function get(string $serviceName, string $path = ''): string
     {
         $url = str_replace(['SERVICE', 'ENVIRONMENT'], [$serviceName, $this->env], $this->pattern);
+        if (!$path) {
+            return $url;
 
-        return rtrim($url, '/') . '/' . ltrim($path);
+        }
+
+        return rtrim($url, '/') . '/' . ltrim($path, '/');
     }
 }
