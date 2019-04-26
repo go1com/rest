@@ -21,8 +21,10 @@ class ServiceUrl
         $this->env = $this->container->has('env') ? $this->container->get('env') : 'dev';
     }
 
-    public function get(string $serviceName): string
+    public function get(string $serviceName, string $path = ''): string
     {
-        return str_replace(['SERVICE', 'ENVIRONMENT'], [$serviceName, $this->env], $this->pattern);
+        $url = str_replace(['SERVICE', 'ENVIRONMENT'], [$serviceName, $this->env], $this->pattern);
+
+        return rtrim($url, '/') . '/' . ltrim($path);
     }
 }
