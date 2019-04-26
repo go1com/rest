@@ -4,6 +4,7 @@ namespace go1\rest\wrapper;
 
 use DI\Container;
 use go1\rest\errors\InvalidServiceConfigurationError;
+use go1\rest\tests\RestTestCase;
 use Memcached;
 use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use Redis;
@@ -13,6 +14,7 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Simple\ArrayCache;
 use Symfony\Component\Cache\Simple\MemcachedCache;
 use Symfony\Component\Cache\Simple\RedisCache;
+use function class_exists;
 
 class CacheClient
 {
@@ -34,6 +36,7 @@ class CacheClient
         switch ($name) {
             case 'array':
                 return new ArrayCache;
+
             case 'memcached':
                 if (!class_exists(Memcached::class)) {
                     throw new RuntimeException('Missing caching driver.');
@@ -59,7 +62,12 @@ class CacheClient
                 ]);
 
                 return new RedisCache($client);
+
             default:
+                if (class_exists(RestTestCase::class, false)) {
+                    return new ArrayCache;
+                }
+
                 throw new RuntimeException('Unsupported backend: ' . $name);
         }
     }
