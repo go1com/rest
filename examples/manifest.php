@@ -12,7 +12,6 @@ use go1\rest\tests\fixtures\FoodCreatedEvent;
 use go1\rest\tests\fixtures\User;
 use go1\rest\tests\fixtures\UserCreateController;
 use go1\rest\util\ObjectMapper;
-use go1\rest\wrapper\DatabaseConnections;
 use go1\rest\wrapper\Manifest;
 use JsonSchema\Validator;
 
@@ -102,7 +101,7 @@ $manifest->rest()
     )
     # ---------------------
     # Database example
-    ->set('dbOptions', ['acme' => DatabaseConnections::connectionOptions('acme')])
+    ->set('dbOptions', ['acme' => AcmeDatabaseConnection::connectionOptions()])
     ->withDatabaseSchema(AcmeDatabaseConnection::class, AcmeDatabaseSchema::class)
     # ! Database example
     # ---------------------

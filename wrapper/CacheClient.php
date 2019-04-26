@@ -47,6 +47,7 @@ class CacheClient
                 ]);
 
                 return new MemcachedCache($client);
+
             case 'redis':
                 if (!class_exists(Redis::class)) {
                     throw new RuntimeException('Missing caching driver.');
