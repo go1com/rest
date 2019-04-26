@@ -1,16 +1,10 @@
 <?php
 
-namespace go1\rest\tests\http;
+namespace go1\rest\tests\wrapper\request;
 
-use go1\rest\Request;
-use go1\rest\Response;
-use go1\rest\tests\fixtures\FoodCreatedEvent;
 use go1\rest\tests\RestTestCase;
 use go1\rest\tests\traits\ReflectionTrait;
-use function json_encode;
 use Psr\Http\Client\ClientInterface;
-use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\HttpClient\Psr18Client;
 
 class HttpClientTest extends RestTestCase
 {

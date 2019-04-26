@@ -1,6 +1,6 @@
 <?php
 
-namespace go1\rest\tests\http;
+namespace go1\rest\tests\wrapper;
 
 use go1\rest\errors\InternalResourceError;
 use go1\rest\Response;

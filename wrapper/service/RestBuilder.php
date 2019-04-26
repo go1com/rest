@@ -3,7 +3,7 @@
 namespace go1\rest\wrapper\service;
 
 use Doctrine\DBAL\Schema\Schema;
-use go1\rest\controller\ConsumeController;
+use go1\rest\controller\MessageListenerController;
 use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\Stream;
@@ -41,8 +41,8 @@ class RestBuilder
 
             $binding = $this->builder->stream()->build();
             if ($binding) {
-                $rest->get('/consume', [ConsumeController::class, 'get']);
-                $rest->post('/consume', [ConsumeController::class, 'post']);
+                $rest->get('/consume', [MessageListenerController::class, 'get']);
+                $rest->post('/consume', [MessageListenerController::class, 'post']);
                 $stream = $rest->getContainer()->get(Stream::class);
                 foreach ($binding as $_) {
                     $stream->on($_[0], $_[1], $_[2]);
