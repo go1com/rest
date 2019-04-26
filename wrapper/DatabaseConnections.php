@@ -38,6 +38,12 @@ class DatabaseConnections
         return $this->container->get($key);
     }
 
+    /**
+     * @param string $name
+     * @param int    $masterMode
+     * @return array
+     * @deprecated Use DatabaseConnection::connectionOptions() instead.
+     */
     public static function connectionOptions(string $name, int $masterMode = self::CON_OPTION_AUTO_MASTER): array
     {
         if (function_exists('__db_connection_options')) {
