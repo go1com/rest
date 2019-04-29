@@ -61,11 +61,11 @@ class SwaggerParamBuilder
         return $this;
     }
 
-    public function withTypeString()
+    public function withTypeString(string $format = '')
     {
         $this->config['schema']['type'] = 'string';
-
-        return $this;
+        
+        return $this->withFormat($format);
     }
 
     public function withTypeObject(string $ref)
@@ -82,7 +82,15 @@ class SwaggerParamBuilder
     public function withTypeInteger(string $format = 'int64')
     {
         $this->config['schema']['type'] = 'integer';
-        $this->config['schema']['format'] = $format;
+
+        return $this->withFormat($format);
+    }
+
+    public function withFormat(string $format)
+    {
+        if ($format) {
+            $this->config['schema']['format'] = $format;
+        }
 
         return $this;
     }
@@ -97,7 +105,7 @@ class SwaggerParamBuilder
     public function withExample(string $name, array $example)
     {
         $this->config['examples'][$name] = $example;
-        
+
         return $this;
     }
 
