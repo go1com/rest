@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<phpunit
+        colors="false"
+        bootstrap="vendor/autoload.php"
+        stopOnFailure="true">
+
+    <testsuites>
+        <testsuite name="default">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./</directory>
+            <exclude>
+                <directory suffix=".php">./vendor</directory>
+                <directory suffix=".php">./tests</directory>
+                <directory suffix=".php">./examples</directory>
+                <directory suffix=".php">./commands</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

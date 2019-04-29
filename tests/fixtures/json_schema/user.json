@@ -1,0 +1,10 @@
+{
+    "title": "User",
+    "type": "object",
+    "required": ["id", "portalId", "mail"],
+    "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "portalId": {"type": "integer", "minimum": 1},
+        "mail": {"type": "string", "format": "email"}
+    }
+}
