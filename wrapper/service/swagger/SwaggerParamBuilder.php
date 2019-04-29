@@ -87,6 +87,20 @@ class SwaggerParamBuilder
         return $this;
     }
 
+    /**
+     * ref https://swagger.io/docs/specification/adding-examples/
+     *
+     * @param string $name
+     * @param array  $example
+     * @return static
+     */
+    public function withExample(string $name, array $example)
+    {
+        $this->config['examples'][$name] = $example;
+        
+        return $this;
+    }
+
     public function end()
     {
         return $this->pathBuilder;
