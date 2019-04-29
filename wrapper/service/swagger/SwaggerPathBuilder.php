@@ -21,6 +21,13 @@ class SwaggerPathBuilder
         return $this;
     }
 
+    public function withOperationId(string $operationId)
+    {
+        $this->config['operationId'] = $operationId;
+
+        return $this;
+    }
+
     public function withParam(string $name, string $description = '')
     {
         $_ = count($this->config['parameters']) - 1;
