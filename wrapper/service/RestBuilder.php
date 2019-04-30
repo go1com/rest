@@ -76,7 +76,7 @@ class RestBuilder
             }
 
             $rest->get(
-                '/swagger',
+                '/api',
                 function (Response $response) use ($swagger) {
                     return $response->withJson($swagger->build());
                 }

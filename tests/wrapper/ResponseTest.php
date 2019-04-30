@@ -40,7 +40,7 @@ class ResponseTest extends RestTestCase
     public function testGetSwagger()
     {
         $rest = $this->rest();
-        $request = $this->mf()->createRequest('GET', '/swagger');
+        $request = $this->mf()->createRequest('GET', '/api');
         $response = $this->mf()->createResponse();
         $response = $rest->process($request, $response);
         $swagger = $response->json(true);
