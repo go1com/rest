@@ -43,6 +43,13 @@ class ComposerBuilder
         return $this;
     }
 
+    public function requireDev(string $name, string $version)
+    {
+        $this->config['require-dev'][$name] = $version;
+
+        return $this;
+    }
+
     public function require(string $name, string $version)
     {
         $this->config['require'][$name] = $version;
