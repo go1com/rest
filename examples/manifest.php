@@ -49,7 +49,7 @@ $manifest->composer()
     ->require('beberlei/assert', '^3.2.0')
     ->require('elasticsearch/elasticsearch', '^5.4.0')
     ->require('ongr/elasticsearch-dsl', '^5.0')
-    ->end();
+    ->endComposer();
 
 # =====================
 # define phpunit.xml
@@ -110,8 +110,7 @@ $manifest->rest()
 # =====================
 # Define Swagger/OpenAPI
 # =====================
-$manifest->swagger()
-    ->withOpenAPI('3.0.0')
+$manifest->openAPI()
     ->withServer('%user-explore%', 'Service for user exploring')
     ->withPath('/lo/{portalId}/{loId}/learners/{keyword}', 'GET')
         # ---------------------------------------------------------------

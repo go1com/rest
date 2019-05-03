@@ -50,7 +50,17 @@ class ComposerBuilder
         return $this;
     }
 
-    public function end(): Manifest
+    public function withRepository(string $url, $type = 'vcs')
+    {
+        $this->config['repositories'][] = [
+            'type' => $type,
+            'url'  => $url,
+        ];
+
+        return $this;
+    }
+
+    public function endComposer(): Manifest
     {
         return $this->builder;
     }
