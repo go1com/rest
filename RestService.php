@@ -28,6 +28,8 @@ class RestService extends \DI\Bridge\Slim\App
 
     private $cnf;
 
+    private $name;
+
     public function __construct(array $cnf = [])
     {
         $this->cnf = $cnf + $this->defaultServices();
@@ -39,6 +41,8 @@ class RestService extends \DI\Bridge\Slim\App
         if (!empty($cnf['boot'])) {
             call_user_func($cnf['boot'], $this);
         }
+
+        $this->name = ($this->cnf['name'] ?? getenv('REST_SERVICE_NAME')) ?: 'rest';
     }
 
     protected function defaultRoutes()
@@ -91,5 +95,10 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
+    }
+
+    public function serviceName(): string
+    {
+        return $this->name;
     }
 }

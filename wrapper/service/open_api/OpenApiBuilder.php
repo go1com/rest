@@ -93,4 +93,34 @@ class OpenApiBuilder
     {
         return $this->config;
     }
+
+    private function parseRefSchema(array &$conf)
+    {
+        foreach ($conf as $k => &$v) {
+            if (is_array($v)) {
+                $this->parseRefSchema($v);
+            }
+        }
+
+        if (isset($conf['schema']['$ref']) && is_scalar($conf['schema']['$ref']) && file_exists($conf['schema']['$ref'])) {
+            $conf['schema'] = json_decode(file_get_contents($conf['schema']['$ref']), true);
+        }
+    }
+
+    public function openAPIformat(): self
+    {
+        foreach ($this->config['paths'] as $path => &$pathConfig) {
+            foreach ($pathConfig as $method => $conf) {
+                unset($conf['#controller']);
+                unset($conf['#middleware']);
+                $conf['parameters'] = array_values($conf['parameters']);
+
+                $this->parseRefSchema($conf);
+                $pathConfig[strtolower($method)] = $conf;
+                unset($pathConfig[$method]);
+            }
+        }
+
+        return $this;
+    }
 }

@@ -21,9 +21,8 @@ class SwaggerBuilderCommand extends Command
     {
         /** @var Manifest $manifest */
         $manifest = require $input->getArgument('path');
-        $_ = $manifest->swagger()->build();
-        $_ = Yaml::dump($_, Yaml::DUMP_OBJECT_AS_MAP);
+        $_ = $manifest->swagger()->openAPIformat()->build();
 
-        echo $_;
+        echo json_encode($_);
     }
 }

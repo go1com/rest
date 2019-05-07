@@ -143,6 +143,8 @@ class RestBuilder
             ->dockerCompose()
             ->withEnv('SERVICE_80_NAME', $name);
 
+        $this->config['name'] = $name;
+
         return $this;
     }
 
