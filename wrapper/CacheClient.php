@@ -54,7 +54,7 @@ class CacheClient
                 }
 
                 $client = RedisAdapter::createConnection($dsn, [
-                    'lazy'           => false,
+                    'lazy'           => true,
                     'persistent'     => 0,
                     'persistent_id'  => null,
                     'timeout'        => 30,
