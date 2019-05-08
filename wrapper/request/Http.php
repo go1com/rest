@@ -9,6 +9,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
+use function json_decode;
 
 /**
  * Example:
@@ -68,5 +69,13 @@ class Http
         return $this->sf->createUri(
             $this->serviceUrl->get($service, $path)
         );
+    }
+
+    public function responseJson(ResponseInterface $response, bool $assoc = false, int $depth = 512, int $option = 0)
+    {
+        $body = $response->getBody();
+        $body->rewind();
+
+        return json_decode($body->getContents(), $assoc, $depth, $option);
     }
 }
