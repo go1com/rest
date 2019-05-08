@@ -2,7 +2,7 @@
     "name":              "go1/rest/cli",
     "license":           "MIT",
     "prefer-stable":     true,
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload":          {
         "psr-4": {
             "go1\\rest\\": "./"
@@ -13,10 +13,5 @@
         "ext-json":        "*",
         "symfony/console": "^v4.2.3",
         "symfony/yaml":    "^v4.2.3"
-    },
-    "require-dev":       {
-        "beberlei/assert":           "^3.2.0",
-        "phpunit/phpunit":           "^8.0",
-        "justinrainbow/json-schema": "^5.2.8"
     }
 }
