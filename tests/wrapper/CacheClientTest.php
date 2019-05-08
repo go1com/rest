@@ -4,7 +4,9 @@ namespace go1\rest\tests\wrapper;
 
 use DI\Container;
 use go1\rest\tests\RestTestCase;
+use Memcached;
 use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
+use Redis;
 use Symfony\Component\Cache\Simple\ArrayCache;
 use Symfony\Component\Cache\Simple\MemcachedCache;
 use Symfony\Component\Cache\Simple\RedisCache;
@@ -25,7 +27,7 @@ class CacheClientTest extends RestTestCase
 
     public function testMemcachedClient()
     {
-        if (!class_exists(\Memcached::class)) {
+        if (!class_exists(Memcached::class)) {
             $this->markTestSkipped('Missing memcached');
         }
 
@@ -41,19 +43,15 @@ class CacheClientTest extends RestTestCase
 
     public function testRedisClient()
     {
-        if (!class_exists(\Redis::class)) {
+        if (!class_exists(Redis::class)) {
             $this->markTestSkipped('Missing redis');
         }
 
-        $rest = $this->rest();
-
         /** @var Container $c */
-        $c = $rest->getContainer();
-        $c->set('cacheConnectionUrl', 'redis://localhost:6379');
+        $c = $this->rest()->getContainer();
+        $c->set('cacheConnectionUrl', 'redis://redis:6379');
 
         $cache = $c->get(Psr16CacheInterface::class);
         $this->assertTrue($cache instanceof RedisCache);
-        $cache->set('foo', 'bar');
-        $this->assertEquals('bar', $cache->get('foo'));
     }
 }
