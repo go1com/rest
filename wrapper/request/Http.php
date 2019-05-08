@@ -48,6 +48,11 @@ class Http
         return $this->sf->createRequest($method, $uri);
     }
 
+    public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    {
+        return $this->sf->createResponse($code, $reasonPhrase);
+    }
+
     public function createStream(string $content): StreamInterface
     {
         return $this->sf->createStream($content);
