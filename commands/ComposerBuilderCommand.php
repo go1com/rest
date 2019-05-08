@@ -12,7 +12,7 @@ class ComposerBuilderCommand extends Command
 {
     public function __construct()
     {
-        parent::__construct('compose');
+        parent::__construct('composer');
 
         $this->addArgument('path', InputArgument::REQUIRED, 'Path to manifest file.');
     }
