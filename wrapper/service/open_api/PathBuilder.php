@@ -54,6 +54,15 @@ class PathBuilder
         return $this;
     }
 
+    public function withMiddlewares(array $middlewares)
+    {
+        foreach ($middlewares as $middleware) {
+            $this->config['#middleware'][] = $middleware;
+        }
+
+        return $this;
+    }
+
     public function withMiddleware($middleware)
     {
         $this->config['#middleware'][] = $middleware;
