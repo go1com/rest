@@ -14,6 +14,7 @@ class ElasticSearchClients
     public function __construct(Container $container)
     {
         $this->options = $container->get('esOptions');
+
         if (is_string($this->options)) {
             $this->options = ['default' => ['endpoint' => $this->options]];
         }
@@ -33,7 +34,7 @@ class ElasticSearchClients
         return Builder::create()->setHosts([$host])->build();
     }
 
-    private function host(string $name)
+    public function host(string $name)
     {
         if (isset($this->options[$name]['endpoint'])) {
             return parse_url($this->options[$name]['endpoint']);
