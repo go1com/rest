@@ -8,6 +8,7 @@ use Doctrine\DBAL\DriverManager;
 use go1\rest\RestService;
 use go1\rest\Stream;
 use go1\rest\util\MessageFactory;
+use Http\Message\StreamFactory\SlimStreamFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use function define;
@@ -53,6 +54,11 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
         }
     }
 
+    public function sf(): SlimStreamFactory
+    {
+        return $this->mf()->streamFactory();
+    }
+
     public function mf(): MessageFactory
     {
         if (null === $this->mf) {
@@ -75,6 +81,14 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
     {
         $this->rest = null;
         $this->db = null;
+    }
+
+    /**
+     * @return Container|ContainerInterface
+     */
+    protected function container()
+    {
+        return $this->rest()->getContainer();
     }
 
     protected function rest(): RestService
