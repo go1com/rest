@@ -4,10 +4,10 @@ namespace go1\rest\wrapper;
 
 use go1\rest\wrapper\service\ComposerBuilder;
 use go1\rest\wrapper\service\DockerComposeBuilder;
+use go1\rest\wrapper\service\open_api\OpenApiBuilder;
 use go1\rest\wrapper\service\PHPUnitConfigBuilder;
 use go1\rest\wrapper\service\RestBuilder;
 use go1\rest\wrapper\service\StreamBuilder;
-use go1\rest\wrapper\service\open_api\OpenApiBuilder;
 
 class Manifest
 {
