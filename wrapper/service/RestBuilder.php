@@ -2,12 +2,11 @@
 
 namespace go1\rest\wrapper\service;
 
-use Doctrine\DBAL\Schema\Schema;
+use go1\rest\controller\InstallController;
 use go1\rest\controller\MessageListenerController;
 use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\Stream;
-use go1\rest\wrapper\DatabaseConnections;
 use go1\rest\wrapper\Manifest;
 use RuntimeException;
 use function call_user_func;
@@ -22,7 +21,6 @@ class RestBuilder
     private $builder;
     private $config = [];
     private $boot;
-    private $dbSchema;
 
     public function __construct(Manifest $builder)
     {
@@ -49,25 +47,8 @@ class RestBuilder
                 }
             }
 
-            if ($this->dbSchema) {
-                list($dbClass, $schemaClass) = $this->dbSchema;
-
-                $swagger->withPath(
-                    '/install',
-                    'POST',
-                    function (Response $response) use ($rest, $dbClass, $schemaClass) {
-                        $c = $rest->getContainer();
-                        $db = $c->get($dbClass);
-                        $schema = $c->get($schemaClass);
-
-                        DatabaseConnections::install(
-                            $db->get(),
-                            [function (Schema $manager) use ($schema) { $schema->install($manager); }]
-                        );
-
-                        return $response->withJson(null, 204);
-                    }
-                );
+            if ($this->has('restDbSchema')) {
+                $swagger->withPath('/install', 'POST', [InstallController::class, 'post']);
             }
 
             $paths = $swagger->getPaths();
@@ -127,6 +108,11 @@ class RestBuilder
         throw new RuntimeException('Middleware must be a callable or name of service');
     }
 
+    public function has(string $k): bool
+    {
+        return isset($this->config[$k]);
+    }
+
     public function set($k, $v)
     {
         $this->config[$k] = $v;
@@ -157,9 +143,7 @@ class RestBuilder
 
     public function withDatabaseSchema(string $dbConnectionClass, string $dbSchemaClass)
     {
-        $this->dbSchema = [$dbConnectionClass, $dbSchemaClass];
-
-        return $this;
+        return $this->set('restDbSchema', [$dbConnectionClass, $dbSchemaClass]);
     }
 
     /**
