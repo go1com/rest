@@ -14,10 +14,11 @@ return call_user_func(
         }
 
         /** @var Manifest $manifest */
-        $manifest = getenv('REST_MANIFEST') ?: (defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php'));
-        $manifest = realpath($manifest);
-        $manifest = require $manifest;
+        $path = getenv('REST_MANIFEST') ?: (defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php'));
+        $path = realpath($path);
+        $manifest = require $path;
         $service = $manifest->rest()->get();
+        $service->getContainer()->set('REST_MANIFEST', $path);
 
         return ('cli' === php_sapi_name()) ? $service : $service->run();
     }

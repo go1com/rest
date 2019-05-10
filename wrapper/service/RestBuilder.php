@@ -2,9 +2,9 @@
 
 namespace go1\rest\wrapper\service;
 
+use go1\rest\controller\ApiController;
 use go1\rest\controller\InstallController;
 use go1\rest\controller\MessageListenerController;
-use go1\rest\Response;
 use go1\rest\RestService;
 use go1\rest\Stream;
 use go1\rest\wrapper\Manifest;
@@ -31,7 +31,7 @@ class RestBuilder
     private function onBoot()
     {
         return function (RestService $rest) {
-            $swagger = $this->builder->swagger();
+            $api = $this->builder->openAPI();
 
             if (!is_null($this->boot)) {
                 call_user_func($this->boot, $rest, $this->builder);
@@ -48,28 +48,25 @@ class RestBuilder
             }
 
             if ($this->has('restDbSchema')) {
-                $swagger->withPath('/install', 'POST', [InstallController::class, 'post']);
+                $api->withPath('/install', 'POST', [InstallController::class, 'post']);
             }
 
-            $paths = $swagger->getPaths();
+            $paths = $api->getPaths();
             if (!$paths) {
                 return;
             }
 
-            $rest->get(
-                '/api',
-                function (Response $response) use ($swagger) {
-                    return $response->withJson($swagger->build());
-                }
-            );
+            # Provide GET /api
+            $rest->get('/api', [ApiController::class, 'get']);
 
-            foreach ($paths as $pattern => $methods) {
-                foreach ($methods as $method => $_) {
+            # Register openAPI routes with slim.
+            foreach ($paths as $pattern => &$methods) {
+                foreach ($methods as $method => &$_) {
                     $this->addRoute($rest, $method, $pattern, $_['#controller'], $_['#middleware'] ?? [], $_['parameters']);
                 }
             }
 
-            $middlewares = $swagger->getMiddlewares();
+            $middlewares = $api->getMiddlewares();
             foreach ($middlewares as $m) {
                 $rest->add($this->parseMiddleware($rest, $m));
             }

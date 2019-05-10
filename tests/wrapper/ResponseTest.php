@@ -41,11 +41,11 @@ class ResponseTest extends RestTestCase
     {
         $rest = $this->rest();
         $request = $this->mf()->createRequest('GET', '/api');
-        $response = $this->mf()->createResponse();
-        $response = $rest->process($request, $response);
-        $swagger = $response->json(true);
+        $res = $this->mf()->createResponse();
+        $res = $rest->process($request, $res);
+        $api = $res->json(true);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('loId', $swagger['paths']['/lo/{portalId}/{loId}/learners/{keyword}']['GET']['parameters'][0]['name']);
+        $this->assertEquals(200, $res->getStatusCode());
+        $this->assertEquals('loId', $api['paths']['/lo/{portalId}/{loId}/learners/{keyword}']['GET']['parameters'][0]['name']);
     }
 }
