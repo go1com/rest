@@ -4,12 +4,12 @@ namespace go1\rest\wrapper\service\open_api;
 
 class PathBuilder
 {
-    private $swagger;
+    private $api;
     private $config;
 
-    public function __construct(OpenApiBuilder $swagger, &$config)
+    public function __construct(OpenApiBuilder $api, &$config)
     {
-        $this->swagger = $swagger;
+        $this->api = $api;
         $this->config = &$config;
         $this->config['parameters'] = [];
     }
@@ -80,11 +80,11 @@ class PathBuilder
 
     public function endPath()
     {
-        return $this->swagger;
+        return $this->api;
     }
 
     public function end()
     {
-        return $this->swagger;
+        return $this->api;
     }
 }

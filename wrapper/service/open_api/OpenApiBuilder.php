@@ -32,6 +32,14 @@ class OpenApiBuilder
         return $this;
     }
 
+    public function withInfo()
+    {
+        $this->config['info'] = $this->config['info'] ?? [];
+        $infoBuilder = new InfoBuilder($this, $this->config['info']);
+
+        return $infoBuilder;
+    }
+
     public function withPath(string $path, string $method, $controller = null): PathBuilder
     {
         $this->config['paths'][$path][$method] = [];
