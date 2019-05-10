@@ -51,7 +51,7 @@ class RestBuilder
                 $api->withPath('/install', 'POST', [InstallController::class, 'post']);
             }
 
-            $paths = $api->getPaths();
+            $paths = $api->paths();
             if (!$paths) {
                 return;
             }
@@ -66,9 +66,8 @@ class RestBuilder
                 }
             }
 
-            $middlewares = $api->getMiddlewares();
-            foreach ($middlewares as $m) {
-                $rest->add($this->parseMiddleware($rest, $m));
+            foreach ($api->middlewares() as $middleware) {
+                $rest->add($this->parseMiddleware($rest, $middleware));
             }
         };
     }

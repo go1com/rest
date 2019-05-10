@@ -14,7 +14,8 @@ return call_user_func(
         }
 
         /** @var Manifest $manifest */
-        $path = getenv('REST_MANIFEST') ?: (defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php'));
+        $path = getenv('REST_MANIFEST');
+        $path = $path ?: (defined('REST_MANIFEST') ? REST_MANIFEST : (__DIR__ . '/../manifest.php'));
         $path = realpath($path);
         $manifest = require $path;
         $service = $manifest->rest()->get();

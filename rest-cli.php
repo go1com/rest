@@ -20,7 +20,7 @@ use function getenv;
 $cli = new Application();
 $cli->add(new DockerComposeBuilderCommand);
 $cli->add(new ComposerBuilderCommand);
-$cli->add(new SwaggerBuilderCommand);
+$cli->add(new SwaggerBuilderCommand());
 
 $hook = getenv('REST_CLI_HOOK');
 if ($hook && file_exists($hook)) {

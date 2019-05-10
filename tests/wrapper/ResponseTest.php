@@ -46,6 +46,6 @@ class ResponseTest extends RestTestCase
         $api = $res->json(true);
 
         $this->assertEquals(200, $res->getStatusCode());
-        $this->assertEquals('loId', $api['paths']['/lo/{portalId}/{loId}/learners/{keyword}']['GET']['parameters'][0]['name']);
+        $this->assertEquals('loId', $api['paths']['/lo/{portalId}/{loId}/learners/{keyword}']['get']['parameters'][1]['name']);
     }
 }
