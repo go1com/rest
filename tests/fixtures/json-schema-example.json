@@ -4,18 +4,26 @@
     "$schema":    "http://json-schema.org/draft-07/schema#",
     "title":      "Person",
     "properties": {
-        "firstName": {
+        "firstName":          {
             "type":        "string",
             "description": "The person's first name."
         },
-        "lastName":  {
+        "lastName":           {
             "type":        "string",
             "description": "The person's last name."
         },
-        "age":       {
+        "age":                {
             "type":        "integer",
             "description": "Age in years which must be equal to or greater than zero.",
             "minimum":     0
+        },
+        "interestingNumbers": {
+            "type":  "array",
+            "items": {
+                "type":    "integer",
+                "minimum": 0,
+                "maximum": 12
+            }
         }
     }
 }

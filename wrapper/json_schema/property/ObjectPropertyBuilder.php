@@ -18,10 +18,24 @@ class ObjectPropertyBuilder extends PropertySchemaBuilder
         return new IntegerPropertyBuilder($this, $this->schema['properties'][$name]);
     }
 
+    public function withNumberProperty(string $name)
+    {
+        $this->schema['properties'][$name] = [];
+
+        return new NumberPropertyBuilder($this, $this->schema['properties'][$name]);
+    }
+
     public function withStringProperty(string $name)
     {
         $this->schema['properties'][$name] = [];
 
         return new StringPropertyBuilder($this, $this->schema['properties'][$name]);
+    }
+
+    public function withArrayProperty(string $name)
+    {
+        $this->schema['properties'][$name] = [];
+
+        return new ArrayPropertyBuilder($this, $this->schema['properties'][$name]);
     }
 }

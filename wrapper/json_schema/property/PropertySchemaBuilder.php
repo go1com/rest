@@ -9,7 +9,13 @@ abstract class PropertySchemaBuilder
     protected $builder;
     protected $schema;
 
-    public function __construct(ObjectPropertyBuilder $builder, array &$schema)
+    /**
+     * PropertySchemaBuilder constructor.
+     *
+     * @param ObjectPropertyBuilder|ArrayPropertyBuilder $builder
+     * @param array                                      $schema
+     */
+    public function __construct($builder, array &$schema)
     {
         $this->builder = $builder;
         $this->schema = &$schema;

@@ -28,6 +28,12 @@ class JsonSchemaTest extends RestTestCase
             ->withDescription('Age in years which must be equal to or greater than zero.')
             ->withMinimum(0);
 
+        $builder
+            ->withArrayProperty('interestingNumbers')
+            ->withIntegerItems()
+            ->withMinimum(0)
+            ->withMaximum(12);
+
         $expect = file_get_contents(__DIR__ . '/../fixtures/json-schema-example.json');
         $actual = $builder->buildJsonString();
 

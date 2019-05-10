@@ -70,7 +70,7 @@ class PathBuilder
         return $this;
     }
 
-    public function responses(string $code)
+    public function responses(string $code = '200')
     {
         $this->config['responses'][$code] = [];
         $builder = new ResponseBuilder($this, $this->config['responses'][$code]);
