@@ -101,11 +101,11 @@ class Marshaller
                 foreach ($input->{$path} as $v) {
                     $value[] = is_scalar($v)
                         ? $this->scalarCast($type, $v)
-                        : $this->parse($v, new $type);
+                        : $this->parse($v, new $type, $propertyFormat);
                 }
             } else {
                 $value = $input->{$path};
-                $value = $this->parse($value, new $type);
+                $value = $this->parse($value, new $type, $propertyFormat);
             }
 
             $rProperty->setAccessible(true);
