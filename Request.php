@@ -13,6 +13,14 @@ class Request extends \Slim\Http\Request
     const ROLE_MANAGER       = 'manager';
     const ROLE_STUDENT       = 'Student';
     const ROLE_ASSESSOR      = 'tutor';
+    const ROLE_ALL           = [
+        self::ROLE_SYSTEM,
+        self::ROLE_ADMIN,
+        self::ROLE_ADMIN_CONTENT,
+        self::ROLE_MANAGER,
+        self::ROLE_STUDENT,
+        self::ROLE_ASSESSOR,
+    ];
 
     private $contextUser;
 
