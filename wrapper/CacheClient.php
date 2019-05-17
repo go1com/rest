@@ -41,6 +41,7 @@ class CacheClient
                 if (!class_exists(Memcached::class)) {
                     throw new RuntimeException('Missing caching driver.');
                 }
+
                 $client = MemcachedAdapter::createConnection($dsn, [
                     'compression'          => true,
                     'libketama_compatible' => true,

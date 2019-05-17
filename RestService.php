@@ -12,10 +12,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
-use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use function getenv;
 
 /**

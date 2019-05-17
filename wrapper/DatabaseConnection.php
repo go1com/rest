@@ -4,6 +4,7 @@ namespace go1\rest\wrapper;
 
 use Doctrine\DBAL\Connection;
 use DomainException;
+use function sprintf;
 
 abstract class DatabaseConnection
 {
@@ -19,7 +20,8 @@ abstract class DatabaseConnection
     private static function check()
     {
         if (!static::DB_NAME) {
-            throw new DomainException('Constant is not defined: %s::DB_NAME', __CLASS__);
+            $err = sprintf('Constant is not defined: %s::DB_NAME', __CLASS__);
+            throw new DomainException($err);
         }
     }
 
