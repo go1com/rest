@@ -5,6 +5,7 @@ namespace go1\rest;
 use DI\ContainerBuilder;
 use go1\rest\controller\DefaultController;
 use go1\rest\errors\RestErrorHandler;
+use go1\rest\tests\RestTestCase;
 use go1\rest\wrapper\CacheClient;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
@@ -16,7 +17,9 @@ use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
+use function class_exists;
 use function getenv;
+use function str_replace;
 use function sys_get_temp_dir;
 
 /**
@@ -80,6 +83,7 @@ class RestService extends \DI\Bridge\Slim\App
             Stream::class              => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
             'stream.transport'         => null,
             LoggerInterface::class     => function () { return new NullLogger; },
+            RestService::class         => $this,
             Psr16CacheInterface::class => function (Container $c) { return $c->get(CacheClient::class)->get(); },
         ];
     }
@@ -91,9 +95,13 @@ class RestService extends \DI\Bridge\Slim\App
         }
 
         if (empty($this->cnf['di.disable-compile'])) {
-            $cacheDir = sys_get_temp_dir();
-            $builder->enableCompilation($cacheDir, 'CompiledContainer__' . md5($this->serviceName()));
-            unset($this->cnf['di.disable-compile']);
+            if (!class_exists(RestTestCase::class, false)) {
+                $builder->enableCompilation(
+                    sys_get_temp_dir(),
+                    'CompiledContainer__' . str_replace('-', '__', $this->serviceName())
+                );
+                unset($this->cnf['di.disable-compile']);
+            }
         }
 
         $builder->addDefinitions($this->cnf);
