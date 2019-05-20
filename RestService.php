@@ -17,6 +17,7 @@ use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use function getenv;
+use function sys_get_temp_dir;
 
 /**
  * @method Response process(ServerRequestInterface $request, ResponseInterface $response)
@@ -32,6 +33,7 @@ class RestService extends \DI\Bridge\Slim\App
 
     public function __construct(array $cnf = [])
     {
+        $this->name = ($cnf['name'] ?? getenv('REST_SERVICE_NAME')) ?: 'rest';
         $this->cnf = $cnf + $this->defaultServices();
 
         parent::__construct();
@@ -41,8 +43,6 @@ class RestService extends \DI\Bridge\Slim\App
         if (!empty($cnf['boot'])) {
             call_user_func($cnf['boot'], $this);
         }
-
-        $this->name = ($this->cnf['name'] ?? getenv('REST_SERVICE_NAME')) ?: 'rest';
     }
 
     protected function defaultRoutes()
@@ -52,10 +52,8 @@ class RestService extends \DI\Bridge\Slim\App
 
     protected function defaultServices(): array
     {
-        $rest = $this;
-
         return [
-            'http-client.options'  => function () {
+            'http-client.options'      => function () {
                 $headers['User-Agent'] = getenv('REST_SERVICE_NAME') ?: 'rest';
 
                 foreach ($_SERVER as $name => $value) {
@@ -69,20 +67,19 @@ class RestService extends \DI\Bridge\Slim\App
 
                 return ['headers' => $headers];
             },
-            ClientInterface::class => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
-            'request'              => function (Container $c) { return Request::createFromEnvironment($c->get('environment')); },
-            'response'             => function (Container $c) {
+            ClientInterface::class     => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
+            'request'                  => function (Container $c) { return Request::createFromEnvironment($c->get('environment')); },
+            'response'                 => function (Container $c) {
                 $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
                 $res = new Response(200, $headers);
                 $ver = $c->get('settings')['httpVersion'];
 
                 return $res->withProtocolVersion($ver);
             },
-            'errorHandler'         => function (Container $c) { return $c->get(RestErrorHandler::class); },
-            Stream::class          => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
-            'stream.transport'     => null,
-            LoggerInterface::class => function () { return new NullLogger; },
-            RestService::class     => function () use ($rest) { return $rest; },
+            'errorHandler'             => function (Container $c) { return $c->get(RestErrorHandler::class); },
+            Stream::class              => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
+            'stream.transport'         => null,
+            LoggerInterface::class     => function () { return new NullLogger; },
             Psr16CacheInterface::class => function (Container $c) { return $c->get(CacheClient::class)->get(); },
         ];
     }
@@ -95,7 +92,7 @@ class RestService extends \DI\Bridge\Slim\App
 
         if (empty($this->cnf['di.disable-compile'])) {
             $cacheDir = sys_get_temp_dir();
-            $builder->enableCompilation($cacheDir);
+            $builder->enableCompilation($cacheDir, 'CompiledContainer__' . md5($this->serviceName()));
             unset($this->cnf['di.disable-compile']);
         }
 
