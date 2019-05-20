@@ -93,6 +93,12 @@ class RestService extends \DI\Bridge\Slim\App
             return null;
         }
 
+        if (empty($this->cnf['di.disable-compile'])) {
+            $cacheDir = sys_get_temp_dir();
+            $builder->enableCompilation($cacheDir);
+            unset($this->cnf['di.disable-compile']);
+        }
+
         $builder->addDefinitions($this->cnf);
         $this->cnf = [];
     }
