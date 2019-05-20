@@ -94,13 +94,13 @@ class RestService extends \DI\Bridge\Slim\App
             return null;
         }
 
-        if (empty($this->cnf['di.disable-compile'])) {
+        if (!empty($this->cnf['di.enable-compile'])) {
             if (!class_exists(RestTestCase::class, false)) {
                 $builder->enableCompilation(
                     sys_get_temp_dir(),
                     'CompiledContainer__' . str_replace('-', '__', $this->serviceName())
                 );
-                unset($this->cnf['di.disable-compile']);
+                unset($this->cnf['di.enable-compile']);
             }
         }
 
