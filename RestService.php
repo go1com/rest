@@ -3,6 +3,7 @@
 namespace go1\rest;
 
 use DI\ContainerBuilder;
+use DI\Definition\Source\SourceCache;
 use go1\rest\controller\DefaultController;
 use go1\rest\errors\RestErrorHandler;
 use go1\rest\tests\RestTestCase;
@@ -105,6 +106,11 @@ class RestService extends \DI\Bridge\Slim\App
         }
 
         $builder->addDefinitions($this->cnf);
+
+        if (SourceCache::isSupported()) {
+            $builder->enableDefinitionCache();
+        }
+
         $this->cnf = [];
     }
 
