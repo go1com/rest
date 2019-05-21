@@ -5,12 +5,13 @@ namespace go1\rests\tests;
 use go1\rest\tests\fixtures\LearningObject;
 use go1\rest\tests\RestTestCase;
 use go1\rest\util\Marshaller;
+use go1\rest\util\Model;
 
 class MarshallerTest extends RestTestCase
 {
     public function testPropertyComment()
     {
-        $obj = new class
+        $obj = new class extends Model
         {
             /**
              * @var int
@@ -27,13 +28,14 @@ class MarshallerTest extends RestTestCase
         };
 
         $input = (object) ['instance_id' => '123', 'userId' => 345];
-        $obj = (new Marshaller)->parse($input, $obj, ['db']);
+        $obj = $this->get(Marshaller::class)->parse($input, $obj, ['db']);
         $this->assertEquals(123, $obj->portalId);
         $this->assertEquals(345, $obj->userId);
 
-        $input = (object) ['portalId' => '123', 'userId' => 345];
-        $obj = (new Marshaller)->parse($input, $obj, ['json']);
-        $this->assertEquals(123, $obj->portalId);
+        $input = (object) ['portalId' => '456', 'userId' => 789];
+        $obj = $this->get(Marshaller::class)->parse($input, $obj, ['json']);
+        $this->assertEquals(456, $obj->portalId);
+        $this->assertEquals(789, $obj->userId);
     }
 
     public function testLearningObject()
@@ -46,7 +48,7 @@ class MarshallerTest extends RestTestCase
         ];
 
         /** @var LearningObject $obj */
-        $obj = (new Marshaller)->parse($input, new LearningObject, ['json', 'db']);
+        $obj = $this->get(Marshaller::class)->parse($input, new LearningObject, ['json', 'db']);
 
         $this->assertEquals(111, $obj->id);
         $this->assertEquals(222, $obj->portalId);
@@ -57,7 +59,7 @@ class MarshallerTest extends RestTestCase
 
     public function testDumpWithOmmitEmpty()
     {
-        $obj = new class
+        $obj = new class extends Model
         {
             /**
              * @var int
@@ -73,11 +75,11 @@ class MarshallerTest extends RestTestCase
             public $id;
         };
 
-        $marshaller = (new Marshaller);
+        $marshaller = $this->get(Marshaller::class);
         $input = (object) ['id' => null, 'userId' => null];
         $obj = $marshaller->parse($input, $obj, ['db']);
 
-        $dump = (new Marshaller)->dump($obj);
+        $dump = $this->get(Marshaller::class)->dump($obj);
         $this->assertEquals(['id' => null], $dump);
     }
 }

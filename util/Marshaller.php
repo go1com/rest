@@ -2,38 +2,56 @@
 
 namespace go1\rest\util;
 
+use DI\Container;
 use ReflectionObject;
 use stdClass;
+use function apcu_fetch;
+use function apcu_store;
+use function function_exists;
 use function get_class;
+use function ini_get;
 use function is_null;
 use function is_scalar;
 use function preg_match;
 use function str_replace;
 use function strpos;
 use function trim;
+use const PHP_SAPI;
 
 class Marshaller
 {
+    private $cache = false;
+
+    public function __construct(Container $container)
+    {
+        if ($container->has('marshaller.cache')) {
+            if ($container->get('marshaller.cache')) {
+                $this->cache = function_exists('apcu_fetch')
+                    && ini_get('apc.enabled')
+                    && !('cli' === PHP_SAPI && !ini_get('apc.enable_cli'));
+            }
+        }
+    }
+
     public function dump($obj, array $propertyFormat = ['json'])
     {
-        $rObject = new ReflectionObject($obj);
-        foreach ($rObject->getProperties() as $rProperty) {
-            $_ = $this->property($rObject->getDocComment(), $rProperty->getDocComment(), $rProperty->getName(), $propertyFormat);
-            list($path, $type, $options) = $_;
+        $info = $this->objectInfo($obj, $propertyFormat);
+        foreach ($info['properties'] as $name => $property) {
+            list($path, $type, $options) = $property;
             if (!$path) {
                 continue;
             }
 
-            $raw = $obj->{$rProperty->getName()};
+            $raw = $obj->{$name};
             if (is_scalar($raw) || empty($type)) {
                 $value = $this->scalarCast($type, $raw);
             } elseif (false !== strpos($type, '[]')) { # Support UserClass[]
                 $value = [];
-                foreach ($obj->{$rProperty->getName()} as $v) {
+                foreach ($obj->{$name} as $v) {
                     $value[] = $this->dump($v, $propertyFormat);
                 }
             } else {
-                $value = $obj->{$rProperty->getName()};
+                $value = $obj->{$name};
                 if (!is_null($value)) {
                     $value = $this->dump($value, $propertyFormat);
                 }
@@ -47,6 +65,52 @@ class Marshaller
         }
 
         return $result ?? [];
+    }
+
+    /**
+     * @param stdClass $input
+     * @param Model    $obj
+     * @param array    $propertyFormat
+     * @return mixed Entity
+     */
+    public function parse(stdClass $input, $obj, array $propertyFormat = ['json'])
+    {
+        if ('stdClass' == get_class($obj)) {
+            return $input;
+        }
+
+        $obj->setInit(true);
+        $info = $this->objectInfo($obj, $propertyFormat);
+        foreach ($info['properties'] as $name => $property) {
+            list($path, $type) = $info['properties'][$name];
+
+            if (!$path || !isset($input->{$path})) {
+                continue;
+            }
+
+            $value = null;
+
+            if (is_scalar($input->{$path})) {
+                $value = $this->scalarCast($type, $input->{$path});
+            } elseif (false !== strpos($type, '[]')) {
+                $type = str_replace('[]', '', $type); # Support UserClass[]
+                $value = [];
+                foreach ($input->{$path} as $v) {
+                    $value[] = is_scalar($v)
+                        ? $this->scalarCast($type, $v)
+                        : $this->parse($v, new $type);
+                }
+            } else {
+                $value = $input->{$path};
+                $value = $this->parse($value, new $type);
+            }
+
+            $obj->{$name} = $value;
+        }
+
+        $obj->setInit(false);
+
+        return $obj;
     }
 
     private function scalarCast($type, $value)
@@ -69,50 +133,38 @@ class Marshaller
         }
     }
 
-    /**
-     * @param stdClass $input
-     * @param mixed    $obj
-     * @param array    $propertyFormat
-     * @return mixed Entity
-     */
-    public function parse(stdClass $input, $obj, array $propertyFormat = ['json'])
+    private function objectInfo(&$obj, array $propertyFormat = ['json'])
     {
-        if ('stdClass' == get_class($obj)) {
-            return $input;
+        $class = get_class($obj);
+        $key = $class . ':' . implode(',', $propertyFormat);
+        if ($this->cache && false === strpos($class, '@anonymous')) {
+            $cache = apcu_fetch($key);
+            if ($cache) {
+                return $cache;
+            }
         }
 
+        # class comment
+        # properties: name, comment
         $rObject = new ReflectionObject($obj);
+        $comment = $rObject->getDocComment();
+        $info = [
+            'comment'    => $comment,
+            'properties' => [],
+        ];
+
         foreach ($rObject->getProperties() as $rProperty) {
-            $_ = $this->property($rObject->getDocComment(), $rProperty->getDocComment(), $rProperty->getName(), $propertyFormat);
-            list($path, $type) = $_;
+            $pName = $rProperty->getName();
+            list($path, $type, $options) = $this->property($comment, $rProperty->getDocComment(), $pName, $propertyFormat);
 
-            if (!$path || !isset($input->{$path})) {
-                continue;
-            }
-
-            $value = null;
-
-            if (is_scalar($input->{$path})) {
-                $value = $this->scalarCast($type, $input->{$path});
-            } elseif (false !== strpos($type, '[]')) {
-                # Support UserClass[]
-                $type = str_replace('[]', '', $type);
-                $value = [];
-                foreach ($input->{$path} as $v) {
-                    $value[] = is_scalar($v)
-                        ? $this->scalarCast($type, $v)
-                        : $this->parse($v, new $type);
-                }
-            } else {
-                $value = $input->{$path};
-                $value = $this->parse($value, new $type);
-            }
-
-            $rProperty->setAccessible(true);
-            $rProperty->setValue($obj, $value);
+            $info['properties'][$pName] = [$path, $type, $options];
         }
 
-        return $obj;
+        if (isset($cache)) {
+            apcu_store($key, $info);
+        }
+
+        return $info;
     }
 
     private function property(string $classComment, string $propertyComment, string $propertyName, array $propertyFormats)
