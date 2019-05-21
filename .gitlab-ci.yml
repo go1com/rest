@@ -7,9 +7,8 @@ mirror:
     - mkdir ~/.ssh
     - echo "$GITHUB_DEPLOY_PRIVATE_KEY"           > ~/.ssh/rest.deploy.pem
     - chmod 400 ~/.ssh/rest.deploy.pem
-    - echo "github.com"                           > ~/.ssh/known_hosts
+    - ssh-keyscan -H github.com                  >> ~/.ssh/known_hosts
     - echo ''                                    >> ~/.ssh/config
     - echo 'Host github.com'                     >> ~/.ssh/config
     - echo 'IdentityFile ~/.ssh/rest.deploy.pem' >> ~/.ssh/config
-    - git remote add github git@github.com:go1com/rest.git
-    - git push -u github master
+    - git push --force git@github.com:go1com/rest.git HEAD:refs/heads/master
