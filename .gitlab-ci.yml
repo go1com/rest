@@ -1,19 +1,15 @@
 image: go1com/ci-php:php7
 
-before_script:
-  - mkdir ~/.ssh
-  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 644 ~/.ssh/known_hosts
-  - chmod 600 ~/.ssh/id_rsa
-
 mirror:
   tags: ["aws"]
   only: ["master"]
   script:
-    - echo $GITHUB_DEPLOY_PRIVATE_KEY > ~/.ssh/rest.deploy.pem
-    - echo ''                                    >> ~/.ssh
-    - echo 'Host github.com'                     >> ~/.ssh
-    - echo 'IdentityFile ~/.ssh/rest.deploy.pem' >> ~/.ssh
+    - mkdir ~/.ssh
+    - echo "$GITHUB_DEPLOY_PRIVATE_KEY"           > ~/.ssh/rest.deploy.pem
+    - chmod 400 ~/.ssh/rest.deploy.pem
+    - echo "github.com"                           > ~/.ssh/known_hosts
+    - echo ''                                    >> ~/.ssh/config
+    - echo 'Host github.com'                     >> ~/.ssh/config
+    - echo 'IdentityFile ~/.ssh/rest.deploy.pem' >> ~/.ssh/config
     - git remote add github git@github.com:go1com/rest.git
     - git push -u github master
