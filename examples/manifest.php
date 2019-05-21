@@ -84,6 +84,12 @@ $manifest->rest()
     ->withVersion('v1.0')
     ->withEsOption('default', getenv('ES_URL') ?: 'http://localhost:9200')
     ->withConfigFile(__DIR__ . '/resources/config.default.php')
+
+    # --- caching config ---
+    # Caching for performance, should only enable on production
+    ->set('di.enable-compile', true) # must have APCU extension enabled
+    ->set('marshaller.cache', true)  # must have APCU extension enabled
+    # ! --- caching config ---
     ->set('userCreateJsonValidatorMiddleware', function (Container $c) {
         return new JsonSchemaValidatorMiddleWare(
             $c->get(Validator::class),
