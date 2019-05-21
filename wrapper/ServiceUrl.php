@@ -18,7 +18,7 @@ class ServiceUrl
 
         $this->pattern = $this->container->has('servicePattern')
             ? $this->container->get('servicePattern')
-            : 'http://SERVICE.ENVIRONMENT.go1.service';
+            : (getenv('SERVICE_URL_PATTERN') ?: 'http://SERVICE.ENVIRONMENT.go1.service');
 
         $this->env = $this->container->has('env') ? $this->container->get('env') : 'dev';
     }
