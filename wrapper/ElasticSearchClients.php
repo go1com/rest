@@ -4,20 +4,23 @@ namespace go1\rest\wrapper;
 
 use DI\Container;
 use Elasticsearch\Client;
-use Elasticsearch\ClientBuilder as Builder;
+use Elasticsearch\ClientBuilder;
 use RuntimeException;
 
 class ElasticSearchClients
 {
     private $options;
+    private $builder;
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, ClientBuilder $builder)
     {
         $this->options = $container->get('esOptions');
 
         if (is_string($this->options)) {
             $this->options = ['default' => ['endpoint' => $this->options]];
         }
+
+        $this->builder = $builder;
     }
 
     public function default(): Client
@@ -31,7 +34,7 @@ class ElasticSearchClients
             throw new RuntimeException('ElasticSearch endpoint not found: ' . $name);
         }
 
-        return Builder::create()->setHosts([$host])->build();
+        return $this->builder->setHosts([$host])->build();
     }
 
     public function host(string $name)
