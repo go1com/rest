@@ -3,6 +3,7 @@
 namespace go1\rest\tests;
 
 use DI\Container;
+use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use go1\rest\RestService;
@@ -74,7 +75,11 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
             return $this->db;
         }
 
-        return $this->db = DriverManager::getConnection(['url' => 'sqlite://sqlite::memory:']);
+        return $this->db = DriverManager::getConnection(
+            ['url' => 'sqlite://sqlite::memory:'],
+            null,
+            $this->get(EventManager::class)
+        );
     }
 
     public function tearDown(): void

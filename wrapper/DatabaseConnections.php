@@ -4,11 +4,14 @@ namespace go1\rest\wrapper;
 
 use DI\Container;
 use DI\NotFoundException;
+use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\TableExistsException;
 use Doctrine\DBAL\Schema\Comparator;
 use go1\rest\Response;
+use go1\rest\tests\RestTestCase;
+use function class_exists;
 
 class DatabaseConnections
 {
@@ -26,13 +29,23 @@ class DatabaseConnections
     public function get(string $name): Connection
     {
         $key = 'dbs.' . $name;
+
         if (!$this->container->has($key)) {
             $config = $this->container->get("dbOptions")[$name] ?? [];
             if (empty($config)) {
                 throw new NotFoundException("DB Config dbOptions[{$name}] not found.");
             }
 
-            $this->container->set($key, DriverManager::getConnection($config));
+            $this->container->set(
+                $key,
+                DriverManager::getConnection(
+                    $config,
+                    null,
+                    class_exists(RestTestCase::class, false)
+                        ? $this->container->get(EventManager::class)
+                        : null
+                )
+            );
         }
 
         return $this->container->get($key);
