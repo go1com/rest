@@ -3,13 +3,12 @@
 namespace go1\rest\errors;
 
 use Exception;
-use function getenv;
 use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\tests\RestTestCase;
 use Psr\Log\LoggerInterface;
 use function class_exists;
-use Psr\Log\NullLogger;
+use function getenv;
 use function sprintf;
 
 class RestErrorHandler
