@@ -3,11 +3,13 @@
 namespace go1\rest\errors;
 
 use Exception;
+use function getenv;
 use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\tests\RestTestCase;
 use Psr\Log\LoggerInterface;
 use function class_exists;
+use Psr\Log\NullLogger;
 use function sprintf;
 
 class RestErrorHandler
@@ -21,18 +23,19 @@ class RestErrorHandler
 
     public function __invoke(Request $request, Response $response, Exception $e)
     {
-        if (class_exists(RestTestCase::class, false)) {
+        $debugging = getenv('REST_DEBUGGING') ?? false;
+        if ($debugging) {
             throw $e;
-        } else {
-            $this->logger->error(
-                $e->getMessage(), [
-                    'errorCode'  => (!$e instanceof RestError) ? $e->getCode() : $e->errorCode(),
-                    'httpStatus' => (!$e instanceof RestError) ? 500 : $e->httpErrorCode(),
-                    'request'    => sprintf('%s %s', $request->getMethod(), $request->getUri()->__toString()),
-                    'trace'      => $e->getTrace(),
-                ]
-            );
         }
+
+        $this->logger->error(
+            $e->getMessage(), [
+                'errorCode'  => (!$e instanceof RestError) ? $e->getCode() : $e->errorCode(),
+                'httpStatus' => (!$e instanceof RestError) ? 500 : $e->httpErrorCode(),
+                'request'    => sprintf('%s %s', $request->getMethod(), $request->getUri()->__toString()),
+                'trace'      => $e->getTrace(),
+            ]
+        );
 
         if (!$request->hasHeader('Accept')) {
             if ($request->hasHeader('Content-Type')) {
