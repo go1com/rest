@@ -21,14 +21,18 @@ class RestErrorHandler
 
     public function __invoke(Request $request, Response $response, Exception $e)
     {
-        $this->logger->error(
-            $e->getMessage(), [
-                'errorCode'  => (!$e instanceof RestError) ? $e->getCode() : $e->errorCode(),
-                'httpStatus' => (!$e instanceof RestError) ? 500 : $e->httpErrorCode(),
-                'request'    => sprintf('%s %s', $request->getMethod(), $request->getUri()->__toString()),
-                'trace'      => $e->getTrace(),
-            ]
-        );
+        if (class_exists(RestTestCase::class, false)) {
+            throw $e;
+        } else {
+            $this->logger->error(
+                $e->getMessage(), [
+                    'errorCode'  => (!$e instanceof RestError) ? $e->getCode() : $e->errorCode(),
+                    'httpStatus' => (!$e instanceof RestError) ? 500 : $e->httpErrorCode(),
+                    'request'    => sprintf('%s %s', $request->getMethod(), $request->getUri()->__toString()),
+                    'trace'      => $e->getTrace(),
+                ]
+            );
+        }
 
         if (!$request->hasHeader('Accept')) {
             if ($request->hasHeader('Content-Type')) {
