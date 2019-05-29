@@ -12,3 +12,4 @@ mirror:
     - echo 'Host github.com'                     >> ~/.ssh/config
     - echo 'IdentityFile ~/.ssh/rest.deploy.pem' >> ~/.ssh/config
     - git push --force git@github.com:go1com/rest.git HEAD:refs/heads/master
+    - git push git@github.com:go1com/rest.git --tags
