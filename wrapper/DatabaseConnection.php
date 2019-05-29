@@ -32,6 +32,13 @@ abstract class DatabaseConnection
         return $this->dbs->get(static::DB_NAME);
     }
 
+    public static function readConnectionOptions()
+    {
+        static::check();
+
+        return DatabaseConnections::connectionOptions(static::DB_NAME, DatabaseConnections::CON_OPTION_DISABLE_MASTER);
+    }
+
     public static function connectionOptions()
     {
         static::check();
