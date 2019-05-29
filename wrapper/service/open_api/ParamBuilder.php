@@ -64,7 +64,7 @@ class ParamBuilder
     public function withTypeString(string $format = '')
     {
         $this->config['schema']['type'] = 'string';
-        
+
         return $this->withFormat($format);
     }
 
@@ -75,6 +75,15 @@ class ParamBuilder
         }
 
         $this->config['schema']['$ref'] = $ref;
+
+        return $this;
+    }
+
+    public function withTypeIntegers(string $format = 'int64')
+    {
+        $this->config['schema']['type'] = 'array';
+        $this->config['schema']['items']['type'] = 'integer';
+        $this->config['schema']['items']['format'] = $format;
 
         return $this;
     }
