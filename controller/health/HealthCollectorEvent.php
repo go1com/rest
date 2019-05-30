@@ -2,9 +2,7 @@
 
 namespace go1\rest\controller\health;
 
-use Symfony\Component\EventDispatcher\Event;
-
-class HealthCollectorEvent extends Event
+class HealthCollectorEvent
 {
     private $metrics;
 

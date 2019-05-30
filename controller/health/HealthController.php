@@ -3,25 +3,21 @@
 namespace go1\rest\controller\health;
 
 use go1\rest\Response;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use function array_map;
 
 class HealthController
 {
-    private $dispatcher;
+    private $collector;
 
-    public function __construct(EventDispatcher $dispatcher, HealthCollectorDefault $collector)
+    public function __construct(HealthCollectorDefault $collector)
     {
-        $this->dispatcher = $dispatcher;
-        $this->dispatcher->addListener('rest.controller.health', [$collector, 'check']);
+        $this->collector = $collector;
     }
 
     public function get(Response $response)
     {
         $event = new HealthCollectorEvent();
-        $this
-            ->dispatcher
-            ->dispatch('rest.controller.health', $event);
+        $this->collector->check($event);
 
         $statusCode = 200;
         $metrics = [];
