@@ -16,7 +16,7 @@ class Client
     public function __construct(Container $c)
     {
         $_ = $c->has('client.rabbitmq.url') ? $c->get('client.rabbitmq.url') : null;
-        $_ = $_ ?: getenv('CLIENT_RABBITMQ_URL');
+        $_ = $_ ?: (getenv('CLIENT_RABBITMQ_URL') ?: getenv('QUEUE_URL'));
 
         if (!$_) {
             throw new InvalidServiceConfigurationError('missing rabbitMQ connection URL.');
