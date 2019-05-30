@@ -37,6 +37,7 @@ abstract class DatabaseConnection
         static::check();
 
         return DatabaseConnections::connectionOptions(static::DB_NAME, DatabaseConnections::CON_OPTION_DISABLE_MASTER);
+    }
 
     public static function writeConnectionOptions()
     {

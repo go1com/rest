@@ -5,6 +5,7 @@ namespace go1\rest;
 use DI\ContainerBuilder;
 use DI\Definition\Source\SourceCache;
 use go1\rest\controller\DefaultController;
+use go1\rest\controller\health\HealthController;
 use go1\rest\errors\RestErrorHandler;
 use go1\rest\tests\RestTestCase;
 use go1\rest\wrapper\CacheClient;
@@ -52,6 +53,7 @@ class RestService extends \DI\Bridge\Slim\App
     protected function defaultRoutes()
     {
         $this->get('/', [DefaultController::class, 'get']);
+        $this->get('/healthz', [HealthController::class, 'get']);
     }
 
     protected function defaultServices(): array
