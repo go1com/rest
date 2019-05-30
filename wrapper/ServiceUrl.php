@@ -28,7 +28,6 @@ class ServiceUrl
         $url = str_replace(['SERVICE', 'ENVIRONMENT'], [$serviceName, $this->env], $this->pattern);
         if (!$path) {
             return $url;
-
         }
 
         return rtrim($url, '/') . '/' . ltrim($path, '/');
