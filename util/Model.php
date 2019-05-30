@@ -15,7 +15,11 @@ abstract class Model
 
     public function setInit(bool $init)
     {
-        $this->___onInit = $init;
+        if ($init) {
+            $this->___onInit = true;
+        } else {
+            unset($this->___onInit);
+        }
     }
 
     public function __set(string $name, $value)

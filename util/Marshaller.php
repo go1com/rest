@@ -9,6 +9,7 @@ use function apcu_fetch;
 use function apcu_store;
 use function function_exists;
 use function get_class;
+use function implode;
 use function ini_get;
 use function is_null;
 use function is_scalar;
@@ -33,8 +34,17 @@ class Marshaller
         }
     }
 
+    public function setCache(bool $cache)
+    {
+        $this->cache = $cache;
+    }
+
     public function dump($obj, array $propertyFormat = ['json'])
     {
+        if ('stdClass' == get_class($obj)) {
+            return (array) $obj;
+        }
+
         $info = $this->objectInfo($obj, $propertyFormat);
         foreach ($info['properties'] as $name => $property) {
             list($path, $type, $options) = $property;
@@ -137,10 +147,12 @@ class Marshaller
     {
         $class = get_class($obj);
         $key = $class . ':' . implode(',', $propertyFormat);
-        if ($this->cache && false === strpos($class, '@anonymous')) {
-            $cache = apcu_fetch($key);
-            if ($cache) {
-                return $cache;
+        if ($this->cache) {
+            if (false === strpos($class, '@anonymous')) {
+                $cache = apcu_fetch($key);
+                if ($cache) {
+                    return $cache;
+                }
             }
         }
 
@@ -160,7 +172,7 @@ class Marshaller
             $info['properties'][$pName] = [$path, $type, $options];
         }
 
-        if (isset($cache)) {
+        if ($this->cache) {
             apcu_store($key, $info);
         }
 
