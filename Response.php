@@ -15,8 +15,8 @@ class Response extends \Slim\Http\Response
         $response->body->write($data);
 
         return $status
-            ? $responseWithJson->withHeader('Content-Type', 'application/json')->withStatus($status)
-            : $responseWithJson->withHeader('Content-Type', 'application/json');
+            ? $response->withHeader('Content-Type', 'application/json')->withStatus($status)
+            : $response->withHeader('Content-Type', 'application/json');
     }
 
     public function jr($msg = 'Runtime error', int $statusCode = 400)
