@@ -4,9 +4,21 @@ namespace go1\rest;
 
 use Assert\LazyAssertionException;
 use Exception;
+use Slim\Http\Body;
+use function fopen;
 
 class Response extends \Slim\Http\Response
 {
+    public function withJsonString($data, $status = null)
+    {
+        $response = $this->withBody(new Body(fopen('php://temp', 'r+')));
+        $response->body->write($data);
+
+        return $status
+            ? $responseWithJson->withHeader('Content-Type', 'application/json')->withStatus($status)
+            : $responseWithJson->withHeader('Content-Type', 'application/json');
+    }
+
     public function jr($msg = 'Runtime error', int $statusCode = 400)
     {
         return $this->withJson(
