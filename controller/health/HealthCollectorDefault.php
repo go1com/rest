@@ -14,10 +14,10 @@ class HealthCollectorDefault
     private $container;
     private $http;
 
-    public function __construct(Container $container, Http $http)
+    public function __construct(Container $container)
     {
         $this->container = $container;
-        $this->http = $http;
+        $this->http = $this->container->get(Http::class);
     }
 
     public function check(HealthCollectorEvent $event)
@@ -76,21 +76,21 @@ class HealthCollectorDefault
 
     private function pingServices(HealthCollectorEvent $event)
     {
-        $ok = function (string $service): bool {
+        $error = function (string $service): bool {
             $uri = $this->http->serviceUri($service, '/');
             $req = $this->http->createRequest('GET', $uri);
 
             try {
                 $res = $this->http->sendRequest($req);
 
-                return 200 == $res->getStatusCode();
+                return $res->getStatusCode() >= 300;
             } catch (\Throwable $e) {
-                return false;
+                return true;
             }
         };
 
         foreach ($this->container->get('services') as $service) {
-            $event->set("service.{$service}", 'ping', $ok($service));
+            $event->set("service.{$service}", 'ping', $error($service));
         }
     }
 }
