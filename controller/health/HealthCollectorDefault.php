@@ -5,16 +5,19 @@ namespace go1\rest\controller\health;
 use DI\Container;
 use Doctrine\DBAL\DriverManager;
 use go1\rest\wrapper\ElasticSearchClients;
+use go1\rest\wrapper\request\Http;
 use Psr\SimpleCache\CacheInterface;
 use Throwable;
 
 class HealthCollectorDefault
 {
     private $container;
+    private $http;
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, Http $http)
     {
         $this->container = $container;
+        $this->http = $http;
     }
 
     public function check(HealthCollectorEvent $event)
@@ -31,6 +34,10 @@ class HealthCollectorDefault
 
         if ($this->container->has('cacheConnectionUrl')) {
             $this->pingCacheServer($event);
+        }
+
+        if ($this->container->has('services')) {
+            $this->pingServices($event);
         }
     }
 
@@ -64,6 +71,26 @@ class HealthCollectorDefault
             $event->set("cache.default", 'ping', false);
         } catch (Throwable $e) {
             $event->set("cache.default", 'ping', true);
+        }
+    }
+
+    private function pingServices(HealthCollectorEvent $event)
+    {
+        $ok = function (string $service): bool {
+            $uri = $this->http->serviceUri($service, '/');
+            $req = $this->http->createRequest('GET', $uri);
+
+            try {
+                $res = $this->http->sendRequest($req);
+
+                return 200 == $res->getStatusCode();
+            } catch (\Throwable $e) {
+                return false;
+            }
+        };
+
+        foreach ($this->container->get('services') as $service) {
+            $event->set("service.{$service}", 'ping', $ok($service));
         }
     }
 }
