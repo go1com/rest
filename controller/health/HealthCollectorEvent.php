@@ -6,9 +6,9 @@ class HealthCollectorEvent
 {
     private $metrics;
 
-    public function set(string $name, $status, bool $error)
+    public function set(string $metric, $key, bool $error)
     {
-        $this->metrics = [$name, $status, $error];
+        $this->metrics[] = [$metric, $key, $error];
     }
 
     public function get()

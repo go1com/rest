@@ -18,13 +18,13 @@ class HealthController
     {
         $event = new HealthCollectorEvent();
         $this->collector->check($event);
-
+        
         $statusCode = 200;
         $metrics = [];
         array_map(
             function ($health) use (&$metrics, &$statusCode) {
-                list($name, $status, $error) = $health;
-                $metrics[$name] = $status;
+                list($metric, $key, $error) = $health;
+                $metrics[$metric][$key] = $error ? false : true;
 
                 if ($error) {
                     $statusCode = 500;
