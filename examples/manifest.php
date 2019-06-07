@@ -80,6 +80,7 @@ $manifest->stream()
 # Define REST service configuration
 # =====================
 $manifest->rest()
+    ->set('env', 'qa')
     ->withServiceName('user-explore')
     ->withVersion('v1.0')
     ->withEsOption('default', getenv('ES_URL') ?: 'http://localhost:9200')
