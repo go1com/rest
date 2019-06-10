@@ -10,7 +10,10 @@ class HealthClientTest extends RestTestCase
     {
         $req = $this->mf()->createRequest('GET', '/healthz');
         $res = $this->rest()->process($req, $this->mf()->createResponse());
+        $results = $res->json(true);
 
-        $this->assertEquals(200, $res->getStatusCode());
+        $this->assertEquals(500, $res->getStatusCode());
+        $this->assertEquals(true, $results['db.acme']['ping']);
+        $this->assertEquals(false, $results['elasticsearch.default']['ping'], 'No elastic server.');
     }
 }
