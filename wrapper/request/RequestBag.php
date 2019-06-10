@@ -11,6 +11,11 @@ class RequestBag
         $this->items = $items;
     }
 
+    public function all()
+    {
+        return $this->items;
+    }
+
     public function get($key, $default = null)
     {
         return isset($this->items[$key]) ? $this->items[$key] : $default;
