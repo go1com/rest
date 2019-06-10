@@ -3,8 +3,13 @@
 namespace go1\rest;
 
 use Firebase\JWT\JWT;
+use go1\rest\wrapper\request\RequestBag;
 use JsonException;
+use RuntimeException;
 
+/**
+ * @property RequestBag $request
+ */
 class Request extends \Slim\Http\Request
 {
     const ROLE_SYSTEM        = 'Admin on #Accounts';
@@ -23,6 +28,20 @@ class Request extends \Slim\Http\Request
     ];
 
     private $contextUser;
+    private $requestBag;
+
+    public function __get($name)
+    {
+        if ('request' === $name) {
+            if (!$this->requestBag) {
+                $this->requestBag = new RequestBag($this->json(true));
+            }
+
+            return $this->requestBag;
+        }
+
+        throw new RuntimeException('Unknown property: ' . $name);
+    }
 
     public function bodyString(): string
     {
