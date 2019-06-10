@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use go1\rest\wrapper\request\RequestBag;
 use JsonException;
 use RuntimeException;
+use function is_numeric;
 
 /**
  * @property RequestBag $request
@@ -106,21 +107,24 @@ class Request extends \Slim\Http\Request
         return $this->contextUser ?? null;
     }
 
-    public function contextAccount($portalIdOrName)
+    public function contextAccount($portalIdOrName = null)
     {
         if (!$user = $this->contextUser()) {
             return null;
         }
 
         $accounts = isset($user->accounts) ? $user->accounts : [];
-        foreach ($accounts as $account) {
-            $actual = is_numeric($portalIdOrName) ? $account->portal_id : $account->instance;
-            if ($portalIdOrName === $actual) {
-                return $account;
+
+        if ($portalIdOrName) {
+            foreach ($accounts as $account) {
+                $actual = is_numeric($portalIdOrName) ? $account->portal_id : $account->instance;
+                if ($portalIdOrName === $actual) {
+                    return $account;
+                }
             }
         }
 
-        return null;
+        return $accounts[0] ?? null;
     }
 
     public function isSystemUser(): bool
