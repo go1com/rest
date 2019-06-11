@@ -99,7 +99,6 @@ class Marshaller
             }
 
             $value = null;
-
             if (is_scalar($input->{$path})) {
                 $value = $this->scalarCast($type, $input->{$path});
             } elseif (false !== strpos($type, '[]')) {
@@ -168,6 +167,7 @@ class Marshaller
         foreach ($rObject->getProperties() as $rProperty) {
             $pName = $rProperty->getName();
             list($path, $type, $options) = $this->property($comment, $rProperty->getDocComment(), $pName, $propertyFormat);
+            $type = explode(' ', $type)[0];
 
             $info['properties'][$pName] = [$path, $type, $options];
         }
