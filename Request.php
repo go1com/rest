@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use go1\rest\wrapper\request\RequestBag;
 use JsonException;
 use RuntimeException;
+use function in_array;
 use function is_numeric;
 
 /**
@@ -141,7 +142,7 @@ class Request extends \Slim\Http\Request
         return $this->roleCheck($portalIdOrName, self::ROLE_ADMIN, $inherit);
     }
 
-    public function isPortalContentAdministrator($portalIdOrName, bool $inherit = true)
+    public function isPortalContentAdministrator($portalIdOrName = null, bool $inherit = true)
     {
         return $this->roleCheck($portalIdOrName, self::ROLE_ADMIN_CONTENT, $inherit);
     }
@@ -151,7 +152,7 @@ class Request extends \Slim\Http\Request
         return $this->roleCheck($portalIdOrName, self::ROLE_MANAGER, $inherit);
     }
 
-    private function roleCheck($portalIdOrName, $role = self::ROLE_ADMIN, bool $inherit = true)
+    private function roleCheck($portalIdOrName = null, $role = self::ROLE_ADMIN, bool $inherit = true)
     {
         if (!$contextUser = $this->contextUser()) {
             return false;
@@ -163,16 +164,13 @@ class Request extends \Slim\Http\Request
             }
         }
 
-        $accounts = isset($contextUser->accounts) ? $contextUser->accounts : [];
-        foreach ($accounts as &$account) {
-            $actual = is_numeric($portalIdOrName) ? $account->portal_id : $account->instance;
-            if ($portalIdOrName === $actual) {
-                if (!empty($account->roles) && in_array($role, $account->roles)) {
-                    return true;
-                }
+        $account = $this->contextAccount($portalIdOrName);
+        if ($account) {
+            if (!empty($account->roles) && in_array($role, $account->roles)) {
+                return true;
             }
         }
-
+        
         return false;
     }
 }
