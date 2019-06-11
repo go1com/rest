@@ -26,7 +26,7 @@ class ResponseTest extends RestTestCase
     {
         $rest = $this->rest();
         $rest->get('/error', function () {
-            throw new InternalResourceError('Just for test');
+            InternalResourceError::throw('Just for test');
         });
 
         $request = $this->mf()->createRequest('GET', '/error');

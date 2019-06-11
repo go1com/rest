@@ -18,7 +18,7 @@ use function class_exists;
 
 class CacheClient
 {
-    private $container;
+    protected $container;
 
     public function __construct(Container &$c)
     {
@@ -28,6 +28,10 @@ class CacheClient
     public function get(): Psr16CacheInterface
     {
         if (!$this->container->has('cacheConnectionUrl')) {
+            if (class_exists(RestTestCase::class, false)) {
+                return new ArrayCache;
+            }
+
             throw new InvalidServiceConfigurationError('Missing cache connection URL.');
         }
 
@@ -38,32 +42,10 @@ class CacheClient
                 return new ArrayCache;
 
             case 'memcached':
-                if (!class_exists(Memcached::class)) {
-                    throw new RuntimeException('Missing caching driver.');
-                }
-
-                $client = MemcachedAdapter::createConnection($dsn, [
-                    'compression'          => true,
-                    'libketama_compatible' => true,
-                ]);
-
-                return new MemcachedCache($client);
+                return $this->memcached($dsn);
 
             case 'redis':
-                if (!class_exists(Redis::class)) {
-                    throw new RuntimeException('Missing caching driver.');
-                }
-
-                $client = RedisAdapter::createConnection($dsn, [
-                    'lazy'           => true,
-                    'persistent'     => 0,
-                    'persistent_id'  => null,
-                    'timeout'        => 30,
-                    'read_timeout'   => 0,
-                    'retry_interval' => 0,
-                ]);
-
-                return new RedisCache($client);
+                return $this->redis($dsn);
 
             default:
                 if (class_exists(RestTestCase::class, false)) {
@@ -72,5 +54,37 @@ class CacheClient
 
                 throw new RuntimeException('Unsupported backend: ' . $name);
         }
+    }
+
+    protected function memcached($dsn)
+    {
+        if (!class_exists(Memcached::class)) {
+            throw new RuntimeException('Missing caching driver.');
+        }
+
+        $client = MemcachedAdapter::createConnection($dsn, [
+            'compression'          => true,
+            'libketama_compatible' => true,
+        ]);
+
+        return new MemcachedCache($client);
+    }
+
+    protected function redis($dsn)
+    {
+        if (!class_exists(Redis::class)) {
+            throw new RuntimeException('Missing caching driver.');
+        }
+
+        $client = RedisAdapter::createConnection($dsn, [
+            'lazy'           => true,
+            'persistent'     => 0,
+            'persistent_id'  => null,
+            'timeout'        => 30,
+            'read_timeout'   => 0,
+            'retry_interval' => 0,
+        ]);
+
+        return new RedisCache($client);
     }
 }
