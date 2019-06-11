@@ -137,14 +137,18 @@ class Request extends \Slim\Http\Request
         return in_array(self::ROLE_SYSTEM, isset($contextUser->roles) ? $contextUser->roles : []);
     }
 
-    public function isPortalAdmin($portalIdOrName, bool $inherit = true): bool
+    public function isPortalAdmin($portalIdOrName = null, bool $inherit = true): bool
     {
         return $this->roleCheck($portalIdOrName, self::ROLE_ADMIN, $inherit);
     }
 
     public function isPortalContentAdministrator($portalIdOrName = null, bool $inherit = true)
     {
-        return $this->roleCheck($portalIdOrName, self::ROLE_ADMIN_CONTENT, $inherit);
+        if ($this->roleCheck($portalIdOrName, self::ROLE_ADMIN_CONTENT, $inherit)) {
+            return true;
+        }
+
+        return $inherit ? $this->isPortalAdmin($portalIdOrName) : false;
     }
 
     public function isPortalManager($portalIdOrName, bool $inherit = true)
@@ -170,7 +174,7 @@ class Request extends \Slim\Http\Request
                 return true;
             }
         }
-        
+
         return false;
     }
 }
