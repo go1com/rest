@@ -108,6 +108,15 @@ class Request extends \Slim\Http\Request
         return $this->contextUser ?? null;
     }
 
+    public function contextPortalId(): int
+    {
+        if ($account = $this->contextAccount()) {
+            return $account->portal_id;
+        }
+
+        return 0;
+    }
+
     public function contextAccount($portalIdOrName = null)
     {
         if (!$user = $this->contextUser()) {
