@@ -45,6 +45,14 @@ class Request extends \Slim\Http\Request
         throw new RuntimeException('Unknown property: ' . $name);
     }
 
+    public function param($name, $defaultValue = null)
+    {
+        $routeInfo = $this->getAttribute('routeInfo', []);
+        $routeInfo = $routeInfo[2] ?? [];
+
+        return $routeInfo[$name] ?? ($defaultValue ?? null);
+    }
+
     public function bodyString(): string
     {
         $body = $this->getBody();
