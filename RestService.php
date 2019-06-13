@@ -96,8 +96,9 @@ class RestService extends \DI\Bridge\Slim\App
             return null;
         }
 
-        if (!empty($this->cnf['di.enable-compile'])) {
-            if (!class_exists(RestTestCase::class, false)) {
+        $testing = class_exists(RestTestCase::class, false);
+        if (!$testing) {
+            if (!empty($this->cnf['di.enable-compile'])) {
                 $builder->enableCompilation(
                     sys_get_temp_dir(),
                     'CompiledContainer__' . str_replace('-', '__', $this->serviceName())
@@ -108,7 +109,7 @@ class RestService extends \DI\Bridge\Slim\App
 
         $builder->addDefinitions($this->cnf);
 
-        if (SourceCache::isSupported()) {
+        if (!$testing && SourceCache::isSupported()) {
             $builder->enableDefinitionCache();
         }
 
