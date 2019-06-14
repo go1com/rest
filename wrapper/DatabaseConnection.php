@@ -25,6 +25,11 @@ abstract class DatabaseConnection
         }
     }
 
+    protected static function dbName(): string
+    {
+        return static::DB_NAME;
+    }
+
     public function get(): Connection
     {
         static::check();
@@ -36,20 +41,20 @@ abstract class DatabaseConnection
     {
         static::check();
 
-        return DatabaseConnections::connectionOptions(static::DB_NAME, DatabaseConnections::CON_OPTION_DISABLE_MASTER);
+        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_DISABLE_MASTER);
     }
 
     public static function writeConnectionOptions()
     {
         static::check();
 
-        return DatabaseConnections::connectionOptions(static::DB_NAME, DatabaseConnections::CON_OPTION_ALWAYS_MASTER);
+        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_ALWAYS_MASTER);
     }
 
     public static function connectionOptions()
     {
         static::check();
 
-        return DatabaseConnections::connectionOptions(static::DB_NAME);
+        return DatabaseConnections::connectionOptions(static::dbName());
     }
 }
