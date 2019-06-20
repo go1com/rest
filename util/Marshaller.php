@@ -111,7 +111,7 @@ class Marshaller
                 }
             } else {
                 $value = $input->{$path};
-                $value = $this->parse($value, new $type);
+                $value = $this->parse($value, new $type, $propertyFormat);
             }
 
             $obj->{$name} = $value;
