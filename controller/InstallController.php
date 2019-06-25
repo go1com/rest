@@ -5,6 +5,7 @@ namespace go1\rest\controller;
 use DI\Container;
 use Doctrine\DBAL\Schema\Schema;
 use go1\rest\Response;
+use go1\rest\Stream;
 use go1\rest\wrapper\DatabaseConnection;
 use go1\rest\wrapper\DatabaseConnections;
 
@@ -15,12 +16,15 @@ class InstallController
     /** @var DatabaseConnection */
     private $db;
 
+    private $stream;
+
     /** @var mixed DatabaseSchema */
     private $schema;
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, Stream $stream)
     {
         $this->container = $container;
+        $this->stream = $stream;
         list($dbClass, $schemaClass) = $container->get('restDbSchema');
 
         $this->db = $this->container->get($dbClass);
@@ -37,6 +41,8 @@ class InstallController
                 },
             ]
         );
+
+        $this->stream->commit('rest.install', '');
 
         return $response->withJson(null, 204);
     }
