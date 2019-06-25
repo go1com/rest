@@ -140,6 +140,8 @@ class Request extends \Slim\Http\Request
                     return $account;
                 }
             }
+
+            return null;
         }
 
         return $accounts[0] ?? null;
