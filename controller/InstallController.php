@@ -25,22 +25,27 @@ class InstallController
     {
         $this->container = $container;
         $this->stream = $stream;
-        list($dbClass, $schemaClass) = $container->get('restDbSchema');
 
-        $this->db = $this->container->get($dbClass);
-        $this->schema = $this->container->get($schemaClass);
+        if ($container->has('restDbSchema')) {
+            list($dbClass, $schemaClass) = $container->get('restDbSchema');
+
+            $this->db = $this->container->get($dbClass);
+            $this->schema = $this->container->get($schemaClass);
+        }
     }
 
     public function post(Response $response)
     {
-        DatabaseConnections::install(
-            $this->db->get(),
-            [
-                function (Schema $manager) {
-                    $this->schema->install($manager);
-                },
-            ]
-        );
+        if (!empty($this->db)) {
+            DatabaseConnections::install(
+                $this->db->get(),
+                [
+                    function (Schema $manager) {
+                        $this->schema->install($manager);
+                    },
+                ]
+            );
+        }
 
         $this->stream->commit('rest.install', '');
 

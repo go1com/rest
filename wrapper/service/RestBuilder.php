@@ -47,9 +47,7 @@ class RestBuilder
                 }
             }
 
-            if ($this->has('restDbSchema')) {
-                $api->withPath('/install', 'POST', [InstallController::class, 'post']);
-            }
+            $api->withPath('/install', 'POST', [InstallController::class, 'post']);
 
             $paths = $api->paths();
             if (!$paths) {
