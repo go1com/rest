@@ -136,7 +136,7 @@ class Request extends \Slim\Http\Request
         if ($portalIdOrName) {
             foreach ($accounts as $account) {
                 $actual = is_numeric($portalIdOrName) ? $account->portal_id : $account->instance;
-                if ($portalIdOrName === $actual) {
+                if ($portalIdOrName == $actual) {
                     return $account;
                 }
             }
