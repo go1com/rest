@@ -2,8 +2,10 @@
 
 namespace go1\rest\wrapper\request\rabbitmq;
 
+use go1\rest\errors\RabbitMqError;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Throwable;
 
 class Channel
 {
@@ -32,6 +34,10 @@ class Channel
 
     public function publish(Message $msg)
     {
-        $this->ch->basic_publish($msg, $this->exchange, $msg->routingKey());
+        try {
+            $this->ch->basic_publish($msg, $this->exchange, $msg->routingKey());
+        } catch (Throwable $e) {
+            RabbitMqError::throw('failed publishing message: ' . $e->getMessage());
+        }
     }
 }

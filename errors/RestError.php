@@ -38,6 +38,9 @@ abstract class RestError extends DomainException
             case DatabaseConstraintError::class:
                 return 6;
 
+            case RabbitMqError::class:
+                return 7;
+
             default:
                 return 0;
         }

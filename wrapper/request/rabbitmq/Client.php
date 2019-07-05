@@ -4,7 +4,9 @@ namespace go1\rest\wrapper\request\rabbitmq;
 
 use DI\Container;
 use go1\rest\errors\InvalidServiceConfigurationError;
+use go1\rest\errors\RabbitMqError;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Throwable;
 use function parse_url;
 
 class Client
@@ -29,7 +31,12 @@ class Client
     {
         if (!$this->connection) {
             $_ = parse_url($this->connectionUrl);
-            $this->connection = new AMQPStreamConnection($_['host'] ?? 'rabbitmq', $_['port'] ?? '5672', $_['user'] ?? '', $_['pass'] ?? '');
+
+            try {
+                $this->connection = new AMQPStreamConnection($_['host'] ?? 'rabbitmq', $_['port'] ?? '5672', $_['user'] ?? '', $_['pass'] ?? '');
+            } catch (Throwable $e) {
+                RabbitMqError::throw('failed making connection: ' . $e->getMessage());
+            }
         }
 
         return $this->connection;
