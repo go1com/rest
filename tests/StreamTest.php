@@ -2,6 +2,7 @@
 
 namespace go1\rest\tests;
 
+use go1\rest\RestService;
 use go1\rest\tests\fixtures\FoodCreatedEvent;
 use function json_encode;
 
@@ -48,6 +49,7 @@ class StreamTest extends RestTestCase
             ->mf()
             ->createRequest('POST', '/consume')
             ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Authorization', 'Bearer ' . RestService::SYSTEM_USER)
             ->withBody(
                 $this->mf()->streamFactory()->createStream(json_encode([
                     'routingKey' => $event = 'foo.create',
@@ -68,6 +70,7 @@ class StreamTest extends RestTestCase
             ->mf()
             ->createRequest('POST', '/consume')
             ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Authorization', 'Bearer ' . RestService::SYSTEM_USER)
             ->withBody($this->mf()->streamFactory()->createStream('{}'));
         $res = $this->rest()->process($req, $this->mf()->createResponse());
 
@@ -92,5 +95,23 @@ class StreamTest extends RestTestCase
         $this->assertEquals($expect[1], $log[1], 'Logged: 5');
         $this->assertEquals($expect[2], $log[2], 'Logged: 3.33');
         $this->assertEquals($expect[3], $log[3], 'Logged: false');
+    }
+
+    public function testPostConsume403()
+    {
+        $req = $this
+            ->mf()
+            ->createRequest('POST', '/consume')
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody(
+                $this->mf()->streamFactory()->createStream(json_encode([
+                    'routingKey' => $event = 'foo.create',
+                    'body'       => $payload = ['name' => 'Ant'],
+                ]))
+            );
+
+        $res = $this->rest()->process($req, $this->mf()->createResponse());
+
+        $this->assertEquals(403, $res->getStatusCode());
     }
 }

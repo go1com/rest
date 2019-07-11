@@ -36,6 +36,10 @@ class MessageListenerController
 
     public function post(Request $request, Response $response)
     {
+        if (!$request->isSystemUser()) {
+            return $response->jr403();
+        }
+
         if (class_exists(RestTestCase::class, false)) {
             return $this->doPost($request, $response);
         }
