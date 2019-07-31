@@ -67,6 +67,8 @@ final class MessageFactory implements TheInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return Response
      */
     public function createResponse(
         $statusCode = 200,
