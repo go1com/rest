@@ -67,14 +67,19 @@ class DatabaseConnections
         }
 
         return [
-            'driver'        => 'pdo_mysql',
+            'driver'        => static::driver(),
             'dbname'        => getenv("{$prefix}_NAME") ?: $dbName,
             'host'          => $host,
             'user'          => self::getEnvByPriority(["{$prefix}_USERNAME", 'RDS_DB_USERNAME', 'DEV_DB_USERNAME']),
             'password'      => self::getEnvByPriority(["{$prefix}_PASSWORD", 'RDS_DB_PASSWORD', 'DEV_DB_PASSWORD']),
-            'port'          => getenv("{$prefix}_PORT") ?: '3306',
+            'port'          => self::getEnvByPriority(["{$prefix}_PORT", 'RDS_DB_PORT', 'DEV_DB_PORT']) ?: 3306,
             'driverOptions' => [1002 => 'SET NAMES utf8'],
         ];
+    }
+
+    protected static function driver(): string
+    {
+        return 'pdo_mysql';
     }
 
     public static function install(Connection $db, array $callbacks): Response
