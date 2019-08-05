@@ -45,7 +45,7 @@ class DatabaseConnections
      * @return array
      * @deprecated Use DatabaseConnection::connectionOptions() instead.
      */
-    public static function connectionOptions(string $name, int $masterMode = self::CON_OPTION_AUTO_MASTER): array
+    public static function connectionOptions(string $name, int $masterMode = self::CON_OPTION_AUTO_MASTER, string $driver = 'pdo_mysql'): array
     {
         if (function_exists('__db_connection_options')) {
             return __db_connection_options($name);
@@ -67,7 +67,7 @@ class DatabaseConnections
         }
 
         return [
-            'driver'        => static::driver(),
+            'driver'        => $driver,
             'dbname'        => getenv("{$prefix}_NAME") ?: $dbName,
             'host'          => $host,
             'user'          => self::getEnvByPriority(["{$prefix}_USERNAME", 'RDS_DB_USERNAME', 'DEV_DB_USERNAME']),
@@ -75,11 +75,6 @@ class DatabaseConnections
             'port'          => self::getEnvByPriority(["{$prefix}_PORT", 'RDS_DB_PORT', 'DEV_DB_PORT']) ?: 3306,
             'driverOptions' => [1002 => 'SET NAMES utf8'],
         ];
-    }
-
-    protected static function driver(): string
-    {
-        return 'pdo_mysql';
     }
 
     public static function install(Connection $db, array $callbacks): Response

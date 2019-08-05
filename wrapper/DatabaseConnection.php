@@ -41,20 +41,25 @@ abstract class DatabaseConnection
     {
         static::check();
 
-        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_DISABLE_MASTER);
+        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_DISABLE_MASTER, static::driver());
     }
 
     public static function writeConnectionOptions()
     {
         static::check();
 
-        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_ALWAYS_MASTER);
+        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_ALWAYS_MASTER, static::driver());
     }
 
     public static function connectionOptions()
     {
         static::check();
 
-        return DatabaseConnections::connectionOptions(static::dbName());
+        return DatabaseConnections::connectionOptions(static::dbName(), DatabaseConnections::CON_OPTION_AUTO_MASTER, static::driver());
+    }
+
+    protected static function driver(): string
+    {
+        return 'pdo_mysql';
     }
 }
