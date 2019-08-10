@@ -6,6 +6,7 @@ use go1\rest\tests\fixtures\LearningObject;
 use go1\rest\tests\RestTestCase;
 use go1\rest\util\Marshaller;
 use go1\rest\util\Model;
+use go1\rest\tests\fixtures\Marshaller\PropertiesWithTheSamePrefixModel;
 
 class MarshallerTest extends RestTestCase
 {
@@ -81,5 +82,19 @@ class MarshallerTest extends RestTestCase
 
         $dump = $this->get(Marshaller::class)->dump($obj);
         $this->assertEquals(['id' => null], $dump);
+    }
+
+    public function testSomePropertiesWithTheSamePrefix()
+    {
+        $obj   = new PropertiesWithTheSamePrefixModel();
+        $input = (object)[
+            'stripe_id'          => '1',
+            'stripe_id_description' => 'some comments',
+        ];
+        $marshaller = $this->get(Marshaller::class);
+        $obj = $marshaller->parse($input, $obj, ['json']);
+
+        $this->assertEquals(gettype($obj->stripeId), gettype(1));
+        $this->assertEquals(gettype($obj->stripeIdDescription), gettype('hello'));
     }
 }

@@ -208,7 +208,7 @@ class Marshaller
 
         if ($classComment) {
             if (!$type) {
-                preg_match('/@property\s+([^\s]+)\s*\\$' . $propertyName . '\s.*$/m', $classComment, $matches);
+                preg_match('/@property\s+([^\s]+)\s*\\$' . $propertyName . '(?:\s.*)?$/m', $classComment, $matches);
                 if (!empty($matches[1])) {
                     $type = trim($matches[1]);
                 }
