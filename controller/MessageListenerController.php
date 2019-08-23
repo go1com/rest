@@ -3,6 +3,7 @@
 namespace go1\rest\controller;
 
 use Exception;
+use go1\rest\errors\RestError;
 use go1\rest\errors\RuntimeError;
 use go1\rest\Request;
 use go1\rest\Response;
@@ -48,6 +49,8 @@ class MessageListenerController
             return $this->doPost($request, $response);
         } catch (JsonException $e) {
             return $response->jr('Invalid payload');
+        } catch (RestError $e) {
+            throw $e;
         } catch (Exception $e) {
             throw new RuntimeError('failed commit: ' . $e->getMessage());
         }
