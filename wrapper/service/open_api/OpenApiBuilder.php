@@ -40,24 +40,24 @@ class OpenApiBuilder
         return $infoBuilder;
     }
 
-    public function get(string $path, $controller = null): PathBuilder
+    public function get(string $path, $controller = null): OpenApiBuilder
     {
-        return $this->withPath($path, 'GET', $controller);
+        return $this->withPath($path, 'GET', $controller)->end();
     }
 
-    public function post(string $path, $controller = null): PathBuilder
+    public function post(string $path, $controller = null): OpenApiBuilder
     {
-        return $this->withPath($path, 'POST', $controller);
+        return $this->withPath($path, 'POST', $controller)->end();
     }
 
-    public function put(string $path, $controller = null): PathBuilder
+    public function put(string $path, $controller = null): OpenApiBuilder
     {
-        return $this->withPath($path, 'PUT', $controller);
+        return $this->withPath($path, 'PUT', $controller)->end();
     }
 
-    public function delete(string $path, $controller = null): PathBuilder
+    public function delete(string $path, $controller = null): OpenApiBuilder
     {
-        return $this->withPath($path, 'DELETE', $controller);
+        return $this->withPath($path, 'DELETE', $controller)->end();
     }
 
     public function withPath(string $path, string $method, $controller = null): PathBuilder
