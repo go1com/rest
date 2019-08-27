@@ -8,6 +8,7 @@ use go1\rest\controller\DefaultController;
 use go1\rest\controller\health\HealthController;
 use go1\rest\errors\RestErrorHandler;
 use go1\rest\tests\RestTestCase;
+use go1\rest\util\MessageFactory;
 use go1\rest\wrapper\CacheClient;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
@@ -114,6 +115,11 @@ class RestService extends \DI\Bridge\Slim\App
         }
 
         $this->cnf = [];
+    }
+
+    public function handle(Request $req)
+    {
+        return $this->process($req, (new MessageFactory)->createResponse());
     }
 
     public function serviceName(): string
