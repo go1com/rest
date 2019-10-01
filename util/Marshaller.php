@@ -128,7 +128,6 @@ class Marshaller
         return $obj;
     }
 
-
     private function scalarCast($type, $value)
     {
         switch ($type) {
