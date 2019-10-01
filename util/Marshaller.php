@@ -81,9 +81,10 @@ class Marshaller
      * @param stdClass $input
      * @param Model    $obj
      * @param array    $propertyFormat
+     * @param bool     $forceObject
      * @return mixed Entity
      */
-    public function parse(stdClass $input, $obj, array $propertyFormat = ['json'])
+    public function parse(stdClass $input, $obj, array $propertyFormat = ['json'], $forceObject = false)
     {
         if ('stdClass' == get_class($obj)) {
             return $input;
@@ -111,6 +112,11 @@ class Marshaller
                 }
             } else {
                 $value = $input->{$path};
+
+                if ($forceObject && is_array($value) && empty($value)) {
+                    $value = (object)[];
+                }
+
                 $value = $this->parse($value, new $type, $propertyFormat);
             }
 
