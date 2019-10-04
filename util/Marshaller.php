@@ -108,7 +108,7 @@ class Marshaller
                 foreach ($input->{$path} as $v) {
                     $value[] = is_scalar($v)
                         ? $this->scalarCast($type, $v)
-                        : $this->parse($v, new $type);
+                        : $this->parse($v, new $type, ['json'], $forceObject);
                 }
             } else {
                 $value = $input->{$path};
@@ -117,7 +117,7 @@ class Marshaller
                     $value = (object)[];
                 }
 
-                $value = $this->parse($value, new $type, $propertyFormat);
+                $value = $this->parse($value, new $type, $propertyFormat, $forceObject);
             }
 
             $obj->{$name} = $value;
