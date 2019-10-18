@@ -18,9 +18,15 @@ class HttpClientTest extends RestTestCase
         $_SERVER['HTTP_X_REQUEST_ID'] = $requestId = 'abcd-1234';
 
         $client = $this->getObjectProperty($rest->getContainer()->get(ClientInterface::class), 'client');
-        $options = $this->getObjectProperty($client, 'defaultOptions');;
+        $options = $this->getObjectProperty($client, 'defaultOptions');
 
-        $this->assertEquals($requestId, $options['headers']['x-request-id'][0]);
+        if (isset($options['normalized_headers'])) {
+            $this->assertEquals('X-Request-Id: abcd-1234', $options['normalized_headers']['x-request-id'][0]);
+        }
+
+        if (isset($options['headers'])) {
+            $this->assertEquals($requestId, $options['headers']['x-request-id'][0]);
+        }
     }
 
     public function testContract()
