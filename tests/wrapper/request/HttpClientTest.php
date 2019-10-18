@@ -5,6 +5,8 @@ namespace go1\rest\tests\wrapper\request;
 use go1\rest\tests\RestTestCase;
 use go1\rest\tests\traits\ReflectionTrait;
 use Psr\Http\Client\ClientInterface;
+use Symfony\Component\HttpClient\Chunk\DataChunk;
+use Symfony\Contracts\HttpClient\ChunkInterface;
 
 class HttpClientTest extends RestTestCase
 {
@@ -19,5 +21,11 @@ class HttpClientTest extends RestTestCase
         $options = $this->getObjectProperty($client, 'defaultOptions');;
 
         $this->assertEquals($requestId, $options['headers']['x-request-id'][0]);
+    }
+
+    public function testContract()
+    {
+        $chunk = new DataChunk;
+        $this->assertTrue($chunk instanceof ChunkInterface);
     }
 }
