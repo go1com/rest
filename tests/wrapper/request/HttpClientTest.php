@@ -22,9 +22,7 @@ class HttpClientTest extends RestTestCase
 
         if (isset($options['normalized_headers'])) {
             $this->assertEquals('X-Request-Id: abcd-1234', $options['normalized_headers']['x-request-id'][0]);
-        }
-
-        if (isset($options['headers'])) {
+        } elseif (isset($options['headers'])) {
             $this->assertEquals($requestId, $options['headers']['x-request-id'][0]);
         }
     }
