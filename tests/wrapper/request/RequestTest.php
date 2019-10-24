@@ -27,6 +27,6 @@ class RequestTest extends RestTestCase
     public function testEmptyBody()
     {
         $req = $this->mf()->createRequest('POST', '/', [], '');
-        $this->assertNull($req->json(false));
+        $this->assertEmpty($req->json(false));
     }
 }

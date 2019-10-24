@@ -65,7 +65,7 @@ class Request extends \Slim\Http\Request
     {
         $body = $this->bodyString();
         if (empty($body)) {
-            return null;
+            return [];
         }
 
         $data = json_decode($this->bodyString(), $assoc, $depth, JSON_THROW_ON_ERROR);
