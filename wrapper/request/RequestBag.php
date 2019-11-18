@@ -20,4 +20,9 @@ class RequestBag
     {
         return isset($this->items[$key]) ? $this->items[$key] : $default;
     }
+
+    public function set($key, $value)
+    {
+        $this->items[$key] = $value;
+    }
 }
