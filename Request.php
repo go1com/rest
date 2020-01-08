@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use go1\rest\wrapper\request\RequestBag;
 use JsonException;
 use RuntimeException;
+use stdClass;
 use function in_array;
 use function is_numeric;
 
@@ -90,7 +91,7 @@ class Request extends \Slim\Http\Request
         return $jwt;
     }
 
-    private function jwtPayload()
+    public function jwtPayload(): ?stdClass
     {
         $jwt = $this->jwt();
         $jwt = is_null($jwt) ? null : ((2 !== substr_count($jwt, '.')) ? null : explode('.', $jwt)[1]);
