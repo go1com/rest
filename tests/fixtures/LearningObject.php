@@ -36,20 +36,6 @@ class LearningObject extends Model
 }
 
 /**
- * @property string $currency
- * @property float  $price
- * @property float  $tax
- * @property bool   $taxIncluded
- */
-class LearningObjectPricing extends Model
-{
-    protected $currency;
-    protected $price;
-    protected $tax;
-    protected $taxIncluded;
-}
-
-/**
  * @property bool $singleLi
  */
 class LearningObjectMetadata extends Model

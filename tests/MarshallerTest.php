@@ -2,6 +2,7 @@
 
 namespace go1\rests\tests;
 
+use go1\rest\tests\fixtures\ContentModel;
 use go1\rest\tests\fixtures\LearningObject;
 use go1\rest\tests\RestTestCase;
 use go1\rest\util\Marshaller;
@@ -12,8 +13,7 @@ class MarshallerTest extends RestTestCase
 {
     public function testPropertyComment()
     {
-        $obj = new class extends Model
-        {
+        $obj = new class extends Model {
             /**
              * @var int
              * @json portalId
@@ -60,8 +60,7 @@ class MarshallerTest extends RestTestCase
 
     public function testDumpWithOmmitEmpty()
     {
-        $obj = new class extends Model
-        {
+        $obj = new class extends Model {
             /**
              * @var int
              * @json userId
@@ -86,9 +85,9 @@ class MarshallerTest extends RestTestCase
 
     public function testSomePropertiesWithTheSamePrefix()
     {
-        $obj   = new PropertiesWithTheSamePrefixModel();
-        $input = (object)[
-            'stripe_id'          => '1',
+        $obj = new PropertiesWithTheSamePrefixModel();
+        $input = (object) [
+            'stripe_id'             => '1',
             'stripe_id_description' => 'some comments',
         ];
         $marshaller = $this->get(Marshaller::class);
@@ -96,5 +95,22 @@ class MarshallerTest extends RestTestCase
 
         $this->assertEquals(gettype($obj->stripeId), gettype(1));
         $this->assertEquals(gettype($obj->stripeIdDescription), gettype('hello'));
+    }
+
+    public function testTypedProperty()
+    {
+        $input = (object) [
+            'id'        => 111,
+            'title'     => 'My content',
+            'pricing'   => (object) ['currency' => 'AUD', 'price' => 10.00],
+            'published' => true,
+        ];
+
+        /** @var LearningObject $obj */
+        $obj = $this->get(Marshaller::class)->parse($input, new ContentModel);
+
+        $this->assertEquals(111, $obj->id);
+        $this->assertEquals('My content', $obj->title);
+        $this->assertEquals('AUD', $obj->pricing->currency);
     }
 }
