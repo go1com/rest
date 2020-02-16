@@ -2,6 +2,8 @@
 
 namespace go1\rest\wrapper\request;
 
+use go1\rest\errors\MissingCredentialsError;
+use go1\rest\errors\MissingScopeError;
 use go1\rest\wrapper\ServiceUrl;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
@@ -10,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use function json_decode;
+use function json_encode;
 
 /**
  * Example:
@@ -28,9 +31,9 @@ use function json_decode;
  */
 class Http
 {
-    private $client;
-    private $sf;
-    private $serviceUrl;
+    private ClientInterface $client;
+    private Psr17Factory    $sf;
+    private ServiceUrl      $serviceUrl;
 
     public function __construct(ClientInterface $client, Psr17Factory $sf, ServiceUrl $serviceUrl)
     {

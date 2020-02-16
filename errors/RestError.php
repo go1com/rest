@@ -41,6 +41,12 @@ abstract class RestError extends DomainException
             case RabbitMqError::class:
                 return 7;
 
+            case MissingCredentialsError::class:
+                return 8;
+
+            case MissingScopeError::class:
+                return 9;
+
             default:
                 return 0;
         }
