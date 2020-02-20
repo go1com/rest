@@ -21,6 +21,7 @@ use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use function class_exists;
+use function DI\get;
 use function getenv;
 use function str_replace;
 use function sys_get_temp_dir;
@@ -83,6 +84,7 @@ class RestService extends \DI\Bridge\Slim\App
                 return $res->withProtocolVersion($ver);
             },
             'errorHandler'             => function (Container $c) { return $c->get(RestErrorHandler::class); },
+            'phpErrorHandler'          => get('errorHandler'),
             Stream::class              => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
             'stream.transport'         => null,
             LoggerInterface::class     => function () { return new NullLogger; },

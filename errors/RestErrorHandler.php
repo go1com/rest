@@ -7,6 +7,7 @@ use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\tests\RestTestCase;
 use Psr\Log\LoggerInterface;
+use Throwable;
 use function class_exists;
 use function getenv;
 use function sprintf;
@@ -20,7 +21,14 @@ class RestErrorHandler
         $this->logger = $logger;
     }
 
-    public function __invoke(Request $request, Response $response, Exception $e)
+    /**
+     * @param Request             $request
+     * @param Response            $response
+     * @param Exception|Throwable $e
+     * @return Response
+     * @throws Exception
+     */
+    public function __invoke(Request $request, Response $response, $e)
     {
         $debugging = getenv('REST_DEBUGGING') ?? false;
         if ($debugging) {
@@ -42,11 +50,15 @@ class RestErrorHandler
             }
         }
 
-        if ($e instanceof RestError) {
-            return $this->handleRestError($request, $response, $e);
+        if ($e instanceof Exception) {
+            if ($e instanceof RestError) {
+                return $this->handleRestError($request, $response, $e);
+            }
+
+            return $this->handleException($request, $response, $e);
         }
 
-        return $this->handle($request, $response, $e);
+        return $this->handleError($request, $response, $e);
     }
 
     private function handleRestError(Request $request, Response $response, RestError $e)
@@ -72,7 +84,7 @@ class RestErrorHandler
         );
     }
 
-    private function handle(Request $request, Response $response, Exception $e)
+    private function handleException(Request $request, Response $response, Exception $e)
     {
         if (class_exists(RestTestCase::class, false)) {
             return $response->withJson(
@@ -83,6 +95,23 @@ class RestErrorHandler
                     'trace'   => $e->getTraceAsString(),
                 ],
                 500
+            );
+        }
+
+        throw $e;
+    }
+
+    private function handleError(Request $request, Response $response, Throwable $e)
+    {
+        if (class_exists(RestTestCase::class, false)) {
+            return $response->withJson(
+                [
+                    'method'  => $request->getMethod(),
+                    'code'    => $e->getCode(),
+                    'message' => $e->getMessage(),
+                    'trace'   => $e->getTraceAsString(),
+                ],
+                400
             );
         }
 

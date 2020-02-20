@@ -22,6 +22,21 @@ class ResponseTest extends RestTestCase
         $this->assertEquals("bar", $res->json()->foo);
     }
 
+    public function testThrowableError()
+    {
+        $rest = $this->rest();
+        $rest->get('/error', function () {
+            $callback = function (int $i) { };
+            $callback('hi');
+        });
+
+        $request = $this->mf()->createRequest('GET', '/error');
+        $response = $this->mf()->createResponse();
+        $response = $rest->process($request, $response);
+
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
     public function testError()
     {
         $rest = $this->rest();
