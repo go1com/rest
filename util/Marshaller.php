@@ -4,9 +4,11 @@ namespace go1\rest\util;
 
 use DI\Container;
 use ReflectionObject;
+use ReflectionProperty;
 use stdClass;
 use function apcu_fetch;
 use function apcu_store;
+use function dump;
 use function function_exists;
 use function get_class;
 use function implode;
@@ -47,7 +49,7 @@ class Marshaller
 
         $info = $this->objectInfo($obj, $propertyFormat);
         foreach ($info['properties'] as $name => $property) {
-            list($path, $type, $options) = $property;
+            [$path, $type, $options] = $property;
             if (!$path) {
                 continue;
             }
@@ -93,7 +95,7 @@ class Marshaller
         $obj->setInit(true);
         $info = $this->objectInfo($obj, $propertyFormat);
         foreach ($info['properties'] as $name => $property) {
-            list($path, $type) = $info['properties'][$name];
+            [$path, $type] = $info['properties'][$name];
 
             if (!$path || !isset($input->{$path})) {
                 continue;
@@ -114,7 +116,7 @@ class Marshaller
                 $value = $input->{$path};
 
                 if ($forceObject && is_array($value) && empty($value)) {
-                    $value = (object)[];
+                    $value = (object) [];
                 }
 
                 $value = $this->parse($value, new $type, $propertyFormat, $forceObject);
@@ -171,11 +173,10 @@ class Marshaller
         ];
 
         foreach ($rObject->getProperties() as $rProperty) {
-            $pName = $rProperty->getName();
-            list($path, $type, $options) = $this->property($comment, $rProperty->getDocComment(), $pName, $propertyFormat);
+            [$path, $type, $options] = $this->property($comment, $rProperty, $propertyFormat);
             $type = explode(' ', $type)[0];
 
-            $info['properties'][$pName] = [$path, $type, $options];
+            $info['properties'][$rProperty->getName()] = [$path, $type, $options];
         }
 
         if ($this->cache) {
@@ -185,10 +186,12 @@ class Marshaller
         return $info;
     }
 
-    private function property(string $classComment, string $propertyComment, string $propertyName, array $propertyFormats)
+    private function property(string $classComment, ReflectionProperty $rProperty, array $propertyFormats)
     {
+        $propertyName = $rProperty->getName();
+        $propertyComment = $rProperty->getDocComment();
         $path = $propertyName;
-        $type = null;
+        $type = !$rProperty->getType() ? null : $rProperty->getType()->getName();
         $options = [];
 
         if ($propertyComment) {
