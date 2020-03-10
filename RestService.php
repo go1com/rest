@@ -24,6 +24,7 @@ use function class_exists;
 use function DI\get;
 use function getenv;
 use function str_replace;
+use function substr;
 use function sys_get_temp_dir;
 
 /**
@@ -69,6 +70,8 @@ class RestService extends \DI\Bridge\Slim\App
                         // Example from `$_SERVER['HTTP_X_REQUEST_ID']` we will have the header name `X-Request-Id`
                         // @see: http://php.net/manual/en/function.getallheaders.php#84262
                         $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                    } elseif ($name === 'User-Agent') {
+                        $headers['User-Agent'] .= ' ' .substr($value, 0, 255);
                     }
                 }
 
