@@ -20,6 +20,8 @@ use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
+use DDTrace\Bootstrap;
+use DDTrace\Integrations\IntegrationsLoader;
 use function class_exists;
 use function DI\get;
 use function getenv;
@@ -44,11 +46,19 @@ class RestService extends \DI\Bridge\Slim\App
         $this->cnf = $cnf + $this->defaultServices();
 
         parent::__construct();
-
+        $this->registerTracingService();
         $this->defaultRoutes();
 
         if (!empty($cnf['boot'])) {
             call_user_func($cnf['boot'], $this);
+        }
+    }
+
+    private function registerTracingService()
+    {
+        if (!empty(getenv('DD_AGENT_HOST')) && extension_loaded('ddtrace')) {
+            Bootstrap::tracerOnce();
+            IntegrationsLoader::load();
         }
     }
 
