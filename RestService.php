@@ -44,7 +44,6 @@ class RestService extends \DI\Bridge\Slim\App
         $this->cnf = $cnf + $this->defaultServices();
 
         parent::__construct();
-
         $this->defaultRoutes();
 
         if (!empty($cnf['boot'])) {

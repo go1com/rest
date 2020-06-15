@@ -1,5 +1,7 @@
 <?php
 
+use DDTrace\Bootstrap;
+use DDTrace\Integrations\IntegrationsLoader;
 use go1\rest\RestService;
 use go1\rest\wrapper\Manifest;
 
@@ -20,6 +22,11 @@ return call_user_func(
         $manifest = require $path;
         $service = $manifest->rest()->get();
         $service->getContainer()->set('REST_MANIFEST', $path);
+
+        if (!empty(getenv('DD_AGENT_HOST')) && extension_loaded('ddtrace')) {
+            Bootstrap::tracerOnce();
+            IntegrationsLoader::load();
+        }
 
         return ('cli' === php_sapi_name()) ? $service : $service->run();
     }
