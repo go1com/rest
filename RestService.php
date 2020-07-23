@@ -20,6 +20,7 @@ use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use Slim\Http\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
+use function call_user_func;
 use function class_exists;
 use function DI\get;
 use function getenv;
@@ -37,7 +38,7 @@ class RestService extends \DI\Bridge\Slim\App
 
     private        $cnf;
     private        $name;
-    private static $onBoot = [];
+    private static $onBoot = null;
 
     public function __construct(array $cnf = [])
     {
@@ -47,14 +48,14 @@ class RestService extends \DI\Bridge\Slim\App
         parent::__construct();
         $this->defaultRoutes();
 
-        foreach (self::$onBoot as $onBoot) {
-            call_user_func($onBoot, $this);
+        if (self::$onBoot) {
+            call_user_func(self::$onBoot, $this);
         }
     }
 
     public static function onBoot(callable $callback)
     {
-        self::$onBoot[] = $callback;
+        self::$onBoot = $callback;
     }
 
     protected function defaultRoutes()
