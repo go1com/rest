@@ -25,10 +25,10 @@ class RestBuilder
     public function __construct(Manifest $builder)
     {
         $this->builder = $builder;
-        $this->config = ['boot' => $this->onBoot()];
+        RestService::onBoot([$this, 'onBoot']);
     }
 
-    private function onBoot()
+    public function onBoot()
     {
         return function (RestService $rest) {
             $api = $this->builder->openAPI();

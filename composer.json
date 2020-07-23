@@ -16,7 +16,7 @@
         "ext-json":                      "*",
         "firebase/php-jwt":              "^5.0",
         "nyholm/psr7":                   "^1.1.0",
-        "php-di/slim-bridge":            "^2.0",
+        "php-di/slim-bridge":            "2.0.1",
         "php-http/message":              "^1.7.2",
         "psr/http-client":               "^1.0.0",
         "psr/simple-cache":              "^1.0.1",
@@ -46,5 +46,8 @@
         "branch-alias": {
             "dev-master": "0.1-dev"
         }
-    }
+    },
+    "repositories":      [
+        { "type": "vcs", "url": "https://github.com/andytruong/Slim-Bridge.git" }
+    ]
 }

@@ -35,8 +35,9 @@ class RestService extends \DI\Bridge\Slim\App
     const VERSION     = 'v1.0';
     const SYSTEM_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvYmplY3QiOnsidHlwZSI6InVzZXIiLCJjb250ZW50Ijp7ImlkIjoxLCJwcm9maWxlX2lkIjoxLCJyb2xlcyI6WyJBZG1pbiBvbiAjQWNjb3VudHMiXSwibWFpbCI6IjFAMS4xIn19fQ.YwGrlnegpd_57ek0vew5ixBfzhxiepc5ODVwPva9egs';
 
-    private $cnf;
-    private $name;
+    private        $cnf;
+    private        $name;
+    private static $onBoot = [];
 
     public function __construct(array $cnf = [])
     {
@@ -46,9 +47,14 @@ class RestService extends \DI\Bridge\Slim\App
         parent::__construct();
         $this->defaultRoutes();
 
-        if (!empty($cnf['boot'])) {
-            call_user_func($cnf['boot'], $this);
+        foreach (self::$onBoot as $onBoot) {
+            call_user_func($onBoot, $this);
         }
+    }
+
+    public static function onBoot(callable $callback)
+    {
+        self::$onBoot[] = $callback;
     }
 
     protected function defaultRoutes()
