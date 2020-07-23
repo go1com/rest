@@ -28,46 +28,44 @@ class RestBuilder
         RestService::onBoot([$this, 'onBoot']);
     }
 
-    public function onBoot()
+    public function onBoot(RestService $rest)
     {
-        return function (RestService $rest) {
-            $api = $this->builder->openAPI();
+        $api = $this->builder->openAPI();
 
-            if (!is_null($this->boot)) {
-                call_user_func($this->boot, $rest, $this->builder);
+        if (!is_null($this->boot)) {
+            call_user_func($this->boot, $rest, $this->builder);
+        }
+
+        $binding = $this->builder->stream()->build();
+        if ($binding) {
+            $rest->get('/consume', [MessageListenerController::class, 'get']);
+            $rest->post('/consume', [MessageListenerController::class, 'post']);
+            $stream = $rest->getContainer()->get(Stream::class);
+            foreach ($binding as $_) {
+                $stream->on($_[0], $_[1], $_[2]);
             }
+        }
 
-            $binding = $this->builder->stream()->build();
-            if ($binding) {
-                $rest->get('/consume', [MessageListenerController::class, 'get']);
-                $rest->post('/consume', [MessageListenerController::class, 'post']);
-                $stream = $rest->getContainer()->get(Stream::class);
-                foreach ($binding as $_) {
-                    $stream->on($_[0], $_[1], $_[2]);
-                }
+        $api->withPath('/install', 'POST', [InstallController::class, 'post']);
+
+        $paths = $api->paths();
+        if (!$paths) {
+            return;
+        }
+
+        # Provide GET /api
+        $rest->get('/api', [ApiController::class, 'get']);
+
+        # Register openAPI routes with slim.
+        foreach ($paths as $pattern => &$methods) {
+            foreach ($methods as $method => &$_) {
+                $this->addRoute($rest, $method, $pattern, $_['#controller'], $_['#middleware'] ?? [], $_['parameters']);
             }
+        }
 
-            $api->withPath('/install', 'POST', [InstallController::class, 'post']);
-
-            $paths = $api->paths();
-            if (!$paths) {
-                return;
-            }
-
-            # Provide GET /api
-            $rest->get('/api', [ApiController::class, 'get']);
-
-            # Register openAPI routes with slim.
-            foreach ($paths as $pattern => &$methods) {
-                foreach ($methods as $method => &$_) {
-                    $this->addRoute($rest, $method, $pattern, $_['#controller'], $_['#middleware'] ?? [], $_['parameters']);
-                }
-            }
-
-            foreach ($api->middlewares() as $middleware) {
-                $rest->add($this->parseMiddleware($rest, $middleware));
-            }
-        };
+        foreach ($api->middlewares() as $middleware) {
+            $rest->add($this->parseMiddleware($rest, $middleware));
+        }
     }
 
     private function addRoute(RestService $rest, $method, $pattern, $controller, array $middleware, array $parameters)
