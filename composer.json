@@ -25,7 +25,7 @@
         "symfony/http-client":           "^v4.4.5",
         "symfony/http-client-contracts": "^1.1.8",
         "symfony/var-dumper":            "^v4.3.2",
-        "datadog/dd-trace": "^0.40"
+        "datadog/dd-trace":              "^0.40"
     },
     "require-dev":       {
         "beberlei/assert":             "^3.2.0",

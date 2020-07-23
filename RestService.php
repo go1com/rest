@@ -70,7 +70,7 @@ class RestService extends \DI\Bridge\Slim\App
                         // @see: http://php.net/manual/en/function.getallheaders.php#84262
                         $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
                     } elseif ($name === 'User-Agent') {
-                        $headers['User-Agent'] .= ' ' .substr($value, 0, 255);
+                        $headers['User-Agent'] .= ' ' . substr($value, 0, 255);
                     }
                 }
 

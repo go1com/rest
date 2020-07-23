@@ -90,6 +90,7 @@ $manifest->rest()
     # Caching for performance, should only enable on production
     ->set('di.enable-compile', true) # must have APCU extension enabled
     ->set('marshaller.cache', true)  # must have APCU extension enabled
+
     # ! --- caching config ---
     ->set('userCreateJsonValidatorMiddleware', function (Container $c) {
         return new JsonSchemaValidatorMiddleWare(
