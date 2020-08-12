@@ -14,9 +14,9 @@
     "require":           {
         "php":                           "^7.4",
         "ext-json":                      "*",
-        "cweagans/composer-patches":     "~1.0",
         "firebase/php-jwt":              "^5.0",
         "nyholm/psr7":                   "^1.1.0",
+        "opis/closure":                  "^3.5.6",
         "php-di/slim-bridge":            "2.0.0",
         "php-http/message":              "^1.7.2",
         "psr/http-client":               "^1.0.0",
@@ -46,11 +46,6 @@
     "extra":             {
         "branch-alias": {
             "dev-master": "0.1-dev"
-        },
-        "patches":      {
-            "php-di/slim-bridge": {
-                "issue-63": "https://github.com/andytruong/Slim-Bridge/commit/100149f04a6f355f29674083ef54dba1b59a50da.patch"
-            }
         }
     }
 }
