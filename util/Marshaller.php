@@ -8,11 +8,11 @@ use ReflectionProperty;
 use stdClass;
 use function apcu_fetch;
 use function apcu_store;
-use function dump;
 use function function_exists;
 use function get_class;
 use function implode;
 use function ini_get;
+use function is_iterable;
 use function is_null;
 use function is_scalar;
 use function preg_match;
@@ -59,8 +59,11 @@ class Marshaller
                 $value = $this->scalarCast($type, $raw);
             } elseif (false !== strpos($type, '[]')) { # Support UserClass[]
                 $value = [];
-                foreach ($obj->{$name} as $v) {
-                    $value[] = $this->dump($v, $propertyFormat);
+
+                if (is_iterable($obj->{$name})) {
+                    foreach ($obj->{$name} as $v) {
+                        $value[] = $this->dump($v, $propertyFormat);
+                    }
                 }
             } else {
                 $value = $obj->{$name};

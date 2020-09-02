@@ -147,7 +147,7 @@ abstract class RestTestCase extends TestCase implements ContainerInterface
         // ---------------------
         if ($this->hasInstallRoute) {
             $res = $rest->process(
-                $this->mf()->createRequest('POST', '/install'),
+                $this->mf()->createRequest('POST', '/install?jwt=' . RestService::SYSTEM_USER),
                 $this->mf()->createResponse()
             );
 
