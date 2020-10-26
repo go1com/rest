@@ -41,6 +41,7 @@ class RestErrorHandler
                 'httpStatus' => (!$e instanceof RestError) ? 500 : $e->httpErrorCode(),
                 'request'    => sprintf('%s %s', $request->getMethod(), $request->getUri()->__toString()),
                 'trace'      => $e->getTrace(),
+                'exception'  => $e,
             ]
         );
 
