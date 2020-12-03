@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5588adab941bdadbaf988ee3e5f35992",
+    "content-hash": "4473ed6e3efcda44ab4d832c103d6fc3",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -60,70 +60,37 @@
         },
         {
             "name": "datadog/dd-trace",
-            "version": "0.40.0",
+            "version": "0.51.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DataDog/dd-trace-php.git",
-                "reference": "4a4628b92c60075dac62f93b34f5ea6aea58324d"
+                "reference": "963a83c33390e115c22a5c861e5674646438075a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/4a4628b92c60075dac62f93b34f5ea6aea58324d",
-                "reference": "4a4628b92c60075dac62f93b34f5ea6aea58324d",
+                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/963a83c33390e115c22a5c861e5674646438075a",
+                "reference": "963a83c33390e115c22a5c861e5674646438075a",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
-                "php": "~5.4.0 || ~5.6.0 || ^7.0"
+                "php": "^5.4 || ^7.0 || ^8.0.0"
             },
             "require-dev": {
                 "ext-posix": "*",
                 "g1a/composer-test-scenarios": "~3.0",
                 "mockery/mockery": "*",
-                "phpunit/phpunit": "^4",
+                "phpunit/phpunit": "*",
                 "squizlabs/php_codesniffer": "^3.3.0",
                 "symfony/process": "<5"
             },
             "type": "library",
             "extra": {
                 "scenarios": {
-                    "elasticsearch1": {
-                        "require": {
-                            "elasticsearch/elasticsearch": "1.2.*",
-                            "symfony/event-dispatcher": "~2.7"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
-                    "guzzle5": {
-                        "require": {
-                            "guzzlehttp/guzzle": "~5.0"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
-                    "guzzle6": {
-                        "require": {
-                            "guzzlehttp/guzzle": "~6.0"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
                     "opentracing1": {
                         "require": {
                             "opentracing/opentracing": "1.0.0-beta6"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
-                    "predis1": {
-                        "require": {
-                            "predis/predis": "^1.1"
                         },
                         "scenario-options": {
                             "create-lockfile": false
@@ -136,7 +103,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "DDTrace\\": "./src/DDTrace/"
+                    "DDTrace\\": "./src/api/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -160,7 +127,7 @@
                 "php",
                 "tracing"
             ],
-            "time": "2020-02-19T18:15:44+00:00"
+            "time": "2020-11-17T15:24:54+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -3109,6 +3076,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2019-09-17T06:23:10+00:00"
         },
         {
