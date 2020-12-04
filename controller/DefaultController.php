@@ -15,6 +15,8 @@ class DefaultController
             'service' => getenv('REST_SERVICE_NAME') ?: 'rest',
             'version' => getenv('REST_SERVICE_VERSION') ?: RestService::VERSION,
             'time'    => time(),
+            'tag'     => getenv('DD_VERSION') ?: '',
+            'env'     => getenv('DD_ENV') ?: ''
         ]);
     }
 }
