@@ -60,16 +60,16 @@
         },
         {
             "name": "datadog/dd-trace",
-            "version": "0.40.0",
+            "version": "0.53.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DataDog/dd-trace-php.git",
-                "reference": "4a4628b92c60075dac62f93b34f5ea6aea58324d"
+                "reference": "004cb1d431c47af1b4e0e3d1fc327ad749b4831c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/4a4628b92c60075dac62f93b34f5ea6aea58324d",
-                "reference": "4a4628b92c60075dac62f93b34f5ea6aea58324d",
+                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/004cb1d431c47af1b4e0e3d1fc327ad749b4831c",
+                "reference": "004cb1d431c47af1b4e0e3d1fc327ad749b4831c",
                 "shasum": ""
             },
             "require": {
