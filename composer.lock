@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5588adab941bdadbaf988ee3e5f35992",
+    "content-hash": "c5a568d7ea4015f30a2ca932f93e15fb",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -60,70 +60,37 @@
         },
         {
             "name": "datadog/dd-trace",
-            "version": "0.53.0",
+            "version": "0.55.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DataDog/dd-trace-php.git",
-                "reference": "004cb1d431c47af1b4e0e3d1fc327ad749b4831c"
+                "reference": "95ecb6be5149032c79eed61302166cde22585f94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/004cb1d431c47af1b4e0e3d1fc327ad749b4831c",
-                "reference": "004cb1d431c47af1b4e0e3d1fc327ad749b4831c",
+                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/95ecb6be5149032c79eed61302166cde22585f94",
+                "reference": "95ecb6be5149032c79eed61302166cde22585f94",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
-                "php": "~5.4.0 || ~5.6.0 || ^7.0"
+                "php": "^5.4 || ^7.0 || ^8.0.0"
             },
             "require-dev": {
                 "ext-posix": "*",
                 "g1a/composer-test-scenarios": "~3.0",
                 "mockery/mockery": "*",
-                "phpunit/phpunit": "^4",
+                "phpunit/phpunit": "*",
                 "squizlabs/php_codesniffer": "^3.3.0",
                 "symfony/process": "<5"
             },
             "type": "library",
             "extra": {
                 "scenarios": {
-                    "elasticsearch1": {
-                        "require": {
-                            "elasticsearch/elasticsearch": "1.2.*",
-                            "symfony/event-dispatcher": "~2.7"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
-                    "guzzle5": {
-                        "require": {
-                            "guzzlehttp/guzzle": "~5.0"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
-                    "guzzle6": {
-                        "require": {
-                            "guzzlehttp/guzzle": "~6.0"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
                     "opentracing1": {
                         "require": {
                             "opentracing/opentracing": "1.0.0-beta6"
-                        },
-                        "scenario-options": {
-                            "create-lockfile": false
-                        }
-                    },
-                    "predis1": {
-                        "require": {
-                            "predis/predis": "^1.1"
                         },
                         "scenario-options": {
                             "create-lockfile": false
@@ -136,7 +103,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "DDTrace\\": "./src/DDTrace/"
+                    "DDTrace\\": "./src/api/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -160,7 +127,11 @@
                 "php",
                 "tracing"
             ],
-            "time": "2020-02-19T18:15:44+00:00"
+            "support": {
+                "issues": "https://github.com/DataDog/dd-trace-php/issues",
+                "source": "https://github.com/DataDog/dd-trace-php/tree/0.55.0"
+            },
+            "time": "2021-02-04T17:46:09+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -4410,5 +4381,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }
