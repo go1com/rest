@@ -130,6 +130,19 @@ class DBConnectionOptionsTest extends RestTestCase
                     'password' => 'user_event_pass',
                 ],
             ],
+            // specify user
+            [
+                $baseEnv + ['EVENT_DB_USERNAME_SLAVE' => 'slave_user', 'EVENT_DB_PASSWORD_SLAVE' => 'slave_pass'],
+                'GET',
+                'event',
+                DatabaseConnections::CON_OPTION_DISABLE_MASTER,
+                [
+                    'dbname'   => 'event_dev',
+                    'host'     => 'slave.rds.go1.co',
+                    'user'     => 'slave_user',
+                    'password' => 'slave_pass',
+                ],
+            ]
         ];
     }
 }

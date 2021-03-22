@@ -55,9 +55,14 @@ class DatabaseConnections
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $useMaster = self::CON_OPTION_ALWAYS_MASTER === $masterMode
             || ($masterMode === self::CON_OPTION_AUTO_MASTER && 'GET' !== strtoupper($method));
-        $host = self::getEnvByPriority(["{$prefix}_HOST", 'RDS_DB_HOST', 'DEV_DB_HOST']);
+        $dbHost = self::getEnvByPriority(["{$prefix}_HOST", 'RDS_DB_HOST', 'DEV_DB_HOST']);
+        $dbUser = self::getEnvByPriority(["{$prefix}_USERNAME", 'RDS_DB_USERNAME', 'DEV_DB_USERNAME']);
+        $dbPass = self::getEnvByPriority(["{$prefix}_PASSWORD", 'RDS_DB_PASSWORD', 'DEV_DB_PASSWORD']);
+
         if (!$useMaster) {
-            $host = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $host;
+            $dbHost = self::getEnvByPriority(["{$prefix}_SLAVE", 'RDS_DB_SLAVE', 'DEV_DB_SLAVE']) ?: $dbHost;
+            $dbUser = self::getEnvByPriority(["{$prefix}_USERNAME_SLAVE", 'RDS_DB_USERNAME_SLAVE', 'DEV_DB_USERNAME_SLAVE']) ?: $dbUser;
+            $dbPass = self::getEnvByPriority(["{$prefix}_PASSWORD_SLAVE", 'RDS_DB_PASSWORD_SLAVE', 'DEV_DB_PASSWORD_SLAVE']) ?: $dbPass;
         }
 
         $isDevEnv = !in_array(self::getEnvByPriority(['_DOCKER_ENV', 'ENV']), ['staging', 'production']);
@@ -69,9 +74,9 @@ class DatabaseConnections
         return [
             'driver'        => $driver,
             'dbname'        => getenv("{$prefix}_NAME") ?: $dbName,
-            'host'          => $host,
-            'user'          => self::getEnvByPriority(["{$prefix}_USERNAME", 'RDS_DB_USERNAME', 'DEV_DB_USERNAME']),
-            'password'      => self::getEnvByPriority(["{$prefix}_PASSWORD", 'RDS_DB_PASSWORD', 'DEV_DB_PASSWORD']),
+            'host'          => $dbHost,
+            'user'          => $dbUser,
+            'password'      => $dbPass,
             'port'          => self::getEnvByPriority(["{$prefix}_PORT", 'RDS_DB_PORT', 'DEV_DB_PORT']) ?: 3306,
             'driverOptions' => [1002 => 'SET NAMES utf8'],
         ];
