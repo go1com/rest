@@ -16,6 +16,7 @@ class DefaultController
             'version' => getenv('REST_SERVICE_VERSION') ?: RestService::VERSION,
             'time'    => time(),
             'tag'     => getenv('DD_VERSION') ?: '',
+            'region'  => getenv('AZURE_REGION') ?: '',
             'env'     => getenv('DD_ENV') ?: ''
         ]);
     }
