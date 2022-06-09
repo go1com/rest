@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5a568d7ea4015f30a2ca932f93e15fb",
+    "content-hash": "6d55620348772811ab77d23f33ab5125",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -60,16 +60,16 @@
         },
         {
             "name": "datadog/dd-trace",
-            "version": "0.55.0",
+            "version": "0.74.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DataDog/dd-trace-php.git",
-                "reference": "95ecb6be5149032c79eed61302166cde22585f94"
+                "reference": "7e112e49def21fc1342fb6c04a1b685d4586863b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/95ecb6be5149032c79eed61302166cde22585f94",
-                "reference": "95ecb6be5149032c79eed61302166cde22585f94",
+                "url": "https://api.github.com/repos/DataDog/dd-trace-php/zipball/7e112e49def21fc1342fb6c04a1b685d4586863b",
+                "reference": "7e112e49def21fc1342fb6c04a1b685d4586863b",
                 "shasum": ""
             },
             "require": {
@@ -88,9 +88,25 @@
             "type": "library",
             "extra": {
                 "scenarios": {
-                    "opentracing1": {
+                    "opentracing_beta5": {
+                        "require": {
+                            "opentracing/opentracing": "1.0.0-beta5"
+                        },
+                        "scenario-options": {
+                            "create-lockfile": false
+                        }
+                    },
+                    "opentracing_beta6": {
                         "require": {
                             "opentracing/opentracing": "1.0.0-beta6"
+                        },
+                        "scenario-options": {
+                            "create-lockfile": false
+                        }
+                    },
+                    "opentracing10": {
+                        "require": {
+                            "opentracing/opentracing": "^1.0"
                         },
                         "scenario-options": {
                             "create-lockfile": false
@@ -102,6 +118,9 @@
                 }
             },
             "autoload": {
+                "files": [
+                    "./src/api/bootstrap.composer.php"
+                ],
                 "psr-4": {
                     "DDTrace\\": "./src/api/"
                 }
@@ -129,9 +148,9 @@
             ],
             "support": {
                 "issues": "https://github.com/DataDog/dd-trace-php/issues",
-                "source": "https://github.com/DataDog/dd-trace-php/tree/0.55.0"
+                "source": "https://github.com/DataDog/dd-trace-php/tree/0.74.0"
             },
-            "time": "2021-02-04T17:46:09+00:00"
+            "time": "2022-05-11T13:46:53+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -4381,5 +4400,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
