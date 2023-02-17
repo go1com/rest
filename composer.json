@@ -14,7 +14,7 @@
     "require":           {
         "php":                           "^7.4",
         "ext-json":                      "*",
-        "firebase/php-jwt":              "^5.0",
+        "firebase/php-jwt":              "^6.0",
         "nyholm/psr7":                   "^1.1.0",
         "opis/closure":                  "^3.5.6",
         "php-di/slim-bridge":            "2.0.0",
