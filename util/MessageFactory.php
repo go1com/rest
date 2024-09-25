@@ -4,33 +4,21 @@ namespace go1\rest\util;
 
 use go1\rest\Request;
 use go1\rest\Response;
-use Http\Message\MessageFactory as TheInterface;
-use Http\Message\StreamFactory\SlimStreamFactory;
-use Http\Message\UriFactory\SlimUriFactory;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Http\Headers;
+use Slim\Psr7\Factory\StreamFactory;
+use Slim\Psr7\Factory\UriFactory;
+use Slim\Psr7\Headers;
 
-/**
- * Creates Slim 3 messages.
- *
- * @author Mika Tuupola <tuupola@appelsiini.net>
- */
-final class MessageFactory implements TheInterface
+final class MessageFactory
 {
-    /**
-     * @var SlimStreamFactory
-     */
-    private $streamFactory;
+    private StreamFactory $streamFactory;
 
-    /**
-     * @var SlimUriFactory
-     */
-    private $uriFactory;
+    private UriFactory $uriFactory;
 
     public function __construct()
     {
-        $this->streamFactory = new SlimStreamFactory();
-        $this->uriFactory = new SlimUriFactory();
+		$this->streamFactory = new StreamFactory();
+		$this->uriFactory = new UriFactory();
     }
 
     public function streamFactory()
@@ -43,16 +31,13 @@ final class MessageFactory implements TheInterface
         return $this->uriFactory;
     }
 
-    /**
-     * @return Request|ServerRequestInterface
-     */
     public function createRequest(
         $method,
         $uri,
         array $headers = [],
-        $body = null,
+        $body = '',
         $protocolVersion = '1.1'
-    )
+    ): Request|ServerRequestInterface
     {
         return (new Request(
             $method,
@@ -65,18 +50,13 @@ final class MessageFactory implements TheInterface
         ))->withProtocolVersion($protocolVersion);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return Response
-     */
     public function createResponse(
         $statusCode = 200,
         $reasonPhrase = null,
         array $headers = [],
-        $body = null,
+        $body = '',
         $protocolVersion = '1.1'
-    )
+    ): Response
     {
         return (new Response(
             $statusCode,

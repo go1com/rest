@@ -4,20 +4,44 @@ namespace go1\rest;
 
 use Assert\LazyAssertionException;
 use Exception;
-use Slim\Http\Body;
+use JsonException;
+use Slim\Psr7\Stream;
+use Slim\Psr7\Response as SlimResponse;
 use function fopen;
 
-class Response extends \Slim\Http\Response
+class Response extends SlimResponse
 {
     public function withJsonString($data, $status = null)
     {
-        $response = $this->withBody(new Body(fopen('php://temp', 'r+')));
-        $response->body->write($data);
+		$body = new Stream(fopen('php://temp', 'r+'));
+		$body->write($data);
+
+		// Set the body and return the response with the proper headers
+		$response = $this->withBody($body);
 
         return $status
             ? $response->withHeader('Content-Type', 'application/json')->withStatus($status)
             : $response->withHeader('Content-Type', 'application/json');
     }
+
+	public function withJson($data, int $status = 200, int $encodingOptions = 0): self
+	{
+		// Encode the data to JSON
+		$json = json_encode($data, $encodingOptions);
+
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			throw new JsonException(json_last_error_msg());
+		}
+
+		// Create a new body and write the JSON data to it
+		$body = new Stream(fopen('php://temp', 'r+'));
+		$body->write($json);
+
+		// Return a new response with the JSON body and appropriate headers
+		return $this->withBody($body)
+			->withHeader('Content-Type', 'application/json')
+			->withStatus($status);
+	}
 
     public function jr($msg = 'Runtime error', int $statusCode = 400)
     {

@@ -2,6 +2,7 @@
 
 namespace go1\rest\controller\health;
 
+use go1\rest\Request;
 use go1\rest\Response;
 use function array_map;
 
@@ -14,11 +15,11 @@ class HealthController
         $this->collector = $collector;
     }
 
-    public function get(Response $response)
+    public function get(Request $request, Response $response)
     {
         $event = new HealthCollectorEvent();
         $this->collector->check($event);
-        
+
         $statusCode = 200;
         $metrics = [];
         array_map(

@@ -26,7 +26,7 @@ class MessageListenerController
         $this->stream = $stream;
     }
 
-    public function get(Response $response)
+    public function get(Request $request, Response $response)
     {
         foreach ($this->stream->listeners() as $name => $listener) {
             $listeners[$name] = $listener['description'];
