@@ -88,7 +88,7 @@ class RestService extends App
                 return ['headers' => $headers];
             },
             ClientInterface::class     => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
-            'request'                  => function (Container $c) {
+            'request'                  => function () {
 				$slimRequest = ServerRequestFactory::createFromGlobals();
 
 				// Return your custom Request object by initializing it with the Slim request data
@@ -114,6 +114,22 @@ class RestService extends App
             LoggerInterface::class     => function () { return new NullLogger; },
             RestService::class         => $this,
             Psr16CacheInterface::class => function (Container $c) { return $c->get(CacheClient::class)->get(); },
+			'notAllowedHandler'        => function ($c) {
+				return function ($request, $response, $methods) use ($c) {
+					$data = ['error' => 'Method Not Allowed', 'allowed_methods' => $methods];
+					return $response->withStatus(405)
+						->withHeader('Content-Type', 'application/json')
+						->write(json_encode($data));
+				};
+			},
+			'notFoundHandler'          => function ($c) {
+				return function ($request, $response, $methods) use ($c) {
+					$data = ['error' => 'Method Not Allowed', 'allowed_methods' => $methods];
+					return $response->withStatus(405)
+						->withHeader('Content-Type', 'application/json')
+						->write(json_encode($data));
+				};
+			}
         ];
     }
 
