@@ -8,16 +8,19 @@ use go1\rest\controller\DefaultController;
 use go1\rest\controller\health\HealthController;
 use go1\rest\errors\RestErrorHandler;
 use go1\rest\tests\RestTestCase;
-use go1\rest\util\MessageFactory;
+use go1\rest\util\ResponseFactory;
 use go1\rest\wrapper\CacheClient;
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
-use Slim\Http\Headers;
+use Slim\App;
+use Slim\Psr7\Factory\ServerRequestFactory;
+use Slim\Psr7\Headers;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 use function call_user_func;
@@ -28,10 +31,7 @@ use function str_replace;
 use function substr;
 use function sys_get_temp_dir;
 
-/**
- * @method Response process(ServerRequestInterface $request, ResponseInterface $response)
- */
-class RestService extends \DI\Bridge\Slim\App
+class RestService extends App
 {
     const VERSION     = 'v1.0';
     const SYSTEM_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvYmplY3QiOnsidHlwZSI6InVzZXIiLCJjb250ZW50Ijp7ImlkIjoxLCJwcm9maWxlX2lkIjoxLCJyb2xlcyI6WyJBZG1pbiBvbiAjQWNjb3VudHMiXSwibWFpbCI6IjFAMS4xIn19fQ.YwGrlnegpd_57ek0vew5ixBfzhxiepc5ODVwPva9egs';
@@ -45,8 +45,13 @@ class RestService extends \DI\Bridge\Slim\App
         $this->name = ($cnf['name'] ?? getenv('REST_SERVICE_NAME')) ?: 'rest';
         $this->cnf = $cnf + $this->defaultServices();
 
-        parent::__construct();
-        $this->defaultRoutes();
+		$containerBuilder = new ContainerBuilder();
+		$containerBuilder->addDefinitions($this->cnf);
+		$container = $containerBuilder->build();
+
+        parent::__construct($container->get(ResponseFactoryInterface::class), $container);
+
+		$this->defaultRoutes();
 
         if (self::$onBoot) {
             call_user_func(self::$onBoot, $this);
@@ -58,7 +63,7 @@ class RestService extends \DI\Bridge\Slim\App
         self::$onBoot = $callback;
     }
 
-    protected function defaultRoutes()
+	protected function defaultRoutes()
     {
         $this->get('/', [DefaultController::class, 'get']);
         $this->get('/healthz', [HealthController::class, 'get']);
@@ -84,14 +89,25 @@ class RestService extends \DI\Bridge\Slim\App
                 return ['headers' => $headers];
             },
             ClientInterface::class     => function (Container $c) { return new Psr18Client(HttpClient::create($c->get('http-client.options'))); },
-            'request'                  => function (Container $c) { return Request::createFromEnvironment($c->get('environment')); },
-            'response'                 => function (Container $c) {
-                $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
-                $res = new Response(200, $headers);
-                $ver = $c->get('settings')['httpVersion'];
+            'request'                  => function () {
+				$slimRequest = ServerRequestFactory::createFromGlobals();
 
-                return $res->withProtocolVersion($ver);
+				// Return your custom Request object by initializing it with the Slim request data
+				return new Request(
+					$slimRequest->getMethod(),
+					$slimRequest->getUri(),
+					new Headers($slimRequest->getHeaders()),
+					$slimRequest->getCookieParams(),
+					$slimRequest->getServerParams(),
+					$slimRequest->getBody(),
+					$slimRequest->getUploadedFiles(),
+				);
+			},
+			Response::class            => function () {
+                $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
+                return new Response(200, $headers);
             },
+			ResponseFactoryInterface::class => function () { return new ResponseFactory(); },
             'errorHandler'             => function (Container $c) { return $c->get(RestErrorHandler::class); },
             'phpErrorHandler'          => get('errorHandler'),
             Stream::class              => function (Container $c) { return new Stream($c, $c->get('stream.transport')); },
@@ -99,6 +115,22 @@ class RestService extends \DI\Bridge\Slim\App
             LoggerInterface::class     => function () { return new NullLogger; },
             RestService::class         => $this,
             Psr16CacheInterface::class => function (Container $c) { return $c->get(CacheClient::class)->get(); },
+			'notAllowedHandler'        => function ($c) {
+				return function ($request, $response, $methods) use ($c) {
+					$data = ['error' => 'Method Not Allowed', 'allowed_methods' => $methods];
+					return $response->withStatus(405)
+						->withHeader('Content-Type', 'application/json')
+						->write(json_encode($data));
+				};
+			},
+			'notFoundHandler'          => function ($c) {
+				return function ($request, $response, $methods) use ($c) {
+					$data = ['error' => 'Method Not Allowed', 'allowed_methods' => $methods];
+					return $response->withStatus(405)
+						->withHeader('Content-Type', 'application/json')
+						->write(json_encode($data));
+				};
+			}
         ];
     }
 
@@ -128,13 +160,13 @@ class RestService extends \DI\Bridge\Slim\App
         $this->cnf = [];
     }
 
-    public function handle(Request $req)
-    {
-        return $this->process($req, (new MessageFactory)->createResponse());
-    }
-
     public function serviceName(): string
     {
         return $this->name;
     }
+
+	public function process(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+	{
+		return $this->handle($request);
+	}
 }

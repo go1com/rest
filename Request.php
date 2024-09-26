@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use go1\rest\wrapper\request\RequestBag;
 use JsonException;
 use RuntimeException;
+use Slim\Psr7\Request as SlimRequest;
 use stdClass;
 use function in_array;
 use function is_numeric;
@@ -13,7 +14,7 @@ use function is_numeric;
 /**
  * @property RequestBag $request
  */
-class Request extends \Slim\Http\Request
+class Request extends SlimRequest
 {
     const ROLE_SYSTEM        = 'Admin on #Accounts';
     const ROLE_ADMIN         = 'administrator';
@@ -81,14 +82,12 @@ class Request extends \Slim\Http\Request
 
     public function jwt()
     {
-        $auth = $this->getHeaderLine('Authorization');
-        if ($auth && (0 === strpos($auth, 'Bearer '))) {
-            $jwt = substr($auth, 7);
-        }
+		$auth = $this->getHeaderLine('Authorization');
+		if ($auth && strpos($auth, 'Bearer ') === 0) {
+			return substr($auth, 7);
+		}
 
-        $jwt = $jwt ?? $this->getQueryParam('jwt') ?? $this->getCookieParam('jwt');
-
-        return $jwt;
+		return $this->getQueryParams()['jwt'] ?? $this->getCookieParams()['jwt'] ?? null;
     }
 
     public function jwtPayload(): ?stdClass

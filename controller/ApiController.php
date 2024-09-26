@@ -3,6 +3,7 @@
 namespace go1\rest\controller;
 
 use DI\Container;
+use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\wrapper\Manifest;
 use function array_values;
@@ -23,7 +24,7 @@ class ApiController
         $this->manifest = require $container->get('REST_MANIFEST');
     }
 
-    public function get(Response $response)
+    public function get(Request $request, Response $response)
     {
         return $response->withJson($this->build());
     }

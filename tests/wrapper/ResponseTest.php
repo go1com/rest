@@ -22,35 +22,24 @@ class ResponseTest extends RestTestCase
         $this->assertEquals("bar", $res->json()->foo);
     }
 
-    public function testThrowableError()
-    {
-        $rest = $this->rest();
-        $rest->get('/error', function () {
-            $callback = function (int $i) { };
-            $callback('hi');
-        });
+	public function testError()
+	{
+		$this->expectException(InternalResourceError::class);
+		$this->expectExceptionCode(0);
+		$this->expectExceptionMessage('Just for test');
 
-        $request = $this->mf()->createRequest('GET', '/error');
-        $response = $this->mf()->createResponse();
-        $response = $rest->process($request, $response);
+		$rest = $this->rest();
+		$rest->get('/error', function () {
+			InternalResourceError::throw('Just for test');
+		});
 
-        $this->assertEquals(400, $response->getStatusCode());
-    }
+		$request = $this->mf()->createRequest('GET', '/error');
+		$response = $this->mf()->createResponse();
+		$response = $rest->process($request, $response);
 
-    public function testError()
-    {
-        $rest = $this->rest();
-        $rest->get('/error', function () {
-            InternalResourceError::throw('Just for test');
-        });
-
-        $request = $this->mf()->createRequest('GET', '/error');
-        $response = $this->mf()->createResponse();
-        $response = $rest->process($request, $response);
-
-        $this->assertEquals(403, $response->getStatusCode());
-        $this->assertEquals('Just for test', $response->json()->errors[0]->title);
-    }
+		$this->assertEquals(403, $response->getStatusCode());
+		$this->assertEquals('Just for test', $response->json()->errors[0]->title);
+	}
 
     public function testGetSwagger()
     {

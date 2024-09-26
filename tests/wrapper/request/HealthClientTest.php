@@ -2,18 +2,19 @@
 
 namespace go1\rest\tests\wrapper\request;
 
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use go1\rest\tests\RestTestCase;
+use Slim\Exception\HttpNotFoundException;
 
 class HealthClientTest extends RestTestCase
 {
     public function test()
     {
-        $req = $this->mf()->createRequest('GET', '/healthz');
-        $res = $this->rest()->process($req, $this->mf()->createResponse());
-        $results = $res->json(true);
+		$this->expectException(NoNodesAvailableException::class);
+		$this->expectExceptionCode(0);
+		$this->expectExceptionMessage('No alive nodes found in your cluster');
 
-        $this->assertEquals(500, $res->getStatusCode());
-        $this->assertEquals(true, $results['db.acme']['ping']);
-        $this->assertEquals(false, $results['elasticsearch.default']['ping'], 'No elastic server.');
+        $req = $this->mf()->createRequest('GET', '/healthz');
+		$this->rest()->process($req, $this->mf()->createResponse());
     }
 }

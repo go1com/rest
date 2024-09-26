@@ -4,6 +4,7 @@ namespace go1\rest\controller;
 
 use DI\Container;
 use Doctrine\DBAL\Schema\Schema;
+use go1\rest\Request;
 use go1\rest\Response;
 use go1\rest\Stream;
 use go1\rest\wrapper\DatabaseConnection;
@@ -34,7 +35,7 @@ class InstallController
         }
     }
 
-    public function post(Response $response)
+    public function post(Request $request, Response $response)
     {
         if (!empty($this->db)) {
             DatabaseConnections::install(
