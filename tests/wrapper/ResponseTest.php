@@ -22,6 +22,25 @@ class ResponseTest extends RestTestCase
         $this->assertEquals("bar", $res->json()->foo);
     }
 
+	public function testError()
+	{
+		$this->expectException(InternalResourceError::class);
+		$this->expectExceptionCode(0);
+		$this->expectExceptionMessage('Just for test');
+
+		$rest = $this->rest();
+		$rest->get('/error', function () {
+			InternalResourceError::throw('Just for test');
+		});
+
+		$request = $this->mf()->createRequest('GET', '/error');
+		$response = $this->mf()->createResponse();
+		$response = $rest->process($request, $response);
+
+		$this->assertEquals(403, $response->getStatusCode());
+		$this->assertEquals('Just for test', $response->json()->errors[0]->title);
+	}
+
     public function testGetSwagger()
     {
         $rest = $this->rest();

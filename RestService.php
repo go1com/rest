@@ -19,7 +19,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface as Psr16CacheInterface;
 use Slim\App;
-use Slim\Factory\AppFactory;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Headers;
 use Symfony\Component\HttpClient\HttpClient;
@@ -51,6 +50,8 @@ class RestService extends App
 		$container = $containerBuilder->build();
 
         parent::__construct($container->get(ResponseFactoryInterface::class), $container);
+
+		$this->defaultRoutes();
 
         if (self::$onBoot) {
             call_user_func(self::$onBoot, $this);
