@@ -35,7 +35,7 @@
         "elasticsearch/elasticsearch": "^v7.11.0",
         "phpunit/phpunit":             "^8.0",
         "symfony/yaml":                "^v4.2.3",
-        "symfony/cache":               "^v4.2.4",
+        "symfony/cache":               "^v5.4.52",
         "justinrainbow/json-schema":   "^5.2.8"
     },
     "suggest":           {
